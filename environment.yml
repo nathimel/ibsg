@@ -1,0 +1,17 @@
+name: ibsg
+channels:
+  - conda-forge
+dependencies:
+  - matplotlib=3.5
+  - pandas
+  - tqdm
+  - black
+  - plotnine
+  - pip
+  - pip:
+    - hydra-core  
+  - pyyaml
+  - numpy
+  - pygmo
+  - pathos
+# and altk, installed via git for now

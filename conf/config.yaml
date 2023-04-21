@@ -1,0 +1,37 @@
+# MAIN (ROOT) CONFIG FILE
+defaults:
+  - game: basic
+  - _self_ # stuff below can override stuff above  
+
+
+seed: 42
+
+# Paths of files used for consuming and producing data
+filepaths: 
+  # experiment outputs
+  curve_points_save_fn: curve_points.csv
+  # hydra automatic folder naming
+  game_subdir: states=${game.num_states}/signals=${game.num_words}/prior=${game.prior}/dist=${game.distance}/discr=${game.discriminative_need}
+  leaf_subdir: ${filepaths.game_subdir} 
+
+hydra:
+  run:
+    dir: outputs/${filepaths.leaf_subdir}
+  job:
+    chdir: True
+    config:
+      override_dirname:
+        exclude_keys:
+          - filepaths.leaf_subdir
+          - game.num_states
+          - game.num_signals
+          - game.prior
+          - game.distance
+          - game.discriminative_need
+
+  sweep:
+    dir: multirun
+    subdir: ${filepaths.leaf_subdir}
+  
+# example command for sweeping params
+# python run_simulations.py -m game.similarity.param=range(1,10, 2)
