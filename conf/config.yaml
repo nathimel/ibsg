@@ -11,7 +11,7 @@ filepaths:
   # experiment outputs
   curve_points_save_fn: curve_points.csv
   # hydra automatic folder naming
-  game_subdir: states=${game.num_states}/signals=${game.num_words}/prior=${game.prior}/dist=${game.distance}/discr=${game.discriminative_need}
+  game_subdir: states=${game.num_states}/words=${game.num_words}/prior=${game.prior}/dist=${game.distance}/discr=${game.discriminative_need}/num_agents=${game.num_agents}
   leaf_subdir: ${filepaths.game_subdir} 
 
 hydra:
@@ -24,7 +24,8 @@ hydra:
         exclude_keys:
           - filepaths.leaf_subdir
           - game.num_states
-          - game.num_signals
+          - game.num_words
+          - game.num_agents
           - game.prior
           - game.distance
           - game.discriminative_need

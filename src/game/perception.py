@@ -68,14 +68,6 @@ def generate_sim_matrix(universe: StateSpace, gamma: float, dist_mat: np.ndarray
         ]
     )
 
-def generate_meaning_distributions(utility: np.ndarray) -> np.ndarray:
-    """Get a meaning distribution by normalizing a utility function to [0,1] range."""
-    # each row sums to 1.0
-    np.seterr(divide="ignore", invalid="ignore")
-    return np.nan_to_num(
-        utility / utility.sum(axis=1, keepdims=True)
-    )
-
 
 ##############################################################################
 # SIMILARITY / UTILITY functions

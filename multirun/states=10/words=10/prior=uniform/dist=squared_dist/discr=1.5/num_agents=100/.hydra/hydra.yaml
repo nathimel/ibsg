@@ -112,13 +112,13 @@ hydra:
     hydra:
     - hydra.mode=MULTIRUN
     task:
-    - game.discriminative_need=range(1,4, 0.5)
+    - game.discriminative_need=1.5
   job:
     name: curve
     chdir: true
     override_dirname: ''
-    id: ???
-    num: ???
+    id: '1'
+    num: 1
     config_name: config
     env_set: {}
     env_copy: []
@@ -148,7 +148,7 @@ hydra:
     - path: ''
       schema: structured
       provider: schema
-    output_dir: ???
+    output_dir: /Users/nathanielimel/uci/projects/ibsg/multirun/states=10/words=10/prior=uniform/dist=squared_dist/discr=1.5/num_agents=100
     choices:
       game: basic
       hydra/env: default
@@ -161,15 +161,3 @@ hydra:
       hydra/launcher: basic
       hydra/output: default
   verbose: false
-game:
-  num_states: 10
-  num_words: 10
-  num_agents: 100
-  distance: squared_dist
-  prior: uniform
-  discriminative_need: 100000000.0
-seed: 42
-filepaths:
-  curve_points_save_fn: curve_points.csv
-  game_subdir: states=${game.num_states}/words=${game.num_words}/prior=${game.prior}/dist=${game.distance}/discr=${game.discriminative_need}/num_agents=${game.num_agents}
-  leaf_subdir: ${filepaths.game_subdir}
