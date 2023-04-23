@@ -113,7 +113,7 @@ hydra:
     - hydra.mode=RUN
     task: []
   job:
-    name: curve
+    name: plot
     chdir: true
     override_dirname: ''
     id: ???
@@ -128,11 +128,13 @@ hydra:
         exclude_keys:
         - filepaths.leaf_subdir
         - game.num_states
-        - game.num_words
+        - game.num_signals
         - game.num_agents
         - game.prior
         - game.distance
         - game.discriminative_need
+        - simulation.dynamics.name
+        - simulation.num_trials
   runtime:
     version: 1.3.2
     version_base: '1.3'
@@ -147,8 +149,10 @@ hydra:
     - path: ''
       schema: structured
       provider: schema
-    output_dir: /Users/nathanielimel/uci/projects/ibsg/outputs/states=10/words=10/prior=uniform/dist=squared_dist/discr=100000000.0/num_agents=100
+    output_dir: /Users/nathanielimel/uci/projects/ibsg/outputs/states=10/words=10/prior=uniform/dist=squared_dist/discr=0.01/dynamics=moran_process/num_trials=1/num_agents=100
     choices:
+      simulation: basic
+      simulation/dynamics: moran_process
       game: basic
       hydra/env: default
       hydra/callbacks: null

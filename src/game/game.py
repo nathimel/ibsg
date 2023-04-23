@@ -8,6 +8,7 @@ from game.prior import generate_prior_over_states
 
 from misc.tools import normalize_rows
 
+# TODO: You're going to want to do replicator dynamics, and potentially Nowak and Krakauer exact replication, so it's worth separating the dynamics out from the game.
 
 class Game:
     """The basic object that contains all of the relevant parameters for the agents, environment, payoffs, etc., that are shared or at least initialized across simulations."""
@@ -47,10 +48,10 @@ class Game:
         # Create a seed language to initialize agents.
         seed_language = SignalingLanguage(signals=signals)
 
-        # create n many agents, fully connected
+        # create n many agents, on a graph
         sender = Sender(seed_language, name="sender")
         receiver = Receiver(seed_language, name="receiver")
-        agents = [SymmetricAgent(sender, receiver, id=i) for i in range(num_agents)]
+        population = [SymmetricAgent(sender, receiver, id=i) for i in range(num_agents)]
 
         # define the adjacency matrix for the environment of interacting agents
         adj_mat = generate_adjacency_matrix(num_agents)
@@ -69,44 +70,28 @@ class Game:
         # construct perceptually uncertain meaning distributions
         meaning_dists = normalize_rows(utility)
 
+        # Constant
         self.states = universe.referents
         self.signals = signals
-        self.agents = agents
         self.adj_mat = adj_mat
         self.prior = prior
         self.dist_mat = dist_mat        
         self.utility = utility        
         self.meaning_dists = meaning_dists
 
+        # updated by dynamics
+        self.population = population
+        self.ib_points = [] # (complexity, accuracy)
+
     @classmethod
     def from_hydra(cls, config):
         """Automatically construct a evolutionary game from a hydra config."""
         return cls(
             config.game.num_states,
-            config.game.num_words,
+            config.game.num_signals,
             config.game.num_agents,
             config.game.prior,
             config.game.distance,
             config.game.discriminative_need,
         )
     
-    def simulate_interactions(self) -> None:
-        """Simulate a single round of the game wherein agents interact with each other and collect payoffs."""
-        raise NotImplementedError
-
-    def moran_evolve(self) -> None:
-        """Simulate evolution in the finite population by running the Moran process, at each iteration randomly replacing an individual with an (randomly selected proportional to fitness) agent's offspring."""
-        raise NotImplementedError
-    
-
-    def interact(self, agent_1: SymmetricAgent, agent_2: SymmetricAgent) -> None:
-        """Simulate the interaction between two agents by recording their expected payoff in repeated communicative exchanges."""
-        raise NotImplementedError
-    
-    def choose_offspring(self) -> SymmetricAgent:
-        """Choose an individual to asexually reproduce, and return their identical copy (child)."""
-        raise NotImplementedError
-
-    def choose_decedent(self) -> SymmetricAgent:
-        """Choose an individual to be removed from the population."""
-        raise NotImplementedError

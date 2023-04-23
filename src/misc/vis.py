@@ -7,12 +7,12 @@ def basic_tradeoff_plot(
     sim_data: pd.DataFrame,
     sampled_data: pd.DataFrame = None,
 ) -> pn.ggplot:
-    """Get a basic plotnine point plot of languages in a complexity vs comm_cost 2D plot."""
+    """Get a basic plotnine point plot of languages in a complexity vs accuracy 2D plot."""
     plot = (
         # Set data and the axes
-        pn.ggplot(data=pareto_data, mapping=pn.aes(x="rate", y="distortion"))
-        + pn.xlab("Complexity $I(S;\hat{S})$")
-        + pn.ylab("Communicative Cost $D[S, \hat{S}]$")
+        pn.ggplot(data=pareto_data, mapping=pn.aes(x="complexity", y="accuracy"))
+        + pn.xlab("Complexity $I[M:W]$ bits")
+        + pn.ylab("Accuracy $I[W:U]$ bits")
         + pn.scale_color_cmap("cividis")
     )
     if sampled_data is not None:
@@ -29,5 +29,5 @@ def basic_tradeoff_plot(
         shape="o",
         size=4,
     )
-    plot = plot + pn.geom_line(size=2)  # pareto frontier last
+    plot = plot + pn.geom_line(size=2)  # curve last
     return plot

@@ -2,9 +2,7 @@
 
 import numpy as np
 from altk.effcomm.agent import Speaker, Listener
-from altk.language.semantics import Meaning
-from game.languages import Signal, SignalMeaning, SignalingLanguage
-from typing import Any
+from game.languages import SignalingLanguage
 
 class Sender(Speaker):
     """A Sender agent in a signaling game chooses a signal given an observed state of nature, according to P(signal | state)."""
@@ -22,6 +20,7 @@ class Sender(Speaker):
             self.weights = weights
         else:
             self.weights = np.random.rand(*self.shape)
+            self.weights = self.normalized_weights()
 
 
 class Receiver(Listener):
@@ -35,8 +34,8 @@ class Receiver(Listener):
             self.weights = weights
         else:
             self.weights = np.random.rand(*self.shape)
+            self.weights = self.normalized_weights()
     
-# TODO: perhaps refactor altk CommunicativeAgent to be compatible with more this more general inherited class?
 class SymmetricAgent:
     """A symmetric communicative agent has both speaker and listener modules."""
     def __init__(self, sender: Sender, receiver: Receiver, **kwargs) -> None:

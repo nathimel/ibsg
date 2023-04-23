@@ -1,6 +1,7 @@
 # MAIN (ROOT) CONFIG FILE
 defaults:
   - game: basic
+  - simulation: basic
   - _self_ # stuff below can override stuff above  
 
 
@@ -10,9 +11,13 @@ seed: 42
 filepaths: 
   # experiment outputs
   curve_points_save_fn: curve_points.csv
+  simulation_points_save_fn: simulation_points.csv
+  tradeoff_plot_fn: tradeoff.png
+  
   # hydra automatic folder naming
-  game_subdir: states=${game.num_states}/words=${game.num_words}/prior=${game.prior}/dist=${game.distance}/discr=${game.discriminative_need}/num_agents=${game.num_agents}
-  leaf_subdir: ${filepaths.game_subdir} 
+  game_subdir: states=${game.num_states}/words=${game.num_signals}/prior=${game.prior}/dist=${game.distance}/discr=${game.discriminative_need}/
+  simulation_subdir: dynamics=${simulation.dynamics.name}/num_trials=${simulation.num_trials}/num_agents=${game.num_agents}
+  leaf_subdir: ${filepaths.game_subdir}/${filepaths.simulation_subdir}
 
 hydra:
   run:
@@ -24,11 +29,13 @@ hydra:
         exclude_keys:
           - filepaths.leaf_subdir
           - game.num_states
-          - game.num_words
+          - game.num_signals
           - game.num_agents
           - game.prior
           - game.distance
           - game.discriminative_need
+          - simulation.dynamics.name
+          - simulation.num_trials
 
   sweep:
     dir: multirun

@@ -108,25 +108,8 @@ class SignalingLanguage(Language):
         self,
         signals: list[Signal],
         name: str = None,
-        data: dict = {
-            "complexity": None,
-            "accuracy": None,
-            "name": None,
-        },
+        **kwargs,
     ):
-        if name is not None:
-            data["name"] = name
-        super().__init__(signals, data=data)
 
-    def yaml_rep(self) -> dict[str, dict]:
-        """Get a data structure for safe compact saving in a .yml file.
+        super().__init__(signals, name=name, **kwargs)
 
-        A dict of the language name and its data. This data is itself a dict of a list of the expressions, and other data.
-        """
-        data = {
-            self.data["name"]: {
-                "expressions": [e.yaml_rep() for e in self.expressions],
-                "data": self.data,  # e.g., complexity and informativity
-            },
-        }
-        return data
