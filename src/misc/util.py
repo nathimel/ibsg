@@ -28,17 +28,12 @@ def save_points_df(fn: str, df: pd.DataFrame) -> None:
     print(f"Saved {len(df)} language points to {os.path.join(os.getcwd(), fn)}")
 
 
-def load_ib_curve(fn: str) -> list[tuple]:
-    """Load a (comm_cost, complexity) IB curve computed by reverse deterministic annealing of the B.A. algorithm."""
-    df = pd.read_csv(fn)
-    return list(map(tuple, df.to_numpy()))
-
-
 def save_ib_curve(fn: str, curve) -> None:
     """Save a dataframe of (accuracy, complexity) points to a CSV."""
-    df = pd.DataFrame(data=curve, columns=["accuracy", "complexity"])
-    df.to_csv(fn, index=False)
-    print(f"Saved {len(df)} language points to {fn}")
+    df = pd.DataFrame(data=curve, columns=["complexity", "accuracy"])
+    save_points_df(fn, df)
+    # df.to_csv(fn, index=False)
+    # print(f"Saved {len(df)} language points to {fn}")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Plot

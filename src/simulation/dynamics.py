@@ -165,7 +165,7 @@ class MoranProcess(FinitePopulationDynamics):
         super().__init__(game, **kwargs)
 
     def evolution_step(self):
-        """Simulate evolution in the finite population by running the Moran process, at each iteration randomly replacing an individual with an (randomly selected proportional to fitness) agent's offspring."""            
+        """Simulate evolution in the finite population by running the frequency dependent Moran process, at each iteration randomly replacing an individual with an (randomly selected proportional to fitness) agent's offspring."""            
         fitnesses = self.measure_fitness()
 
         i = torch.multinomial(fitnesses, 1) # birth
