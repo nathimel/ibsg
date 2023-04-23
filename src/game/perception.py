@@ -1,7 +1,6 @@
 """Functions for computing similarity distributions and utility functions for signaling games."""
 
 import numpy as np
-from game.languages import StateSpace, State
 
 # distance measures
 def abs_dist(t: int, u: int) -> float:
@@ -18,13 +17,13 @@ distance_measures = {
 }
 
 def generate_dist_matrix(
-    universe: StateSpace,
+    universe: list[int],
     distance: str = "squared_dist",
 ) -> np.ndarray:
     """Given a universe, compute the distance for every pair of points in the universe.
 
     Args:
-        universe: a StateSpace such that objects bear Euclidean distance relations
+        universe: a list of ints representing the universe of states (referents), and objects bear Euclidean distance relations
 
         distance: a string corresponding to the name of a pairwise distance function on states, one of {'abs_dist', 'squared_dist'}
     
@@ -36,22 +35,22 @@ def generate_dist_matrix(
         [
             np.array(
                 [
-                    distance_measures[distance](t.data, u.data)
-                    for u in universe.referents
+                    distance_measures[distance](t, u)
+                    for u in universe
                 ]
             )
-            for t in universe.referents
+            for t in universe
         ]
     )
 
 
-def generate_sim_matrix(universe: StateSpace, gamma: float, dist_mat: np.ndarray) -> np.ndarray:
+def generate_sim_matrix(universe: list[int], gamma: float, dist_mat: np.ndarray) -> np.ndarray:
     """Given a universe, compute a similarity score for every pair of points in the universe.
 
     NB: this is a wrapper function that generates the similarity matrix using the data contained in each State.
 
     Args:
-        universe: a StateSpace such that objects bear Euclidean distance relations
+        universe: a list of ints representing the universe of states (referents), and objects bear Euclidean distance relations
 
         similarity: a string corresponding to the name of a pairwise similarity function on states
     """
@@ -59,12 +58,12 @@ def generate_sim_matrix(universe: StateSpace, gamma: float, dist_mat: np.ndarray
     return np.array(
         [
             exp(
-                target=t.data,
-                objects=[u.data for u in universe.referents],
+                target=t,
+                objects=[u for u in universe],
                 gamma=gamma,
                 dist_mat=dist_mat,
             )
-            for t in universe.referents
+            for t in universe
         ]
     )
 
@@ -98,5 +97,5 @@ def exp(
     return np.exp(np.array([exp_term(target, u) for u in objects]))
 
 
-def sim_utility(x: State, y: State, sim_mat: np.ndarray) -> float:
-    return sim_mat[int(x.data), int(y.data)]
+def sim_utility(x: int, y: int, sim_mat: np.ndarray) -> float:
+    return sim_mat[x, y]

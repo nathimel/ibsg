@@ -3,4 +3,4 @@ max_its: 200
 threshold: 1e-5
 
 # dummy until I hear from omry
-num_agents: null
+population_size: null

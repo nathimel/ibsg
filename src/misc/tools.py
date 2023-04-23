@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.special import softmax
 
 def normalize_rows(mat: np.ndarray) -> np.ndarray:
     # each row of 2D array sums to 1.0
@@ -25,3 +26,8 @@ def rows_zero_to_uniform(mat):
             raise Exception
 
     return np.array([row if row.sum() else np.ones(len(row)) / len(row) for row in mat])
+
+def random_stochastic_matrix(shape: tuple[int], temperature: float = 1e-2): 
+    # higher temperature -> more uniform initialization
+    energies = 1/temperature * np.random.randn(*shape)
+    return softmax(energies, axis=-1)

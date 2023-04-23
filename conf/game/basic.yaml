@@ -1,8 +1,9 @@
 # game paramters
 num_states: 10
 num_signals: 10
-num_agents: 100 # if moran process
 
 distance: squared_dist # squared_dist or abs_dist
-prior: uniform # uniform or random or dirac
 discriminative_need: 1e-1 # 0 is useless, \infty is perfect; to sweep
+
+# temperature params for generating random distributions: higher -> more uniform distribution
+prior_init_temp: 1e8 # for communicative need distribution = prior over states

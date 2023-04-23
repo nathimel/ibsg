@@ -1,0 +1,24 @@
+game:
+  num_states: 10
+  num_signals: 10
+  distance: squared_dist
+  discriminative_need: 100000000.0
+  prior_init_temp: 100000000.0
+simulation:
+  dynamics:
+    name: moran_process
+    max_its: 200
+    threshold: 1.0e-05
+    population_size: 1000
+    population_init_temp: 0.01
+  num_trials: 1
+  multiprocessing: false
+  num_processes: null
+seed: 42
+filepaths:
+  curve_points_save_fn: curve_points.csv
+  simulation_points_save_fn: simulation_points.csv
+  tradeoff_plot_fn: tradeoff.png
+  game_subdir: states=${game.num_states}/words=${game.num_signals}/prior=${game.prior_init_temp}/dist=${game.distance}/discr=${game.discriminative_need}/
+  simulation_subdir: dynamics=${simulation.dynamics.name}/num_trials=${simulation.num_trials}/population_size=${simulation.dynamics.population_size}
+  leaf_subdir: ${filepaths.game_subdir}/${filepaths.simulation_subdir}

@@ -1,18 +1,9 @@
 """Functions for running one trial of a simulation."""
 
-import numpy as np
-import pandas as pd
 from tqdm import tqdm
-from typing import Any
-
 from omegaconf import DictConfig
-
-from game.languages import SignalingLanguage
-from misc.util import points_to_df
-from simulation.dynamics import dynamics_map
-
 from multiprocessing import Pool, cpu_count
-
+from simulation.dynamics import dynamics_map
 from game.game import Game
 
 

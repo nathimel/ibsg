@@ -13,10 +13,10 @@ filepaths:
   curve_points_save_fn: curve_points.csv
   simulation_points_save_fn: simulation_points.csv
   tradeoff_plot_fn: tradeoff.png
-  
+
   # hydra automatic folder naming
-  game_subdir: states=${game.num_states}/words=${game.num_signals}/prior=${game.prior}/dist=${game.distance}/discr=${game.discriminative_need}/
-  simulation_subdir: dynamics=${simulation.dynamics.name}/num_trials=${simulation.num_trials}/num_agents=${game.num_agents}
+  game_subdir: states=${game.num_states}/words=${game.num_signals}/prior=${game.prior_init_temp}/dist=${game.distance}/discr=${game.discriminative_need}/
+  simulation_subdir: dynamics=${simulation.dynamics.name}/num_trials=${simulation.num_trials}/population_size=${simulation.dynamics.population_size}
   leaf_subdir: ${filepaths.game_subdir}/${filepaths.simulation_subdir}
 
 hydra:
@@ -30,8 +30,8 @@ hydra:
           - filepaths.leaf_subdir
           - game.num_states
           - game.num_signals
-          - game.num_agents
-          - game.prior
+          - simulation.dynamics.population_size
+          - game.prior_init_temp
           - game.distance
           - game.discriminative_need
           - simulation.dynamics.name
