@@ -1,10 +1,10 @@
 """Functions for computing similarity distributions and utility functions for signaling games."""
 
-import numpy as np
+import torch
 
 # distance measures
 def abs_dist(t: int, u: int) -> float:
-    return np.abs(t - u)
+    return torch.abs(t - u)
 
 
 def squared_dist(t: int, u: int) -> float:
@@ -19,7 +19,7 @@ distance_measures = {
 def generate_dist_matrix(
     universe: list[int],
     distance: str = "squared_dist",
-) -> np.ndarray:
+) -> torch.Tensor:
     """Given a universe, compute the distance for every pair of points in the universe.
 
     Args:
@@ -31,20 +31,20 @@ def generate_dist_matrix(
 
         an array of shape `(|universe|, |universe|)` representing pairwise distances
     """
-    return np.array(
+    return torch.Tensor(
         [
-            np.array(
+            # torch.Tensor(
                 [
                     distance_measures[distance](t, u)
                     for u in universe
                 ]
-            )
+            # )
             for t in universe
         ]
     )
 
 
-def generate_sim_matrix(universe: list[int], gamma: float, dist_mat: np.ndarray) -> np.ndarray:
+def generate_sim_matrix(universe: list[int], gamma: float, dist_mat: torch.Tensor) -> torch.Tensor:
     """Given a universe, compute a similarity score for every pair of points in the universe.
 
     NB: this is a wrapper function that generates the similarity matrix using the data contained in each State.
@@ -54,12 +54,11 @@ def generate_sim_matrix(universe: list[int], gamma: float, dist_mat: np.ndarray)
 
         similarity: a string corresponding to the name of a pairwise similarity function on states
     """
-
-    return np.array(
+    return torch.stack(
         [
             exp(
                 target=t,
-                objects=[u for u in universe],
+                objects=universe,
                 gamma=gamma,
                 dist_mat=dist_mat,
             )
@@ -75,10 +74,10 @@ def generate_sim_matrix(universe: list[int], gamma: float, dist_mat: np.ndarray)
 
 def exp(
     target: int,
-    objects: np.ndarray,
+    objects: torch.Tensor,
     gamma: float,
-    dist_mat: np.ndarray,
-) -> np.ndarray:
+    dist_mat: torch.Tensor,
+) -> torch.Tensor:
     """The (unnormalized) exponential function sim(x,y) = exp(-gamma * d(x,y)).
 
     Args:
@@ -94,8 +93,8 @@ def exp(
         a similarity matrix representing pairwise inverse distance between states
     """
     exp_term = lambda t, u: -gamma * dist_mat[t, u]
-    return np.exp(np.array([exp_term(target, u) for u in objects]))
+    return torch.exp(torch.stack([exp_term(target, u) for u in objects]))
 
 
-def sim_utility(x: int, y: int, sim_mat: np.ndarray) -> float:
+def sim_utility(x: int, y: int, sim_mat: torch.Tensor) -> float:
     return sim_mat[x, y]

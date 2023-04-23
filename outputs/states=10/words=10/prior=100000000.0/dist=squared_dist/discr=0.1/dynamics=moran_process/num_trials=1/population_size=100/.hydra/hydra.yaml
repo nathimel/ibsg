@@ -113,7 +113,7 @@ hydra:
     - hydra.mode=RUN
     task: []
   job:
-    name: run_simulations
+    name: plot
     chdir: true
     override_dirname: ''
     id: ???
@@ -149,7 +149,7 @@ hydra:
     - path: ''
       schema: structured
       provider: schema
-    output_dir: /Users/nathanielimel/uci/projects/ibsg/outputs/states=10/words=10/prior=100000000.0/dist=squared_dist/discr=0.1/dynamics=moran_process/num_trials=1/population_size=10
+    output_dir: /Users/nathanielimel/uci/projects/ibsg/outputs/states=10/words=10/prior=100000000.0/dist=squared_dist/discr=0.1/dynamics=moran_process/num_trials=1/population_size=100
     choices:
       simulation: basic
       simulation/dynamics: moran_process

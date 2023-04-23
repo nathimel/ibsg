@@ -2,5 +2,5 @@ name: moran_process
 max_its: 200
 threshold: 1e-5
 
-population_size: 10
+population_size: 100
 population_init_temp: 1e-2 # for creating Sender, Receivers in seed population

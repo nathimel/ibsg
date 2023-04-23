@@ -1,5 +1,5 @@
 import os
-import numpy as np  
+import torch
 import pandas as pd
 from plotnine import ggplot
 
@@ -9,7 +9,7 @@ from plotnine import ggplot
 
 def set_seed(seed: int) -> None:
     """Sets random seeds."""
-    np.random.seed(seed)
+    torch.manual_seed(seed)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Data

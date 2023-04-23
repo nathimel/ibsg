@@ -1,10 +1,8 @@
-import numpy as np
+import torch
 
 from game.perception import generate_dist_matrix, generate_sim_matrix
 
 from misc.tools import normalize_rows, random_stochastic_matrix
-
-# TODO: You're going to want to do replicator dynamics, and potentially Nowak and Krakauer exact replication, so it's worth separating the dynamics out from the game.
 
 class Game:
     """The basic object that contains all of the relevant parameters for the agents, environment, payoffs, etc., that are shared or at least initialized across simulations."""

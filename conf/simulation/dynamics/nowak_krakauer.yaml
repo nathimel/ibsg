@@ -1,0 +1,7 @@
+name: nowak_krakauer
+max_its: 200
+threshold: 1e-5
+
+population_size: 100
+num_samples: 10
+population_init_temp: 1e-2 # for creating Sender, Receivers in seed population

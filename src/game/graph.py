@@ -1,6 +1,6 @@
-import numpy as np
+import torch
 
-def generate_adjacency_matrix(n: int, graph: str = 'complete', self_connections: bool = False, **kwargs) -> np.ndarray:
+def generate_adjacency_matrix(n: int, graph: str = 'complete', self_connections: bool = False, **kwargs) -> torch.Tensor:
     """Generate an adjacency matrix for a graph (network) defining the environment of agents, with vertices representing agents, and edges representing communication.
     
     Args:
@@ -12,14 +12,14 @@ def generate_adjacency_matrix(n: int, graph: str = 'complete', self_connections:
     """
     graph = graph_map[graph](n, **kwargs)
     if not self_connections:
-        graph -= np.eye(n)
+        graph -= torch.eye(n)
     return graph
 
 
-def complete_graph(n: int, **kwargs) -> np.ndarray:
-    return np.ones((n, n))
+def complete_graph(n: int, **kwargs) -> torch.Tensor:
+    return torch.ones((n, n))
 
-def random_graph(n: int, **kwargs) -> np.ndarray:
+def random_graph(n: int, **kwargs) -> torch.Tensor:
     raise NotImplementedError
 
 graph_map = {
