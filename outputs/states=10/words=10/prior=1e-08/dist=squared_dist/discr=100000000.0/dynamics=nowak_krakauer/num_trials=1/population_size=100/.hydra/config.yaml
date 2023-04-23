@@ -6,7 +6,7 @@ game:
   meaning_dist_beta: 0.01
   prior_init_beta: 1.0e-08
   beta_start: 2
-  beta_stop: 0
+  beta_stop: -2
   steps: 1500
 simulation:
   dynamics:
