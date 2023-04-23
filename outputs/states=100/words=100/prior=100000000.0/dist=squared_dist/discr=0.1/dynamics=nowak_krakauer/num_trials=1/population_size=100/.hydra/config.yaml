@@ -1,9 +1,9 @@
 game:
-  num_states: 10
-  num_signals: 10
+  num_states: 100
+  num_signals: 100
   distance: squared_dist
-  discriminative_need: 100000000.0
-  meaning_dist_temp: 100.0
+  discriminative_need: 0.1
+  meaning_dist_temp: 100000000.0
   prior_init_temp: 100000000.0
 simulation:
   dynamics:

@@ -3,6 +3,7 @@ game:
   num_signals: 10
   distance: squared_dist
   discriminative_need: 0.1
+  meaning_dist_temp: 100000000.0
   prior_init_temp: 100000000.0
 simulation:
   dynamics:

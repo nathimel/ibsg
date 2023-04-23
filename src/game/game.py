@@ -10,9 +10,10 @@ class Game:
         self, 
         num_states: int, 
         num_signals: int, 
-        prior_init_temp: float, 
+        prior_init_beta: float, 
         distance: str, 
         discr: float,
+        meaning_dist_beta: float,
         **kwargs,
         ) -> None:
         """Construct an evolutionary game.
@@ -28,22 +29,22 @@ class Game:
 
             distance: the kind of distance measure to use as input to the similarity-based utility and meaning distributions.
 
-            discr: a float corresponding to gamma in the softmax-based distribution, representing discriminative need in the game.
-
-            init_temperature: a float controlling the uniform-ness of the seed population of agents (composed of a Sender P and Receiver Q)
+            discr: a float controlling the uniform-ness of the payoff / utility / fitness function, representing discriminative need. Higher discr -> all or nothing reward.
+            
+            meaning_dist_temp: a float controlling the uniform-ness of the meaning distributions P(U|M), which represent perceptual uncertainty. higher temp -> full certainty.
         """
         # define a meaning space with some 'similarity' structure
         universe = [i for i in range(num_states)]
 
         # specify prior and distortion matrix for all trials
-        prior = random_stochastic_matrix((num_states, ), temperature = prior_init_temp)
+        prior = random_stochastic_matrix((num_states, ), beta = prior_init_beta)
         dist_mat = generate_dist_matrix(universe, distance)
 
         # construct utility function
         utility = generate_sim_matrix(universe, discr, dist_mat)
 
         # construct perceptually uncertain meaning distributions
-        meaning_dists = normalize_rows(utility)
+        meaning_dists = normalize_rows(generate_sim_matrix(universe, meaning_dist_beta, dist_mat))
 
         # Constant
         self.num_states = num_states
@@ -56,13 +57,19 @@ class Game:
         # updated by dynamics
         self.ib_points = [] # (complexity, accuracy)
 
+        self.__dict__.update(**kwargs)
+
     @classmethod
     def from_hydra(cls, config):
         """Automatically construct a evolutionary game from a hydra config."""
         return cls(
             config.game.num_states,
             config.game.num_signals,
-            config.game.prior_init_temp,
+            config.game.prior_init_beta,
             config.game.distance,
             config.game.discriminative_need,
+            config.game.meaning_dist_beta,
+            beta_start = config.game.beta_start,
+            beta_stop = config.game.beta_stop,
+            steps = config.game.steps,
         )

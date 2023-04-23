@@ -25,14 +25,22 @@ class Dynamics:
 
 class FinitePopulationDynamics(Dynamics):
     def __init__(self, game: Game, **kwargs) -> None:
+        """
+        Args:
+            max_its: int maximum number of steps to run evolution
+
+            threshold: a float controlling convergence of evolution
+
+            init_beta: a float controlling the sharpness of the seed population (composed of a Sender P and Receiver Q) agents' distributions        
+        """
         super().__init__(game, **kwargs)
         self.max_its = kwargs["max_its"]
         self.threshold = kwargs["threshold"]
         self.n = kwargs["population_size"]
 
         # create a population of n many (P,Q) agents
-        self.Ps = random_stochastic_matrix((self.n, self.game.num_states, self.game.num_signals), kwargs["population_init_temp"])
-        self.Qs = random_stochastic_matrix((self.n, self.game.num_states, self.game.num_states), kwargs["population_init_temp"])
+        self.Ps = random_stochastic_matrix((self.n, self.game.num_states, self.game.num_signals), kwargs["population_init_beta"])
+        self.Qs = random_stochastic_matrix((self.n, self.game.num_states, self.game.num_states), kwargs["population_init_beta"])
 
         # define the adjacency matrix for the environment of interacting agents
         self.adj_mat = generate_adjacency_matrix(self.n)
