@@ -5,5 +5,5 @@ defaults:
 # simulation parameters
 num_trials: 1
 
-multiprocessing: False # N.B. just for running simulations of dynamics for now, not for e.g. genetic algorithm, analysis
+multiprocessing: True # N.B. just for running simulations of dynamics for now, not for e.g. genetic algorithm, analysis
 num_processes: null # null defaults to cpu_count

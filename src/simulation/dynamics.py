@@ -119,8 +119,8 @@ class FinitePopulationDynamics(Dynamics):
                 converged = True
 
         progress_bar.close()
-        torch.set_printoptions(sci_mode=False)
-        print(mean_p)
+        # torch.set_printoptions(sci_mode=False)
+        # print(mean_p)
 
     def evolution_step(self):
         """The step of evolution that varies between different stochastic processes modeling evolution.
