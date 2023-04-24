@@ -104,20 +104,26 @@ hydra:
       - file
     disable_existing_loggers: false
   env: {}
-  mode: RUN
+  mode: MULTIRUN
   searchpath: []
   callbacks: {}
   output_subdir: .hydra
   overrides:
     hydra:
-    - hydra.mode=RUN
-    task: []
+    - hydra.mode=MULTIRUN
+    task:
+    - simulation.use_decoder=False
+    - game.discriminative_need_beta=3
+    - game.meaning_dist_beta=0
+    - simulation/dynamics=two_population_rd
+    - game.num_states=100
+    - game.num_signals=100
   job:
     name: curve
     chdir: true
-    override_dirname: ''
-    id: ???
-    num: ???
+    override_dirname: simulation.use_decoder=False,simulation/dynamics=two_population_rd
+    id: '0'
+    num: 0
     config_name: config
     env_set: {}
     env_copy: []
@@ -151,7 +157,7 @@ hydra:
     - path: ''
       schema: structured
       provider: schema
-    output_dir: /Users/nathanielimel/uci/projects/ibsg/outputs/states=10/signals=10/prior=-8/dist=squared_dist/meaning_certainty=0/discr_need=1/seed=42/dynamics=two_population_rd/num_trials=8/population_size=None
+    output_dir: /Users/nathanielimel/uci/projects/ibsg/multirun/states=100/signals=100/prior=-8/dist=squared_dist/meaning_certainty=0/discr_need=3/seed=42/dynamics=two_population_rd/num_trials=8/population_size=None
     choices:
       simulation: basic
       simulation/dynamics: two_population_rd

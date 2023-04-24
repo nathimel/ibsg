@@ -6,6 +6,13 @@ from altk.effcomm.information import ib_encoder_to_point
 from omegaconf import DictConfig
 from game.game import Game
 from misc import util
+from tqdm import tqdm
+from multiprocessing import cpu_count, Pool
+
+# def curve_multiprocessing(*args):
+
+
+
 
 def ib_blahut_arimoto(
     num_words: int,
@@ -48,6 +55,7 @@ def ib_blahut_arimoto(
         W_dim
     )  # shape 1MW
 
+    # TODO: implement thresholding
     for _ in range(num_steps):
         # start by getting q(m,w) = p(m) q(w|m)
         lnq_joint = lnp_M + lnq
@@ -75,10 +83,30 @@ def get_ib_curve(prior, meaning_dists, beta_start, beta_stop, steps):
     encoders = []
     coordinates = []
 
-    for beta in torch.logspace(beta_start, beta_stop, steps):
-        encoder = ib_blahut_arimoto(len(prior), beta, prior, meaning_dists)
-        coordinates.append(ib_encoder_to_point(encoder, meaning_dists, prior))
-        encoders.append(encoder)
+    betas = torch.logspace(beta_start, beta_stop, steps)
+    num_states = len(prior)
+
+    # Multiprocessing
+    if len(prior) > 25:
+        num_processes = cpu_count()
+        with Pool(num_processes) as p:
+            async_results = [
+                p.apply_async(
+                ib_blahut_arimoto, 
+                args=[num_states, beta, prior, meaning_dists],
+                )
+                for beta in betas
+            ]
+            p.close()
+            p.join()
+        encoders = [async_result.get() for async_result in tqdm(async_results)]
+        coordinates = [ib_encoder_to_point(encoder, meaning_dists, prior) for encoder in encoders]
+
+    else:
+        for beta in tqdm(betas):
+            encoder = ib_blahut_arimoto(num_states, beta, prior, meaning_dists)
+            coordinates.append(ib_encoder_to_point(encoder, meaning_dists, prior))
+            encoders.append(encoder)
 
     return {
         "encoders": encoders,
