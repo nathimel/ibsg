@@ -6,7 +6,7 @@ defaults:
 use_decoder: True # whether to use the emergent decoder when computing IB coordinate
 
 # simulation parameters
-num_trials: 100
+num_trials: 10
 
 multiprocessing: True # N.B. just for running simulations of dynamics for now, not for e.g. genetic algorithm, analysis
 num_processes: null # null defaults to cpu_count

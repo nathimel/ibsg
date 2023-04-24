@@ -37,14 +37,14 @@ class Game:
         universe = [i for i in range(num_states)]
 
         # specify prior and distortion matrix for all trials
-        prior = random_stochastic_matrix((num_states, ), beta = prior_init_beta)
+        prior = random_stochastic_matrix((num_states, ), beta = 10 ** prior_init_beta)
         dist_mat = generate_dist_matrix(universe, distance)
 
         # construct utility function
-        utility = generate_sim_matrix(universe, discr_need_beta, dist_mat)
+        utility = generate_sim_matrix(universe, 10 ** discr_need_beta, dist_mat)
 
         # construct perceptually uncertain meaning distributions
-        meaning_dists = normalize_rows(generate_sim_matrix(universe, meaning_dist_beta, dist_mat))
+        meaning_dists = normalize_rows(generate_sim_matrix(universe, 10 ** meaning_dist_beta, dist_mat))
 
         # Constant
         self.num_states = num_states
