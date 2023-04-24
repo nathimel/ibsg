@@ -28,12 +28,6 @@ def save_points_df(fn: str, df: pd.DataFrame) -> None:
     print(f"Saved {len(df)} language points to {os.path.join(os.getcwd(), fn)}")
 
 
-def save_ib_curve(fn: str, curve) -> None:
-    """Save a dataframe of (accuracy, complexity) points to a CSV."""
-    df = pd.DataFrame(data=curve, columns=["complexity", "accuracy"])
-    save_points_df(fn, df)
-
-
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Plot
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

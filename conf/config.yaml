@@ -15,7 +15,7 @@ filepaths:
   tradeoff_plot_fn: tradeoff.png
 
   # hydra automatic folder naming
-  game_subdir: states=${game.num_states}/words=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/discr=${game.discriminative_need}/
+  game_subdir: states=${game.num_states}/words=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/discr_need=${game.discriminative_need_beta}/
   simulation_subdir: dynamics=${simulation.dynamics.name}/num_trials=${simulation.num_trials}/population_size=${simulation.dynamics.population_size}
   leaf_subdir: ${filepaths.game_subdir}/${filepaths.simulation_subdir}
 
@@ -33,7 +33,7 @@ hydra:
           - simulation.dynamics.population_size
           - game.prior_init_beta
           - game.distance
-          - game.discriminative_need
+          - game.discriminative_need_beta
           - simulation.dynamics.name
           - simulation.num_trials
 

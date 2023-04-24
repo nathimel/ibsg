@@ -10,19 +10,18 @@ def generate_adjacency_matrix(n: int, graph: str = 'complete', self_connections:
 
         self_connections: whether to allow an agent to communicate with itself (weird)
     """
-    graph = graph_map[graph](n, **kwargs)
+    if isinstance(graph, str):
+        graph = torch.ones((n, n))
+
+    elif isinstance(graph, float):
+        # generate a random UNWEIGHTED graph
+        graph = torch.zeros(n,n)
+        while not (graph - torch.eye(n,n)).any(): # at least one irreflexive connection
+            graph = torch.tensor(torch.randn(n, n) > 0, dtype=int)
+
+    else:
+        raise ValueError("Argument `graph` must be str 'complete' or 'random'.")
+        
     if not self_connections:
         graph -= torch.eye(n)
     return graph
-
-
-def complete_graph(n: int, **kwargs) -> torch.Tensor:
-    return torch.ones((n, n))
-
-def random_graph(n: int, **kwargs) -> torch.Tensor:
-    raise NotImplementedError
-
-graph_map = {
-    "complete": complete_graph,
-    "random": random_graph,
-}

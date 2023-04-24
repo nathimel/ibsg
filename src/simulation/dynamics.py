@@ -48,7 +48,7 @@ class FinitePopulationDynamics(Dynamics):
         self.Qs = random_stochastic_matrix((self.n, self.game.num_states, self.game.num_states), kwargs["population_init_beta"])
 
         # define the adjacency matrix for the environment of interacting agents
-        self.adj_mat = generate_adjacency_matrix(self.n)
+        self.adj_mat = generate_adjacency_matrix(self.n, kwargs["graph"])
 
     def population_mean_weights(self) -> tuple[float]:
         """Return the average agent (Sender, Receiver) weights."""

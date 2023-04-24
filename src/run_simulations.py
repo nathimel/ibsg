@@ -3,7 +3,6 @@
 import hydra
 from misc import util
 from simulation.driver import run_trials
-from simulation.data import trials_to_df
 
 
 @hydra.main(version_base=None, config_path="../conf", config_name="config")
@@ -13,7 +12,7 @@ def main(config):
     # setup and run experiment
     trials = run_trials(config)
 
-    df_points = trials_to_df(trials)
+    df_points = util.points_to_df([g.ib_points[-1] for g in trials])
     util.save_points_df(fn=config.filepaths.simulation_points_save_fn, df=df_points)
 
 if __name__ == "__main__":

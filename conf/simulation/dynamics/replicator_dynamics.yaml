@@ -4,4 +4,6 @@ threshold: 1e-5
 
 # dummy until I hear from omry
 population_size: null
+graph_beta: null
+
 population_init_beta: 1e-2 # for creating Sender, Receivers in seed 'population'

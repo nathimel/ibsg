@@ -4,3 +4,4 @@ threshold: 1e-5
 
 population_size: 100
 population_init_beta: 1e-2 # for creating Sender, Receivers in seed population
+graph: complete # 'complete' or float beta for random

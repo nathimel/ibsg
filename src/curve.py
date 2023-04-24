@@ -98,7 +98,7 @@ def main(config: DictConfig):
     evol_game = Game.from_hydra(config)
     curve_points = get_ib_curve(evol_game.prior, evol_game.meaning_dists)["coordinates"]
 
-    util.save_ib_curve(curve_fn, curve_points)
+    util.save_points_df(curve_fn, util.points_to_df(curve_points))
 
 if __name__ == "__main__":
     main()

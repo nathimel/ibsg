@@ -12,7 +12,7 @@ class Game:
         num_signals: int, 
         prior_init_beta: float, 
         distance: str, 
-        discr: float,
+        discr_need_beta: float,
         meaning_dist_beta: float,
         **kwargs,
         ) -> None:
@@ -29,7 +29,7 @@ class Game:
 
             distance: the kind of distance measure to use as input to the similarity-based utility and meaning distributions.
 
-            discr: a float controlling the uniform-ness of the payoff / utility / fitness function, representing discriminative need. Higher discr -> all or nothing reward.
+            discr_need_beta: a float controlling the uniform-ness of the payoff / utility / fitness function, representing discriminative need. Higher discr -> all or nothing reward.
             
             meaning_dist_temp: a float controlling the uniform-ness of the meaning distributions P(U|M), which represent perceptual uncertainty. higher temp -> full certainty.
         """
@@ -41,7 +41,7 @@ class Game:
         dist_mat = generate_dist_matrix(universe, distance)
 
         # construct utility function
-        utility = generate_sim_matrix(universe, discr, dist_mat)
+        utility = generate_sim_matrix(universe, discr_need_beta, dist_mat)
 
         # construct perceptually uncertain meaning distributions
         meaning_dists = normalize_rows(generate_sim_matrix(universe, meaning_dist_beta, dist_mat))
@@ -67,7 +67,7 @@ class Game:
             config.game.num_signals,
             config.game.prior_init_beta,
             config.game.distance,
-            config.game.discriminative_need,
+            config.game.discriminative_need_beta,
             config.game.meaning_dist_beta,
             beta_start = config.game.beta_start,
             beta_stop = config.game.beta_stop,
