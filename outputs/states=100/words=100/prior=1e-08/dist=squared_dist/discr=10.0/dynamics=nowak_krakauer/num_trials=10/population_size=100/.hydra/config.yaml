@@ -1,0 +1,29 @@
+game:
+  num_states: 100
+  num_signals: 100
+  distance: squared_dist
+  discriminative_need: 10.0
+  meaning_dist_beta: 1.0
+  prior_init_beta: 1.0e-08
+  beta_start: 2
+  beta_stop: -2
+  steps: 1500
+simulation:
+  dynamics:
+    name: nowak_krakauer
+    max_its: 200
+    threshold: 1.0e-05
+    population_size: 100
+    num_samples: 10
+    population_init_beta: 0.01
+  num_trials: 10
+  multiprocessing: true
+  num_processes: null
+seed: 42
+filepaths:
+  curve_points_save_fn: curve_points.csv
+  simulation_points_save_fn: simulation_points.csv
+  tradeoff_plot_fn: tradeoff.png
+  game_subdir: states=${game.num_states}/words=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/discr=${game.discriminative_need}/
+  simulation_subdir: dynamics=${simulation.dynamics.name}/num_trials=${simulation.num_trials}/population_size=${simulation.dynamics.population_size}
+  leaf_subdir: ${filepaths.game_subdir}/${filepaths.simulation_subdir}

@@ -5,7 +5,7 @@ import torch
 from altk.effcomm.information import ib_encoder_decoder_to_point
 from game.game import Game
 from game.graph import generate_adjacency_matrix
-from misc.tools import random_stochastic_matrix
+from misc.tools import random_stochastic_matrix, normalize_rows
 
 from tqdm import tqdm
 
@@ -20,6 +20,11 @@ class Dynamics:
         self.ib_point = lambda encoder, decoder: ib_encoder_decoder_to_point(encoder, decoder, self.game.meaning_dists, self.game.prior)
 
     def run(self):
+        raise NotImplementedError
+    
+    def evolution_step(self):
+        """The step of evolution that varies between different models.
+        """
         raise NotImplementedError
 
 
@@ -122,11 +127,6 @@ class FinitePopulationDynamics(Dynamics):
         # torch.set_printoptions(sci_mode=False)
         # print(mean_p)
 
-    def evolution_step(self):
-        """The step of evolution that varies between different stochastic processes modeling evolution.
-        """
-        raise NotImplementedError
-
 
 ##############################################################################
 # Nowak and Krakauer
@@ -176,23 +176,92 @@ class MoranProcess(FinitePopulationDynamics):
         self.Qs[j] = copy.deepcopy(self.Qs[j])
         # N.B.: no update to adj_mat necessary
 
-class NoisyDiscreteTimeReplicatorDynamics(Dynamics):
+
+##############################################################################
+# Discrete Time Replicator Dynamics (with perceptual uncertainty in meanings)
+##############################################################################
+
+class ReplicatorDynamics(Dynamics):
+    """Discrete Time Replicator Dynamics, with perceptual uncertainty in meaning distributions (see Franke and Correia, 2018 on imprecise imitation)."""
     def __init__(self, game: Game, **kwargs) -> None:
         super().__init__(game, **kwargs)
         self.max_its = kwargs["max_its"]
         self.threshold = kwargs["threshold"]
+        self.init_beta = kwargs["population_init_beta"]        
 
     def run(self):
+        self.P = random_stochastic_matrix((self.game.num_states, self.game.num_signals), self.init_beta)
+        self.Q = random_stochastic_matrix((self.game.num_signals, self.game.num_states), self.init_beta)
+
+        i = 0
+        converged = False
+        progress_bar = tqdm(total=self.max_its)
+        while not converged:
+            i += 1
+            progress_bar.update(1)
+
+            P_prev = copy.deepcopy(self.P)
+            Q_prev = copy.deepcopy(self.Q)
+
+            # track data
+            self.game.ib_points.append(self.ib_point(self.P, self.Q))
+
+            self.evolution_step() # N.B.: fitness requires population update 
+
+            # Check for convergence
+            if (
+                torch.abs(self.P - P_prev).sum() < self.threshold
+                and torch.abs(self.Q - Q_prev).sum() < self.threshold
+            ) or (i == self.max_its):
+                converged = True
+
+        progress_bar.close()
+
+    def evolution_step(self):
         """Simulate evolution of strategies in a near-infinite population of agents x using a discrete-time version of the replicator equation:
 
             x_i' = x_i * ( f_i(x) - sum_j f_j(x_j) )
 
         Changes in agent type (pure strategies) depend only on their frequency and their fitness.
         """
-        raise NotImplementedError
+        raise NotImplementedError        
+
+class TwoPopulationRD(ReplicatorDynamics):
+    def __init__(self, game: Game, **kwargs) -> None:
+        super().__init__(game, **kwargs)
+
+    def evolution_step(self):
+        """Update steps in the two population replicator dynamics for signaling is given as follows:
+
+        """
+        P = self.P
+        Q = self.Q
+
+        # re-measure population-sensitive expected utilities for agents
+        U_sender = torch.tensor(
+            [[Q[w] @ self.game.utility[s] for w in range(self.game.num_signals)] for s in range(self.game.num_states)]
+        )
+
+        # update sender
+        P *= U_sender
+        P = normalize_rows(P)
+        P = self.game.meaning_dists @ P
+
+        U_receiver = torch.Tensor([
+                [(self.game.prior * P[:, w]) @ self.game.utility[s] for s in range(self.game.num_states)]
+                for w in range(self.game.num_signals)]
+            )
+
+        # update receiver
+        Q *= U_receiver
+        Q = normalize_rows(Q)
+        Q = Q @ self.game.meaning_dists
+
+        self.P = P
+        self.Q = Q
 
 dynamics_map = {
     "moran_process": MoranProcess,
     "nowak_krakauer": NowakKrakauerDynamics,
-    "replicator_dynamics": NoisyDiscreteTimeReplicatorDynamics,
+    "two_population_rd": TwoPopulationRD,
 }

@@ -25,7 +25,6 @@ def main(config):
 
     # get plot
     plot = vis.basic_tradeoff_plot(curve_data, sim_data)
-    # plot = vis.bound_only_plot(curve_data)
 
     util.save_plot(plot_fn, plot)
 
