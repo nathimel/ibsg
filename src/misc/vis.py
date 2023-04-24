@@ -5,7 +5,7 @@ import pandas as pd
 def basic_tradeoff_plot(
     curve_data: pd.DataFrame,
     sim_data: pd.DataFrame,
-    sampled_data: pd.DataFrame = None,
+    variant_data: pd.DataFrame = None,
 ) -> pn.ggplot:
     """Get a basic plotnine point plot of languages in a complexity vs accuracy 2D plot."""
     plot = (
@@ -15,9 +15,9 @@ def basic_tradeoff_plot(
         + pn.ylab("Accuracy $I[W:U]$ bits")
         + pn.scale_color_cmap("cividis")
     )
-    if sampled_data is not None:
+    if variant_data is not None:
         plot = plot + pn.geom_point(  # hypothetical langs bottom layer
-            sampled_data,
+            variant_data,
             color="gray",
             shape="o",
             size=2,

@@ -12,6 +12,7 @@ filepaths:
   # experiment outputs
   curve_points_save_fn: curve_points.csv
   simulation_points_save_fn: simulation_points.csv
+  variant_points_save_fn: variant_points.csv
   tradeoff_plot_fn: tradeoff.png
 
   # hydra automatic folder naming

@@ -56,6 +56,7 @@ class Game:
 
         # updated by dynamics
         self.ib_points = [] # (complexity, accuracy)
+        self.ib_encoders = []
 
         self.__dict__.update(**kwargs)
 

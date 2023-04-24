@@ -115,6 +115,7 @@ class FinitePopulationDynamics(Dynamics):
 
             # track data
             self.game.ib_points.append(self.ib_point(mean_p, mean_q))
+            self.game.ib_encoders.append(mean_p)
 
             self.evolution_step()
 
@@ -209,6 +210,7 @@ class ReplicatorDynamics(Dynamics):
 
             # track data
             self.game.ib_points.append(self.ib_point(self.P, self.Q))
+            self.game.ib_encoders.append(self.P)
 
             self.evolution_step() # N.B.: fitness requires population update 
 
