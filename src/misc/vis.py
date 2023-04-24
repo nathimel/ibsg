@@ -29,8 +29,8 @@ def basic_tradeoff_plot(
         shape="o",
         size=4,
     )
-    # plot = plot + pn.geom_line(size=2)  # curve last
-    plot = plot + pn.geom_point()
+    plot = plot + pn.geom_line(size=2)  # curve last
+    # plot = plot + pn.geom_point()
     return plot
 
 def bound_only_plot(

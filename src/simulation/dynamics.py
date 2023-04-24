@@ -2,7 +2,7 @@ import copy
 
 import torch
 
-from altk.effcomm.information import ib_encoder_decoder_to_point
+from altk.effcomm.information import ib_encoder_decoder_to_point, ib_encoder_to_point
 from game.game import Game
 from game.graph import generate_adjacency_matrix
 from misc.tools import random_stochastic_matrix, normalize_rows
@@ -17,7 +17,11 @@ from tqdm import tqdm
 class Dynamics:
     def __init__(self, game: Game, **kwargs) -> None:
         self.game = game
-        self.ib_point = lambda encoder, decoder: ib_encoder_decoder_to_point(encoder, decoder, self.game.meaning_dists, self.game.prior)
+
+        self.ib_point = lambda encoder, _ : ib_encoder_to_point(encoder, self.game.meaning_dists, self.game.prior)
+
+        if kwargs["use_decoder"]:
+            self.ib_point = lambda encoder, decoder: ib_encoder_decoder_to_point(encoder, decoder, self.game.meaning_dists, self.game.prior)
 
     def run(self):
         raise NotImplementedError
