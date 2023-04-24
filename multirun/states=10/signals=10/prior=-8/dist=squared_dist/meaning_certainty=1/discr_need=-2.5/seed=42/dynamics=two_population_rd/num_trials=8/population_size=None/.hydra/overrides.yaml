@@ -1,0 +1,4 @@
+- simulation.use_decoder=False
+- game.discriminative_need_beta=-2.5
+- game.meaning_dist_beta=1
+- simulation/dynamics=two_population_rd

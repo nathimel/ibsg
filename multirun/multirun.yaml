@@ -113,13 +113,15 @@ hydra:
     - hydra.mode=MULTIRUN
     task:
     - simulation.use_decoder=False
-    - game.discriminative_need_beta=range(-2, 2)
+    - game.discriminative_need_beta=range(-3, 4, 0.5)
     - game.meaning_dist_beta=0
-    - simulation/dynamics=nowak_krakauer
+    - simulation/dynamics=two_population_rd
+    - game.num_states=100
+    - game.num_signals=100
   job:
     name: plot
     chdir: true
-    override_dirname: simulation.use_decoder=False,simulation/dynamics=nowak_krakauer
+    override_dirname: simulation.use_decoder=False,simulation/dynamics=two_population_rd
     id: ???
     num: ???
     config_name: config
@@ -158,7 +160,7 @@ hydra:
     output_dir: ???
     choices:
       simulation: basic
-      simulation/dynamics: nowak_krakauer
+      simulation/dynamics: two_population_rd
       game: basic
       hydra/env: default
       hydra/callbacks: null
@@ -171,24 +173,23 @@ hydra:
       hydra/output: default
   verbose: false
 game:
-  num_states: 10
-  num_signals: 10
+  num_states: 100
+  num_signals: 100
   distance: squared_dist
-  discriminative_need_beta: 2
+  discriminative_need_beta: 1
   meaning_dist_beta: 0
   prior_init_beta: -8
-  beta_start: 2
+  beta_start: 5
   beta_stop: -2
   steps: 1500
 simulation:
   dynamics:
-    name: nowak_krakauer
+    name: two_population_rd
     max_its: 200
     threshold: 1.0e-05
-    population_size: 100
-    num_samples: 10
+    population_size: null
+    graph_beta: null
     population_init_beta: 0.01
-    graph: complete
   use_decoder: false
   num_trials: 8
   multiprocessing: true
@@ -197,6 +198,7 @@ seed: 42
 filepaths:
   curve_points_save_fn: curve_points.csv
   simulation_points_save_fn: simulation_points.csv
+  variant_points_save_fn: variant_points.csv
   tradeoff_plot_fn: tradeoff.png
   game_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}/discr_need=${game.discriminative_need_beta}/seed=${seed}
   simulation_subdir: dynamics=${simulation.dynamics.name}/num_trials=${simulation.num_trials}/population_size=${simulation.dynamics.population_size}

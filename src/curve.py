@@ -2,6 +2,7 @@
 import hydra
 import os
 import torch
+from altk.effcomm.information import ib_encoder_to_point
 from omegaconf import DictConfig
 from game.game import Game
 from misc import util
@@ -59,7 +60,7 @@ def ib_blahut_arimoto(
         lnq_inv = lnq_joint - lnq0  # shape 1MW
 
         # now need q(u|w) = \sum_m p(m | w) p(u | m)
-        lnquw = (lnq_inv + lnp_U_given_M).logsumexp(M_dim, keepdim=True)  # shape U1W
+        lnquw = (lnq_inv + lnp_U_given_M).logsumexp(M_dim, keepdim=True) # shape U1W
 
         # now need \sum_u p(u|m) ln q(u|w); use torch.xlogy for 0*log0 case
         d = -(lnp_U_given_M.exp() * lnquw).sum(U_dim, keepdim=True)  # shape 1MW
@@ -69,14 +70,12 @@ def ib_blahut_arimoto(
 
     return lnq.squeeze(U_dim).exp()  # remove dummy U dimension, convert from logspace
 
-from altk.effcomm.information import ib_encoder_to_point
-
-def get_ib_curve(prior, meaning_dists):
+def get_ib_curve(prior, meaning_dists, beta_start, beta_stop, steps):
     """Reverse deterministic annealing (Zaslavsky and Tishby, 2019)"""
     encoders = []
     coordinates = []
 
-    for beta in torch.logspace(2, -2, 1500):
+    for beta in torch.logspace(beta_start, beta_stop, steps):
         encoder = ib_blahut_arimoto(len(prior), beta, prior, meaning_dists)
         coordinates.append(ib_encoder_to_point(encoder, meaning_dists, prior))
         encoders.append(encoder)
@@ -96,7 +95,13 @@ def main(config: DictConfig):
     curve_fn = os.path.join(game_dir, config.filepaths.curve_points_save_fn)
 
     evol_game = Game.from_hydra(config)
-    curve_points = get_ib_curve(evol_game.prior, evol_game.meaning_dists)["coordinates"]
+    curve_points = get_ib_curve(
+        evol_game.prior, 
+        evol_game.meaning_dists,
+        config.game.beta_start,
+        config.game.beta_stop,
+        config.game.steps,
+        )["coordinates"]
 
     util.save_points_df(curve_fn, util.points_to_df(curve_points))
 

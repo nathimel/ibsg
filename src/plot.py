@@ -26,7 +26,8 @@ def main(config):
     variant_data = pd.read_csv(variant_fn)
 
     # get plot
-    plot = vis.basic_tradeoff_plot(curve_data, sim_data, variant_data)
+    # plot = vis.basic_tradeoff_plot(curve_data, sim_data, variant_data)
+    plot = vis.bound_only_plot(curve_data)
 
     util.save_plot(plot_fn, plot)
 
