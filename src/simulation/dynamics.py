@@ -176,6 +176,8 @@ class MoranProcess(FinitePopulationDynamics):
         i = torch.multinomial(fitnesses, 1) # birth
         j = torch.multinomial(torch.ones_like(fitnesses), 1) # death
 
+        # perhaps add mutations?
+
         # replace the random deceased with fitness-sampled offspring
         self.Ps[j] = copy.deepcopy(self.Ps[i])
         self.Qs[j] = copy.deepcopy(self.Qs[j])

@@ -5,7 +5,7 @@ game:
   discriminative_need_beta: 0.5
   meaning_dist_beta: 0
   prior_init_beta: -8
-  beta_start: 2
+  beta_start: 5
   beta_stop: -2
   steps: 1500
 simulation:

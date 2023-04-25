@@ -3,23 +3,21 @@ import hydra
 import os
 import torch
 from altk.effcomm.information import ib_encoder_to_point
+from altk.effcomm.information import get_ib_curve
 from omegaconf import DictConfig
 from game.game import Game
 from misc import util
 from tqdm import tqdm
 from multiprocessing import cpu_count, Pool
 
-# def curve_multiprocessing(*args):
-
-
-
-
 def ib_blahut_arimoto(
     num_words: int,
     beta: float,
     p_M: torch.Tensor,
     p_U_given_M: torch.Tensor,
-    num_steps: int = 10,
+    max_its: int = 100,
+    eps: float = 1e-5,
+    ignore_converge: bool = False,    
     init_temperature: float = 1,
 ) -> torch.Tensor:
     """Compute the optimal IB encoder, using the IB-method. Implementation belongs to Futrell.
@@ -33,7 +31,11 @@ def ib_blahut_arimoto(
 
         p_U_given_M: the Bayes' optimal decoder P(U|M) (i.e. the listener meaning)
 
-        num_steps: the number of iterations to run IB method
+        max_its: the number of iterations to run IB method
+
+        eps: accuracy required by the algorithm: the algorithm stops if there is no change in distortion value of more than 'eps' between consequtive iterations
+
+        ignore_converge: whether to run the optimization until `max_it`, ignoring the stopping criterion specified by `eps`.        
 
         init_temperature: specifies the entropy of the encoder's initialization distribution
 
@@ -55,8 +57,13 @@ def ib_blahut_arimoto(
         W_dim
     )  # shape 1MW
 
-    # TODO: implement thresholding
-    for _ in range(num_steps):
+    it = 0
+    d = 2 * eps
+    converged = False
+    while not converged:
+        it += 1
+        d_prev = d
+
         # start by getting q(m,w) = p(m) q(w|m)
         lnq_joint = lnp_M + lnq
 
@@ -76,15 +83,26 @@ def ib_blahut_arimoto(
         # finally get the encoder
         lnq = (lnq0 - beta * d).log_softmax(W_dim)  # shape 1MW
 
+        # convergence check
+        if ignore_converge:
+            converged = it == max_its
+        else:
+            converged = it == max_its or (d - d_prev).abs().sum() < eps
+
     return lnq.squeeze(U_dim).exp()  # remove dummy U dimension, convert from logspace
 
-def get_ib_curve(prior, meaning_dists, beta_start, beta_stop, steps):
+def get_ib_curve_(config: DictConfig):
     """Reverse deterministic annealing (Zaslavsky and Tishby, 2019)"""
+    # load params
+    evol_game = Game.from_hydra(config)
+    prior = evol_game.prior
+    meaning_dists = evol_game.meaning_dists
+    max_signals = evol_game.num_signals    
+
     encoders = []
     coordinates = []
 
-    betas = torch.logspace(beta_start, beta_stop, steps)
-    num_states = len(prior)
+    betas = torch.logspace(config.game.beta_start, config.game.beta_stop, config.game.steps)
 
     # Multiprocessing
     if len(prior) > 25:
@@ -93,7 +111,7 @@ def get_ib_curve(prior, meaning_dists, beta_start, beta_stop, steps):
             async_results = [
                 p.apply_async(
                 ib_blahut_arimoto, 
-                args=[num_states, beta, prior, meaning_dists],
+                args=[max_signals, beta, prior, meaning_dists],
                 )
                 for beta in betas
             ]
@@ -104,7 +122,7 @@ def get_ib_curve(prior, meaning_dists, beta_start, beta_stop, steps):
 
     else:
         for beta in tqdm(betas):
-            encoder = ib_blahut_arimoto(num_states, beta, prior, meaning_dists)
+            encoder = ib_blahut_arimoto(max_signals, beta, prior, meaning_dists)
             coordinates.append(ib_encoder_to_point(encoder, meaning_dists, prior))
             encoders.append(encoder)
 
@@ -122,14 +140,9 @@ def main(config: DictConfig):
     game_dir = os.getcwd().replace(config.filepaths.simulation_subdir, "")
     curve_fn = os.path.join(game_dir, config.filepaths.curve_points_save_fn)
 
-    evol_game = Game.from_hydra(config)
-    curve_points = get_ib_curve(
-        evol_game.prior, 
-        evol_game.meaning_dists,
-        config.game.beta_start,
-        config.game.beta_stop,
-        config.game.steps,
-        )["coordinates"]
+    # curve_points = get_ib_curve(config)["coordinates"]
+    g = Game.from_hydra(config)
+    curve_points = torch.tensor(get_ib_curve(g.prior, g.meaning_dists)).flip([0,1])
 
     util.save_points_df(curve_fn, util.points_to_df(curve_points))
 
