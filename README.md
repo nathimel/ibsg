@@ -24,7 +24,7 @@ Step 2. Install ALTK via git:
 
 - Additionally, this project requires [the artificial language toolkit (ALTK)](https://github.com/nathimel/altk). Install it via git with
 
-    `python -m pip install git+https://github.com/nathimel/altk.git`
+    `python -m pip install git+https://github.com/CLMBRs/altk.git`
 
 ## Replicating the experimental results
 
