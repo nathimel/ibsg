@@ -115,13 +115,14 @@ hydra:
     - simulation.use_decoder=False
     - game.discriminative_need_beta=range(-3, 4, 0.5)
     - game.meaning_dist_beta=0
-    - simulation/dynamics=nowak_krakauer
+    - simulation/dynamics=two_population_rd
     - game.num_states=10
     - game.num_signals=10
+    - game.distance=hamming_dist
   job:
     name: plot
     chdir: true
-    override_dirname: simulation.use_decoder=False,simulation/dynamics=nowak_krakauer
+    override_dirname: simulation.use_decoder=False,simulation/dynamics=two_population_rd
     id: ???
     num: ???
     config_name: config
@@ -160,7 +161,7 @@ hydra:
     output_dir: ???
     choices:
       simulation: basic
-      simulation/dynamics: nowak_krakauer
+      simulation/dynamics: two_population_rd
       game: basic
       hydra/env: default
       hydra/callbacks: null
@@ -175,7 +176,7 @@ hydra:
 game:
   num_states: 10
   num_signals: 10
-  distance: squared_dist
+  distance: hamming_dist
   discriminative_need_beta: 1
   meaning_dist_beta: 0
   prior_init_beta: -8
@@ -184,13 +185,12 @@ game:
   steps: 1500
 simulation:
   dynamics:
-    name: nowak_krakauer
+    name: two_population_rd
     max_its: 200
     threshold: 1.0e-05
-    population_size: 100
-    num_samples: 10
+    population_size: null
+    graph_beta: null
     population_init_beta: 0.01
-    graph: complete
   use_decoder: false
   num_trials: 8
   multiprocessing: true

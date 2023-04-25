@@ -18,7 +18,7 @@ simulation:
     population_init_beta: 0.01
   use_decoder: true
   num_trials: 8
-  multiprocessing: true
+  multiprocessing: false
   num_processes: null
 seed: 42
 filepaths:

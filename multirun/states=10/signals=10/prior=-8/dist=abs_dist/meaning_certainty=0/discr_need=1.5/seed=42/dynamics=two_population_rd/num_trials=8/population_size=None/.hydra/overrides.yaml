@@ -1,0 +1,6 @@
+- simulation.use_decoder=False
+- game.discriminative_need_beta=1.5
+- game.meaning_dist_beta=0
+- simulation/dynamics=two_population_rd
+- game.num_states=10
+- game.num_signals=10

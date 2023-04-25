@@ -192,12 +192,12 @@ class ReplicatorDynamics(Dynamics):
         super().__init__(game, **kwargs)
         self.max_its = kwargs["max_its"]
         self.threshold = kwargs["threshold"]
-        self.init_beta = kwargs["population_init_beta"]        
+        self.init_beta = kwargs["population_init_beta"]
 
-    def run(self):
         self.P = random_stochastic_matrix((self.game.num_states, self.game.num_signals), self.init_beta)
         self.Q = random_stochastic_matrix((self.game.num_signals, self.game.num_states), self.init_beta)
 
+    def run(self):
         i = 0
         converged = False
         progress_bar = tqdm(total=self.max_its)

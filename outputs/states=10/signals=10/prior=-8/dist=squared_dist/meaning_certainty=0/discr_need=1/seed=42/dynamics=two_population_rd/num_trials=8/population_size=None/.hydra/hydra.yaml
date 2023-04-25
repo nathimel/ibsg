@@ -111,11 +111,12 @@ hydra:
   overrides:
     hydra:
     - hydra.mode=RUN
-    task: []
+    task:
+    - simulation.multiprocessing=False
   job:
-    name: curve
+    name: run_simulations
     chdir: true
-    override_dirname: ''
+    override_dirname: simulation.multiprocessing=False
     id: ???
     num: ???
     config_name: config

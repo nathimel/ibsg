@@ -41,6 +41,10 @@ def run_trials_multiprocessing(config: DictConfig) -> list[Game]:
 def run_simulation(config: DictConfig) -> Game:
     """Run one trial of a simulation and return the resulting game."""
     dynamics = dynamics_map[config.simulation.dynamics.name]
-    dynamics = dynamics(Game.from_hydra(config), **config.simulation.dynamics, use_decoder = config.simulation.use_decoder)
+    dynamics = dynamics(
+        Game.from_hydra(config), 
+        **config.simulation.dynamics, 
+        use_decoder = config.simulation.use_decoder,
+        )
     dynamics.run()
     return dynamics.game

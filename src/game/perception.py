@@ -3,8 +3,13 @@
 import torch
 
 # distance measures
+def hamming_dist(t: int, u: int) -> float:
+    # indicator
+    return t == u
+
+
 def abs_dist(t: int, u: int) -> float:
-    return torch.abs(t - u)
+    return abs(t - u)
 
 
 def squared_dist(t: int, u: int) -> float:
@@ -14,6 +19,7 @@ def squared_dist(t: int, u: int) -> float:
 distance_measures = {
     "abs_dist": abs_dist,
     "squared_dist": squared_dist,
+    "hamming_dist": hamming_dist,
 }
 
 def generate_dist_matrix(
