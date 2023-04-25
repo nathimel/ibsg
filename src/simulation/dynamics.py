@@ -138,9 +138,9 @@ class FinitePopulationDynamics(Dynamics):
 ##############################################################################
 
 
-def mutate(p, num_samples):
-    eye = torch.eye(p.shape[-1])
-    sample_indices = torch.stack([torch.multinomial(sub_p, num_samples, replacement=True) for sub_p in p])
+def mutate(parent_behavior: torch.Tensor, num_samples: int):
+    eye = torch.eye(parent_behavior.shape[-1])
+    sample_indices = torch.stack([torch.multinomial(sub_p, num_samples, replacement=True) for sub_p in parent_behavior])
     samples = eye[sample_indices]
     return samples.mean(axis=-2)
 
@@ -174,13 +174,11 @@ class MoranProcess(FinitePopulationDynamics):
         fitnesses = self.measure_fitness()
 
         i = torch.multinomial(fitnesses, 1) # birth
-        j = torch.multinomial(torch.ones_like(fitnesses), 1) # death
-
-        # perhaps add mutations?
+        j = torch.multinomial(torch.ones(self.n), 1) # death
 
         # replace the random deceased with fitness-sampled offspring
-        self.Ps[j] = copy.deepcopy(self.Ps[i])
-        self.Qs[j] = copy.deepcopy(self.Qs[j])
+        self.Ps[j] = self.Ps[i]
+        self.Qs[j] = self.Qs[i]
         # N.B.: no update to adj_mat necessary
 
 
