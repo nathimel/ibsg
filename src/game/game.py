@@ -70,7 +70,7 @@ class Game:
             config.game.distance,
             config.game.discriminative_need_beta,
             config.game.meaning_dist_beta,
-            beta_start = config.game.beta_start,
-            beta_stop = config.game.beta_stop,
-            steps = config.game.steps,
+            maxbeta = config.game.maxbeta,
+            minbeta = config.game.minbeta,
+            numbeta = config.game.numbeta,
         )

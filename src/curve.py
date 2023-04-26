@@ -10,6 +10,11 @@ from misc import util
 from tqdm import tqdm
 from multiprocessing import cpu_count, Pool
 
+def infima(curve_points: torch.Tensor):
+    """Fix any randomness in curve leading to nonmonotonicity."""
+    # We can fix random noise that tends to occur at the high complexity region by ensuring monotonicity: that as we increase beta, accuracy must increase. If accuracy does not increase, drop these values.
+
+
 def ib_blahut_arimoto(
     num_words: int,
     beta: float,
@@ -102,10 +107,16 @@ def get_ib_curve_(config: DictConfig):
     encoders = []
     coordinates = []
 
-    betas = torch.logspace(config.game.beta_start, config.game.beta_stop, config.game.steps)
+    betas = torch.linspace(config.game.maxbeta, config.game.minbeta, config.game.numbeta)
+    # curve can get sparse for low complexity regions of large dim games
+    # betas = torch.concat([
+    #     torch.linspace(5, 0, 50),
+    #     torch.linspace(0, -1, 1000),
+    #     torch.linspace(-1, -2, 250),
+    # ])
 
     # Multiprocessing
-    if len(prior) > 25:
+    if len(prior) > 100:
         num_processes = cpu_count()
         with Pool(num_processes) as p:
             async_results = [
@@ -137,12 +148,17 @@ def main(config: DictConfig):
     util.set_seed(config.seed)
 
     # save one curve for multiple analyses
-    game_dir = os.getcwd().replace(config.filepaths.simulation_subdir, "")
-    curve_fn = os.path.join(game_dir, config.filepaths.curve_points_save_fn)
+    curve_fn = util.get_curve_fn(config)
 
-    # curve_points = get_ib_curve(config)["coordinates"]
-    g = Game.from_hydra(config)
-    curve_points = torch.tensor(get_ib_curve(g.prior, g.meaning_dists)).flip([0,1])
+    curve_points = get_ib_curve_(config)["coordinates"]
+    # g = Game.from_hydra(config)
+    # curve_points = torch.tensor(get_ib_curve(
+    #     g.prior, 
+    #     g.meaning_dists,
+    #     g.maxbeta,
+    #     g.minbeta,
+    #     g.numbeta,
+    #     )).flip([0,1])
 
     util.save_points_df(curve_fn, util.points_to_df(curve_points))
 

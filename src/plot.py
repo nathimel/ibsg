@@ -11,13 +11,11 @@ def main(config):
     util.set_seed(config.seed)
 
     # load datapaths
+    curve_fn = util.get_curve_fn(config)
     cwd = os.getcwd()
-    game_dir = cwd.replace(config.filepaths.simulation_subdir, "")
-    curve_fn = os.path.join(game_dir, config.filepaths.curve_points_save_fn)
     fps = config.filepaths
     sim_fn = os.path.join(cwd, fps.simulation_points_save_fn)
     variant_fn = os.path.join(cwd, fps.variant_points_save_fn)
-
     plot_fn = os.path.join(cwd, fps.tradeoff_plot_fn)
 
     # load data

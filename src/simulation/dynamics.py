@@ -56,7 +56,10 @@ class FinitePopulationDynamics(Dynamics):
 
     def population_mean_weights(self) -> tuple[float]:
         """Return the average agent (Sender, Receiver) weights."""
-        return torch.mean(self.Ps, dim=0), torch.mean(self.Qs, dim=0)
+        return (
+            normalize_rows(torch.mean(self.Ps, dim=0)), 
+            normalize_rows(torch.mean(self.Qs, dim=0)),
+            )
 
     def measure_fitness(self) -> torch.Tensor:
         """Measure the fitness of communicating individuals in the population.
@@ -237,8 +240,10 @@ class TwoPopulationRD(ReplicatorDynamics):
         super().__init__(game, **kwargs)
 
     def evolution_step(self):
-        """Update steps in the two population replicator dynamics for signaling is given as follows:
+        """Update steps in the two population replicator dynamics for signaling is given by:
 
+            P' = P * F_Q[P]
+            Q' = P * F_P[Q]
         """
         P = self.P
         Q = self.Q
@@ -250,8 +255,8 @@ class TwoPopulationRD(ReplicatorDynamics):
 
         # update sender
         P *= U_sender
-        P = normalize_rows(P)
         P = self.game.meaning_dists @ P
+        P = normalize_rows(P)
 
         U_receiver = torch.Tensor([
                 [(self.game.prior * P[:, w]) @ self.game.utility[s] for s in range(self.game.num_states)]
@@ -260,8 +265,8 @@ class TwoPopulationRD(ReplicatorDynamics):
 
         # update receiver
         Q *= U_receiver
-        Q = normalize_rows(Q)
         Q = Q @ self.game.meaning_dists
+        Q = normalize_rows(Q)
 
         self.P = P
         self.Q = Q

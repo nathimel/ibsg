@@ -3,7 +3,7 @@ defaults:
   # - dynamics: nowak_krakauer  
   - dynamics: two_population_rd
 
-use_decoder: True # whether to use the emergent decoder when computing IB coordinate
+use_decoder: False # whether to use the emergent decoder when computing IB coordinate
 
 # simulation parameters
 num_trials: 8 # default should be cpu_count

@@ -113,11 +113,11 @@ hydra:
     - hydra.mode=MULTIRUN
     task:
     - simulation.use_decoder=False
-    - game.discriminative_need_beta=3
+    - game.discriminative_need_beta=-3
     - game.meaning_dist_beta=0
     - simulation/dynamics=two_population_rd
-    - game.num_states=1000
-    - game.num_signals=1000
+    - game.num_states=100
+    - game.num_signals=100
   job:
     name: plot
     chdir: true
@@ -173,15 +173,15 @@ hydra:
       hydra/output: default
   verbose: false
 game:
-  num_states: 1000
-  num_signals: 1000
+  num_states: 100
+  num_signals: 100
   distance: squared_dist
-  discriminative_need_beta: 3
+  discriminative_need_beta: -3
   meaning_dist_beta: 0
   prior_init_beta: -8
-  beta_start: 5
-  beta_stop: -2
-  steps: 1500
+  maxbeta: 5
+  minbeta: -2
+  numbeta: 1500
 simulation:
   dynamics:
     name: two_population_rd
@@ -200,6 +200,7 @@ filepaths:
   simulation_points_save_fn: simulation_points.csv
   variant_points_save_fn: variant_points.csv
   tradeoff_plot_fn: tradeoff.png
-  game_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}/discr_need=${game.discriminative_need_beta}/seed=${seed}
+  game_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}
+  common_sweep_subdir: discr_need=${game.discriminative_need_beta}/seed=${seed}
   simulation_subdir: dynamics=${simulation.dynamics.name}/num_trials=${simulation.num_trials}/population_size=${simulation.dynamics.population_size}
-  leaf_subdir: ${filepaths.game_subdir}/${filepaths.simulation_subdir}
+  leaf_subdir: ${filepaths.game_subdir}/${filepaths.common_sweep_subdir}/${filepaths.simulation_subdir}
