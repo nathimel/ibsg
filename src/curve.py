@@ -108,12 +108,7 @@ def get_ib_curve_(config: DictConfig):
     coordinates = []
 
     betas = torch.linspace(config.game.maxbeta, config.game.minbeta, config.game.numbeta)
-    # curve can get sparse for low complexity regions of large dim games
-    # betas = torch.concat([
-    #     torch.linspace(5, 0, 50),
-    #     torch.linspace(0, -1, 1000),
-    #     torch.linspace(-1, -2, 250),
-    # ])
+    # curve can get sparse in the high-interest regions, beta 1.02-1.1
 
     # Multiprocessing
     if len(prior) > 100:
@@ -150,15 +145,16 @@ def main(config: DictConfig):
     # save one curve for multiple analyses
     curve_fn = util.get_curve_fn(config)
 
-    curve_points = get_ib_curve_(config)["coordinates"]
-    # g = Game.from_hydra(config)
-    # curve_points = torch.tensor(get_ib_curve(
-    #     g.prior, 
-    #     g.meaning_dists,
-    #     g.maxbeta,
-    #     g.minbeta,
-    #     g.numbeta,
-    #     )).flip([0,1])
+    # curve_points = get_ib_curve_(config)["coordinates"]
+    g = Game.from_hydra(config)
+    curve_points = torch.tensor(get_ib_curve(
+        g.prior, 
+        g.meaning_dists,
+        # g.maxbeta,
+        2,
+        10 ** g.minbeta,
+        g.numbeta,
+        )).flip([0,1])
 
     util.save_points_df(curve_fn, util.points_to_df(curve_points))
 
