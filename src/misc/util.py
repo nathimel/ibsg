@@ -3,6 +3,7 @@ import torch
 import pandas as pd
 from plotnine import ggplot
 from omegaconf import DictConfig
+from game.game import Game
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Random
@@ -24,9 +25,27 @@ def points_to_df(points: torch.Tensor) -> pd.DataFrame:
     )
 
 def save_points_df(fn: str, df: pd.DataFrame) -> None:
-    """Save a dataframe of (complexity, accuracy) points to a CSV."""
+    """Save a dataframe of (complexity, accuracy) points (and potentially other dims) to a CSV."""
     df.to_csv(fn, index=False)
     print(f"Saved {len(df)} language points to {os.path.join(os.getcwd(), fn)}")
+
+def trajectories_df(trials: list[Game]) -> pd.DataFrame:
+    """Collect the (complexity, accuracy) trajectories of every game across trials and store in one dataframe."""
+    # build a df for each and concatenate
+    df = pd.concat([
+        pd.DataFrame(
+            # label trials
+            data=torch.hstack((
+                # label rounds
+                torch.hstack((
+                    torch.Tensor(trial.ib_points),
+                    torch.arange(len(trial.ib_points))[:, None]
+                )),
+                torch.ones(len(trial.ib_points))[:, None] * trial_num+1),
+            ),
+            columns=["complexity", "accuracy", "round", "trial"]) for trial_num, trial in enumerate(trials)
+        ])
+    return df
 
 
 def get_curve_fn(config: DictConfig) -> str:

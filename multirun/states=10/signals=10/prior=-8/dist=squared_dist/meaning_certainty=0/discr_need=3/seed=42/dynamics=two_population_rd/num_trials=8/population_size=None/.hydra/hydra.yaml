@@ -118,10 +118,11 @@ hydra:
     - simulation/dynamics=two_population_rd
     - game.num_states=10
     - game.num_signals=10
+    - simulation.trajectory=True
   job:
-    name: curve
+    name: plot
     chdir: true
-    override_dirname: simulation.use_decoder=False,simulation/dynamics=two_population_rd
+    override_dirname: simulation.trajectory=True,simulation.use_decoder=False,simulation/dynamics=two_population_rd
     id: '0'
     num: 0
     config_name: config

@@ -1,5 +1,3 @@
-import torch
-
 from game.perception import generate_dist_matrix, generate_sim_matrix
 
 from misc.tools import normalize_rows, random_stochastic_matrix

@@ -4,3 +4,4 @@
 - simulation/dynamics=two_population_rd
 - game.num_states=10
 - game.num_signals=10
+- simulation.trajectory=True

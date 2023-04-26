@@ -15,15 +15,18 @@ simulation:
     threshold: 1.0e-05
     population_size: null
     graph_beta: null
-    population_init_beta: 0.01
+    population_init_minbeta: -2
+    population_init_maxbeta: 5
   use_decoder: false
   num_trials: 8
+  trajectory: true
   multiprocessing: true
   num_processes: null
 seed: 42
 filepaths:
   curve_points_save_fn: curve_points.csv
   simulation_points_save_fn: simulation_points.csv
+  trajectory_points_save_fn: trajectory_points.csv
   variant_points_save_fn: variant_points.csv
   tradeoff_plot_fn: tradeoff.png
   game_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}

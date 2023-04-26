@@ -113,16 +113,17 @@ hydra:
     - hydra.mode=MULTIRUN
     task:
     - simulation.use_decoder=False
-    - game.discriminative_need_beta=range(-3, 4, 0.5)
+    - game.discriminative_need_beta=3
     - game.meaning_dist_beta=0
     - simulation/dynamics=two_population_rd
     - game.num_states=10
     - game.num_signals=10
-    - simulation.num_trials=100
+    - simulation.trajectory=True
+    - simulation.num_trials=10
   job:
-    name: run_simulations
+    name: plot
     chdir: true
-    override_dirname: simulation.use_decoder=False,simulation/dynamics=two_population_rd
+    override_dirname: simulation.trajectory=True,simulation.use_decoder=False,simulation/dynamics=two_population_rd
     id: ???
     num: ???
     config_name: config
@@ -177,7 +178,7 @@ game:
   num_states: 10
   num_signals: 10
   distance: squared_dist
-  discriminative_need_beta: 1
+  discriminative_need_beta: 3
   meaning_dist_beta: 0
   prior_init_beta: -8
   maxbeta: 5
@@ -193,13 +194,15 @@ simulation:
     population_init_minbeta: -2
     population_init_maxbeta: 5
   use_decoder: false
-  num_trials: 100
+  num_trials: 10
+  trajectory: true
   multiprocessing: true
   num_processes: null
 seed: 42
 filepaths:
   curve_points_save_fn: curve_points.csv
   simulation_points_save_fn: simulation_points.csv
+  trajectory_points_save_fn: trajectory_points.csv
   variant_points_save_fn: variant_points.csv
   tradeoff_plot_fn: tradeoff.png
   game_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}
