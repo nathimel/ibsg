@@ -118,8 +118,9 @@ hydra:
     - simulation/dynamics=two_population_rd
     - game.num_states=10
     - game.num_signals=10
+    - simulation.num_trials=100
   job:
-    name: plot
+    name: run_simulations
     chdir: true
     override_dirname: simulation.use_decoder=False,simulation/dynamics=two_population_rd
     id: ???
@@ -189,9 +190,10 @@ simulation:
     threshold: 1.0e-05
     population_size: null
     graph_beta: null
-    population_init_beta: 100000.0
+    population_init_minbeta: -2
+    population_init_maxbeta: 5
   use_decoder: false
-  num_trials: 8
+  num_trials: 100
   multiprocessing: true
   num_processes: null
 seed: 42

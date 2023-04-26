@@ -15,7 +15,8 @@ simulation:
     threshold: 1.0e-05
     population_size: null
     graph_beta: null
-    population_init_beta: 100000.0
+    population_init_minbeta: -2
+    population_init_maxbeta: 5
   use_decoder: false
   num_trials: 8
   multiprocessing: true

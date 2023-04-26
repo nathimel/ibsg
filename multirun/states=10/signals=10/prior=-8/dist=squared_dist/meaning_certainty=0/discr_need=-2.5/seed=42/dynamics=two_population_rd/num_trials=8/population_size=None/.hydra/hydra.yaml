@@ -119,7 +119,7 @@ hydra:
     - game.num_states=10
     - game.num_signals=10
   job:
-    name: plot
+    name: run_simulations
     chdir: true
     override_dirname: simulation.use_decoder=False,simulation/dynamics=two_population_rd
     id: '1'
