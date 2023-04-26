@@ -113,11 +113,11 @@ hydra:
     - hydra.mode=MULTIRUN
     task:
     - simulation.use_decoder=False
-    - game.discriminative_need_beta=-3
+    - game.discriminative_need_beta=range(-3, 4, 0.5)
     - game.meaning_dist_beta=0
     - simulation/dynamics=two_population_rd
-    - game.num_states=100
-    - game.num_signals=100
+    - game.num_states=10
+    - game.num_signals=10
   job:
     name: plot
     chdir: true
@@ -173,10 +173,10 @@ hydra:
       hydra/output: default
   verbose: false
 game:
-  num_states: 100
-  num_signals: 100
+  num_states: 10
+  num_signals: 10
   distance: squared_dist
-  discriminative_need_beta: -3
+  discriminative_need_beta: 1
   meaning_dist_beta: 0
   prior_init_beta: -8
   maxbeta: 5
@@ -189,7 +189,7 @@ simulation:
     threshold: 1.0e-05
     population_size: null
     graph_beta: null
-    population_init_beta: 0.01
+    population_init_beta: 100000.0
   use_decoder: false
   num_trials: 8
   multiprocessing: true

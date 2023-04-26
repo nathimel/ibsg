@@ -151,7 +151,7 @@ def main(config: DictConfig):
         g.prior, 
         g.meaning_dists,
         # g.maxbeta,
-        2,
+        5,
         10 ** g.minbeta,
         g.numbeta,
         )).flip([0,1])
