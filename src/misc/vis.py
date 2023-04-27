@@ -63,6 +63,31 @@ def basic_tradeoff_plot(
 
     return plot
 
+
+def ub_plot(
+    curve_data: pd.DataFrame,
+    sim_data: pd.DataFrame,
+) -> pn.ggplot:
+    """Get plot of I[M:W] complexity vs. MSE accuracy."""
+    plot = (
+        # Set data and the axes
+        pn.ggplot(data=curve_data, mapping=pn.aes(x="complexity", y="mse"))
+        + pn.xlab("Complexity $I[M:W]$ bits")
+        + pn.ylab("Accuracy $\mathbb{E}[(M - \hat{M})^2]$ ")
+        # + pn.scale_color_cmap("cividis")
+    )
+
+    plot = plot + pn.geom_line(size=2)  # curve first
+    # plot = plot + pn.geom_point()
+
+    plot = plot + pn.geom_point(  # simulation langs
+        sim_data,
+        color="blue",
+        shape="o",
+        size=4,
+    )
+    return plot
+
 def bound_only_plot(
     curve_data: pd.DataFrame,
 ) -> pn.ggplot:

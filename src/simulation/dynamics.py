@@ -20,9 +20,24 @@ class Dynamics:
         self.game = game
 
         self.ib_point = lambda encoder, _ : ib_encoder_to_point(encoder, self.game.meaning_dists, self.game.prior)
+        self.ub_point = lambda encoder, _ : ib_encoder_to_point(
+            encoder, 
+            self.game.meaning_dists, 
+            self.game.prior, 
+            distortion="MSE", 
+            dist_mat=self.game.dist_mat,
+        )
 
         if kwargs["use_decoder"]:
             self.ib_point = lambda encoder, decoder: ib_encoder_decoder_to_point(encoder, decoder, self.game.meaning_dists, self.game.prior)
+            self.ub_point = lambda encoder, decoder : ib_encoder_decoder_to_point(
+                encoder, 
+                decoder, 
+                self.game.meaning_dists, 
+                self.game.prior, 
+                distortion="MSE", 
+                dist_mat=self.game.dist_mat,
+            )
 
     def run(self):
         raise NotImplementedError
@@ -119,6 +134,7 @@ class FinitePopulationDynamics(Dynamics):
 
             # track data
             self.game.ib_points.append(self.ib_point(mean_p, mean_q))
+            self.game.ub_points.append(self.ub_point(mean_p, mean_q))
             self.game.ib_encoders.append(mean_p)
 
             self.evolution_step()
@@ -214,6 +230,7 @@ class ReplicatorDynamics(Dynamics):
 
             # track data
             self.game.ib_points.append(self.ib_point(self.P, self.Q))
+            self.game.ub_points.append(self.ub_point(self.P, self.Q))
             self.game.ib_encoders.append(self.P)
 
             self.evolution_step() # N.B.: fitness requires population update 

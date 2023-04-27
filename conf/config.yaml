@@ -9,12 +9,16 @@ seed: 42
 
 # Paths of files used for consuming and producing data
 filepaths: 
+  # TODO: refactor naming for ib, ub
   # experiment outputs
-  curve_points_save_fn: curve_points.csv
-  simulation_points_save_fn: simulation_points.csv # misnomer, 1 final point
+  curve_points_save_fn: curve_points.csv # I[M:W], I[W:U]
+  ub_curve_points_save_fn: ub_curve_points.csv # I[M:W], MSE
+  simulation_points_save_fn: simulation_points.csv # final point, for all trials
+  ub_points_save_fn: ub_points.csv # final point, for all trials
   trajectory_points_save_fn: trajectory_points.csv # all points, for all trials
   variant_points_save_fn: variant_points.csv
   tradeoff_plot_fn: tradeoff.png
+  ub_plot_fn: ub.png
 
   # hydra automatic folder naming
   game_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}
