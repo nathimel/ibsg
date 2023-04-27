@@ -113,7 +113,7 @@ hydra:
     - hydra.mode=MULTIRUN
     task:
     - simulation.use_decoder=False
-    - game.discriminative_need_beta=range(-3, 4, 0.5)
+    - game.discriminative_need_beta=-3.0
     - game.meaning_dist_beta=3
     - game.num_states=10
     - game.num_signals=10
@@ -121,8 +121,8 @@ hydra:
     name: run_simulations
     chdir: true
     override_dirname: simulation.use_decoder=False
-    id: ???
-    num: ???
+    id: '0'
+    num: 0
     config_name: config
     env_set: {}
     env_copy: []
@@ -156,7 +156,7 @@ hydra:
     - path: ''
       schema: structured
       provider: schema
-    output_dir: ???
+    output_dir: /Users/nathanielimel/uci/projects/ibsg/multirun/states=10/signals=10/prior=-8/dist=squared_dist/meaning_certainty=3/discr_need=-3.0/seed=42/dynamics=two_population_rd/num_trials=8/population_size=None
     choices:
       simulation: basic
       simulation/dynamics: two_population_rd
@@ -171,42 +171,3 @@ hydra:
       hydra/launcher: basic
       hydra/output: default
   verbose: false
-game:
-  num_states: 10
-  num_signals: 10
-  distance: squared_dist
-  discriminative_need_beta: 1
-  meaning_dist_beta: 3
-  prior_init_beta: -8
-  maxbeta: 5
-  minbeta: -2
-  numbeta: 1500
-  num_processes: 8
-simulation:
-  dynamics:
-    name: two_population_rd
-    max_its: 200
-    threshold: 1.0e-05
-    population_size: null
-    graph_beta: null
-    population_init_minbeta: -2
-    population_init_maxbeta: 5
-  use_decoder: false
-  num_trials: 8
-  trajectory: false
-  multiprocessing: true
-  num_processes: 1
-seed: 42
-filepaths:
-  curve_points_save_fn: curve_points.csv
-  ub_curve_points_save_fn: ub_curve_points.csv
-  simulation_points_save_fn: simulation_points.csv
-  ub_points_save_fn: ub_points.csv
-  trajectory_points_save_fn: trajectory_points.csv
-  variant_points_save_fn: variant_points.csv
-  tradeoff_plot_fn: tradeoff.png
-  ub_plot_fn: ub.png
-  game_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}
-  common_sweep_subdir: discr_need=${game.discriminative_need_beta}/seed=${seed}
-  simulation_subdir: dynamics=${simulation.dynamics.name}/num_trials=${simulation.num_trials}/population_size=${simulation.dynamics.population_size}
-  leaf_subdir: ${filepaths.game_subdir}/${filepaths.common_sweep_subdir}/${filepaths.simulation_subdir}
