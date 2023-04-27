@@ -113,17 +113,14 @@ hydra:
     - hydra.mode=MULTIRUN
     task:
     - simulation.use_decoder=False
-    - game.discriminative_need_beta=3
     - game.meaning_dist_beta=0
     - simulation/dynamics=two_population_rd
-    - game.num_states=10
-    - game.num_signals=10
-    - simulation.trajectory=True
-    - simulation.num_trials=10
+    - game.num_states=1000
+    - game.num_signals=1000
   job:
-    name: plot
+    name: curve
     chdir: true
-    override_dirname: simulation.trajectory=True,simulation.use_decoder=False,simulation/dynamics=two_population_rd
+    override_dirname: simulation.use_decoder=False,simulation/dynamics=two_population_rd
     id: ???
     num: ???
     config_name: config
@@ -175,15 +172,16 @@ hydra:
       hydra/output: default
   verbose: false
 game:
-  num_states: 10
-  num_signals: 10
+  num_states: 1000
+  num_signals: 1000
   distance: squared_dist
-  discriminative_need_beta: 3
+  discriminative_need_beta: 1
   meaning_dist_beta: 0
   prior_init_beta: -8
   maxbeta: 5
   minbeta: -2
   numbeta: 1500
+  num_processes: 8
 simulation:
   dynamics:
     name: two_population_rd
@@ -194,8 +192,8 @@ simulation:
     population_init_minbeta: -2
     population_init_maxbeta: 5
   use_decoder: false
-  num_trials: 10
-  trajectory: true
+  num_trials: 8
+  trajectory: false
   multiprocessing: true
   num_processes: null
 seed: 42

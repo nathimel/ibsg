@@ -8,6 +8,7 @@ from game.graph import generate_adjacency_matrix
 from misc.tools import random_stochastic_matrix, normalize_rows
 
 from tqdm import tqdm
+from multiprocessing import cpu_count
 
 ##############################################################################
 # Base classes
@@ -242,30 +243,22 @@ class TwoPopulationRD(ReplicatorDynamics):
     def evolution_step(self):
         """Update steps in the two population replicator dynamics for signaling is given by:
 
-            P' = P * F_Q[P]
-            Q' = P * F_P[Q]
+            freq(sender)' = freq(sender) * fitness_relative_to_receiver(sender)
+
+            freq(receiver)' = freq(receiver) * fitness_relative_to_prior_and_sender(receiver)
         """
-        P = self.P
-        Q = self.Q
+        P = self.P # `[states, signals]`
+        Q = self.Q # `[signals, states]`
+        U = self.game.utility # `[states, states]`
+        M = self.game.meaning_dists # `[states, states]`
+        p = self.game.prior # `[states,]`
 
-        # re-measure population-sensitive expected utilities for agents
-        U_sender = torch.tensor(
-            [[Q[w] @ self.game.utility[s] for w in range(self.game.num_signals)] for s in range(self.game.num_states)]
-        )
-
-        # update sender
-        P *= U_sender
-        P = self.game.meaning_dists @ P
+        P *= (Q @ U).T
+        P = M @ P 
         P = normalize_rows(P)
 
-        U_receiver = torch.Tensor([
-                [(self.game.prior * P[:, w]) @ self.game.utility[s] for s in range(self.game.num_states)]
-                for w in range(self.game.num_signals)]
-            )
-
-        # update receiver
-        Q *= U_receiver
-        Q = Q @ self.game.meaning_dists
+        Q *= p * (U @ P).T
+        Q = Q @ M
         Q = normalize_rows(Q)
 
         self.P = P

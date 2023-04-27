@@ -154,6 +154,7 @@ def main(config: DictConfig):
         5,
         10 ** g.minbeta,
         g.numbeta,
+        processes=g.num_processes,
         )).flip([0,1])
 
     util.save_points_df(curve_fn, util.points_to_df(curve_points))
