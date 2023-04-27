@@ -113,12 +113,11 @@ hydra:
     - hydra.mode=MULTIRUN
     task:
     - simulation.use_decoder=False
-    - game.discriminative_need_beta=range(-3, 4, 0.5)
     - game.meaning_dist_beta=3
-    - game.num_states=10
-    - game.num_signals=10
+    - game.num_states=100
+    - game.num_signals=100
   job:
-    name: run_simulations
+    name: curve
     chdir: true
     override_dirname: simulation.use_decoder=False
     id: ???
@@ -172,8 +171,8 @@ hydra:
       hydra/output: default
   verbose: false
 game:
-  num_states: 10
-  num_signals: 10
+  num_states: 100
+  num_signals: 100
   distance: squared_dist
   discriminative_need_beta: 1
   meaning_dist_beta: 3
@@ -181,7 +180,7 @@ game:
   maxbeta: 5
   minbeta: -2
   numbeta: 1500
-  num_processes: 8
+  num_processes: null
 simulation:
   dynamics:
     name: two_population_rd
@@ -195,7 +194,7 @@ simulation:
   num_trials: 8
   trajectory: false
   multiprocessing: true
-  num_processes: 1
+  num_processes: null
 seed: 42
 filepaths:
   curve_points_save_fn: curve_points.csv

@@ -21,4 +21,4 @@ maxbeta: 5
 minbeta: -2
 numbeta: 1500
 # use multiprocessing to compute bound
-num_processes: 8 
+num_processes: null 

@@ -12,4 +12,4 @@ num_trials: 8 # default should be cpu_count
 trajectory: False
 
 multiprocessing: True # N.B. just for running simulations of dynamics for now, not for e.g. genetic algorithm, analysis
-num_processes: 1 # null defaults to cpu_count
+num_processes: null # null defaults to cpu_count

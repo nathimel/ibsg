@@ -1,4 +1,5 @@
 import torch
+from multiprocessing import cpu_count
 
 from game.perception import generate_dist_matrix, generate_sim_matrix
 
@@ -64,6 +65,10 @@ class Game:
     @classmethod
     def from_hydra(cls, config):
         """Automatically construct a evolutionary game from a hydra config."""
+
+        if config.game.num_processes is None:
+            config.game.num_processes = cpu_count()
+
         return cls(
             config.game.num_states,
             config.game.num_signals,
