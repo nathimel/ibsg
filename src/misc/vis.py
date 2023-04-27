@@ -73,7 +73,7 @@ def ub_plot(
         # Set data and the axes
         pn.ggplot(data=curve_data, mapping=pn.aes(x="complexity", y="mse"))
         + pn.xlab("Complexity $I[M:W]$ bits")
-        + pn.ylab("Accuracy $\mathbb{E}[(M - \hat{M})^2]$ ")
+        + pn.ylab("Distortion $\mathbb{E}[(M - \hat{M})^2]$ ")
         # + pn.scale_color_cmap("cividis")
     )
 
