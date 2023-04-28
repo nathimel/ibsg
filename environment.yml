@@ -2,6 +2,7 @@ name: ibsg
 channels:
   - conda-forge
 dependencies:
+  - hydra
   - matplotlib=3.5
   - pandas
   - tqdm
@@ -12,6 +13,7 @@ dependencies:
     - hydra-core  
   - pyyaml
   - numpy
+  - pytorch
   - pygmo
   - pathos
 # and altk, installed via git for now
