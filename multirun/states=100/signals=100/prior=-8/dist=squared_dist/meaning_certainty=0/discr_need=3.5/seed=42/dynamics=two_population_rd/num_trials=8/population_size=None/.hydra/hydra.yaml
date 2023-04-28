@@ -118,7 +118,7 @@ hydra:
     - game.num_states=100
     - game.num_signals=100
   job:
-    name: run_simulations
+    name: plot
     chdir: true
     override_dirname: simulation.use_decoder=False
     id: '13'
