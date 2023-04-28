@@ -13,23 +13,22 @@ def numeric_col_to_categorical(df: pd.DataFrame, col: str) -> pd.DataFrame:
 
 # Canonical plotting functions
 
+
+
+
 def basic_tradeoff_plot(
     curve_data: pd.DataFrame,
     sim_data: pd.DataFrame,
     variant_data: pd.DataFrame = None,
     trajectory_data: pd.DataFrame = None,
+    y: str = "accuracy",
 ) -> pn.ggplot:
-    """Get a basic plotnine point plot of languages in a complexity vs accuracy 2D plot."""
-    plot = (
-        # Set data and the axes
-        pn.ggplot(data=curve_data, mapping=pn.aes(x="complexity", y="accuracy"))
-        + pn.xlab("Complexity $I[M:W]$ bits")
-        + pn.ylab("Accuracy $I[W:U]$ bits")
-        # + pn.scale_color_cmap("cividis")
-    )
-
-    plot = plot + pn.geom_line(size=2)  # curve first
-    # plot = plot + pn.geom_point()
+    """Get a basic plotnine point plot of languages in a complexity vs accuracy 2D plot.
+    
+    Args:
+        y: {'accuracy', 'distortion', 'mse'}
+    """
+    plot = bound_only_plot(curve_data, y=y)
 
     if variant_data is not None:
         plot = plot + pn.geom_point(  # hypothetical langs bottom layer
@@ -63,40 +62,25 @@ def basic_tradeoff_plot(
 
     return plot
 
-
-def ub_plot(
-    curve_data: pd.DataFrame,
-    sim_data: pd.DataFrame,
-) -> pn.ggplot:
-    """Get plot of I[M:W] complexity vs. MSE accuracy."""
-    plot = (
-        # Set data and the axes
-        pn.ggplot(data=curve_data, mapping=pn.aes(x="complexity", y="mse"))
-        + pn.xlab("Complexity $I[M:W]$ bits")
-        + pn.ylab("Distortion $\mathbb{E}[(M - \hat{M})^2]$ ")
-        # + pn.scale_color_cmap("cividis")
-    )
-
-    plot = plot + pn.geom_line(size=2)  # curve first
-    # plot = plot + pn.geom_point()
-
-    plot = plot + pn.geom_point(  # simulation langs
-        sim_data,
-        color="blue",
-        shape="o",
-        size=4,
-    )
-    return plot
-
 def bound_only_plot(
     curve_data: pd.DataFrame,
+    y: str = "accuracy",
 ) -> pn.ggplot:
+    
+    if y == "accuracy":
+        ystr = "Accuracy $I[W:U]$ bits"
+    elif y == "distortion":
+        ystr = "Distortion $\mathbb{E}[D_{KL}[ M || \hat{M} ]]$"
+    elif y == "mse":
+        ystr = "Distortion $\mathbb{E}[(u - \hat{u})^2]$"
+
     plot = (
         # Set data and the axes
-        pn.ggplot(data=curve_data, mapping=pn.aes(x="complexity", y="accuracy"))
+        pn.ggplot(data=curve_data, mapping=pn.aes(x="complexity", y=y))
         + pn.xlab("Complexity $I[M:W]$ bits")
-        + pn.ylab("Accuracy $I[W:U]$ bits")
+        + pn.ylab(ystr)
         + pn.scale_color_cmap("cividis")
     )
     plot = plot + pn.geom_line()
+    # plot = plot + pn.geom_point()
     return plot

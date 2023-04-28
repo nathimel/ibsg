@@ -13,13 +13,12 @@ def main(config):
     # setup and run experiment
     trials = run_trials(config)
 
-    # (I[M:W], I[W:U])
-    ib_df = util.points_to_df([g.ib_points[-1] for g in trials])
-    util.save_points_df(fn=config.filepaths.simulation_points_save_fn, df=ib_df)
-
-    # (I[M:W], MSE)
-    ub_df = util.points_to_df([g.ub_points[-1] for g in trials], columns=["complexity", "mse"])
-    util.save_points_df(fn=config.filepaths.ub_points_save_fn, df=ub_df)
+    # (I[M:W], I[W:U], KL[M, M'], MSE)
+    points_df = util.points_to_df(
+        [g.points[-1] for g in trials], 
+        columns = ["complexity", "accuracy", "distortion", "mse"]
+    )
+    util.save_points_df(fn=config.filepaths.simulation_points_save_fn, df=points_df)
 
     if config.simulation.trajectory:
         # save trajectories from every trial

@@ -2,13 +2,14 @@ import copy
 
 import torch
 
-from altk.effcomm.information import ib_encoder_decoder_to_point, ib_encoder_to_point
+from analysis.ib import ib_encoder_to_measurements
 from game.game import Game
 from game.graph import generate_adjacency_matrix
 from misc.tools import random_stochastic_matrix, normalize_rows
 
 from tqdm import tqdm
 from multiprocessing import cpu_count
+
 
 ##############################################################################
 # Base classes
@@ -19,25 +20,12 @@ class Dynamics:
     def __init__(self, game: Game, **kwargs) -> None:
         self.game = game
 
-        self.ib_point = lambda encoder, _ : ib_encoder_to_point(encoder, self.game.meaning_dists, self.game.prior)
-        self.ub_point = lambda encoder, _ : ib_encoder_to_point(
-            encoder, 
-            self.game.meaning_dists, 
-            self.game.prior, 
-            distortion="MSE", 
-            dist_mat=self.game.dist_mat,
-        )
+        pt_args = [self.game.meaning_dists, self.game.prior, self.game.dist_mat]
+
+        self.get_point = lambda encoder, _: ib_encoder_to_measurements(*pt_args, encoder=encoder,)
 
         if kwargs["use_decoder"]:
-            self.ib_point = lambda encoder, decoder: ib_encoder_decoder_to_point(encoder, decoder, self.game.meaning_dists, self.game.prior)
-            self.ub_point = lambda encoder, decoder : ib_encoder_decoder_to_point(
-                encoder, 
-                decoder, 
-                self.game.meaning_dists, 
-                self.game.prior, 
-                distortion="MSE", 
-                dist_mat=self.game.dist_mat,
-            )
+            self.get_point = lambda encoder, decoder: ib_encoder_to_measurements(*pt_args, encoder=encoder, decoder=decoder,)
 
     def run(self):
         raise NotImplementedError
@@ -133,8 +121,7 @@ class FinitePopulationDynamics(Dynamics):
             mean_q_prev = copy.deepcopy(mean_q)
 
             # track data
-            self.game.ib_points.append(self.ib_point(mean_p, mean_q))
-            self.game.ub_points.append(self.ub_point(mean_p, mean_q))
+            self.game.points.append(self.get_point(mean_p, mean_q))
             self.game.ib_encoders.append(mean_p)
 
             self.evolution_step()
@@ -229,8 +216,7 @@ class ReplicatorDynamics(Dynamics):
             Q_prev = copy.deepcopy(self.Q)
 
             # track data
-            self.game.ib_points.append(self.ib_point(self.P, self.Q))
-            self.game.ub_points.append(self.ub_point(self.P, self.Q))
+            self.game.points.append(self.get_point(self.P, self.Q))
             self.game.ib_encoders.append(self.P)
 
             self.evolution_step() # N.B.: fitness requires population update 
@@ -271,11 +257,11 @@ class TwoPopulationRD(ReplicatorDynamics):
         p = self.game.prior # `[states,]`
 
         P *= (Q @ U).T
-        P = M @ P 
+        # P = M @ P 
         P = normalize_rows(P)
 
         Q *= p * (U @ P).T
-        Q = Q @ M
+        # Q = Q @ M
         Q = normalize_rows(Q)
 
         self.P = P

@@ -113,9 +113,10 @@ hydra:
     - hydra.mode=MULTIRUN
     task:
     - simulation.use_decoder=False
-    - game.meaning_dist_beta=3
-    - game.num_states=100
-    - game.num_signals=100
+    - game.discriminative_need_beta=range(-3, 4, 0.5)
+    - game.meaning_dist_beta=0
+    - game.num_states=10
+    - game.num_signals=10
   job:
     name: curve
     chdir: true
@@ -171,11 +172,11 @@ hydra:
       hydra/output: default
   verbose: false
 game:
-  num_states: 100
-  num_signals: 100
+  num_states: 10
+  num_signals: 10
   distance: squared_dist
   discriminative_need_beta: 1
-  meaning_dist_beta: 3
+  meaning_dist_beta: 0
   prior_init_beta: -8
   maxbeta: 5
   minbeta: -2
@@ -205,6 +206,7 @@ filepaths:
   variant_points_save_fn: variant_points.csv
   tradeoff_plot_fn: tradeoff.png
   ub_plot_fn: ub.png
+  comm_cost_plot_fn: comm_cost.png
   game_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}
   common_sweep_subdir: discr_need=${game.discriminative_need_beta}/seed=${seed}
   simulation_subdir: dynamics=${simulation.dynamics.name}/num_trials=${simulation.num_trials}/population_size=${simulation.dynamics.population_size}

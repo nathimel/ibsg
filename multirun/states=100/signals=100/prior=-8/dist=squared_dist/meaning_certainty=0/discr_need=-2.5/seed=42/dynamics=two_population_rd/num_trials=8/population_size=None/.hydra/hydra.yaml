@@ -115,13 +115,12 @@ hydra:
     - simulation.use_decoder=False
     - game.discriminative_need_beta=-2.5
     - game.meaning_dist_beta=0
-    - simulation/dynamics=two_population_rd
     - game.num_states=100
     - game.num_signals=100
   job:
-    name: plot
+    name: run_simulations
     chdir: true
-    override_dirname: simulation.use_decoder=False,simulation/dynamics=two_population_rd
+    override_dirname: simulation.use_decoder=False
     id: '1'
     num: 1
     config_name: config

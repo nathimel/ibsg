@@ -37,7 +37,7 @@ class Game:
         # define a meaning space with some 'similarity' structure
         universe = [i for i in range(num_states)]
 
-        # specify prior and distortion matrix for all trials
+        # specify prior and distance matrix for all trials
         prior = random_stochastic_matrix((num_states, ), beta = 10 ** prior_init_beta)
         dist_mat = generate_dist_matrix(universe, distance)
 
@@ -56,8 +56,7 @@ class Game:
         self.meaning_dists = meaning_dists
 
         # updated by dynamics
-        self.ib_points = [] # (complexity, accuracy)
-        self.ub_points = [] # (complexity, MSE) 
+        self.points = [] # list of (complexity, accuracy, comm_cost, MSE) points
         self.ib_encoders = []
 
         self.__dict__.update(**kwargs)
@@ -76,8 +75,8 @@ class Game:
             config.game.distance,
             config.game.discriminative_need_beta,
             config.game.meaning_dist_beta,
-            maxbeta = config.game.maxbeta,
-            minbeta = config.game.minbeta,
+            maxbeta = config.game.maxbeta, # we want about 1.0 - 2.0
+            minbeta = 10 ** config.game.minbeta,
             numbeta = config.game.numbeta,
             num_processes = config.game.num_processes,
         )

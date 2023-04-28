@@ -1,9 +1,58 @@
 import torch
-from altk.effcomm.information import ib_encoder_to_point
+import numpy as np
+
+from altk.effcomm import util
+from altk.effcomm.information import (
+    expected_distortion,
+    ib_encoder_to_point
+)
+
 from omegaconf import DictConfig
 from game.game import Game
 from tqdm import tqdm
 from multiprocessing import cpu_count, Pool
+
+
+def ib_encoder_to_measurements(
+    meaning_dists: torch.Tensor,
+    prior: torch.Tensor,
+    dist_mat: torch.Tensor,    
+    encoder: torch.Tensor,     
+    decoder: torch.Tensor = None,
+) -> tuple[float]:
+    """Return (complexity, accuracy, distortion, mean squared error) point.
+    
+    Args:
+        meaning_dists: array of shape `(|meanings|, |meanings|)` representing the distribution over world states given meanings.        
+
+        prior: array of shape `|M|` representing the cognitive source
+
+        dist_mat: array of shape `(|M|, |M|)` representing pairwise distance/error for computing MSE.        
+
+        encoder: array of shape `(|M|, |W|)` representing P(W | M)
+
+        decoder: array of shape `(|W|, |M|)` representing P(M | W). If is None, and the Bayesian optimal decoder will be inferred.
+    """
+    # NOTE: altk requires numpy
+    meaning_dists = np.array(meaning_dists)
+    prior = np.array(prior)
+    dist_mat = np.array(dist_mat)    
+    encoder = np.array(encoder)
+    if decoder is not None:
+        decoder = np.array(decoder)
+    else:
+        decoder = util.bayes(encoder, prior)
+    
+    complexity, accuracy, distortion = ib_encoder_to_point(
+        meaning_dists,
+        prior,
+        encoder,
+        decoder,
+    )
+    mse = expected_distortion(prior, encoder @ decoder, dist_mat)
+
+    return (complexity, accuracy, distortion, mse)
+
 
 def infima(curve_points: torch.Tensor):
     """Fix any randomness in curve leading to nonmonotonicity."""
@@ -119,12 +168,12 @@ def get_ib_curve_(config: DictConfig):
             p.close()
             p.join()
         encoders = [async_result.get() for async_result in tqdm(async_results)]
-        coordinates = [ib_encoder_to_point(encoder, meaning_dists, prior) for encoder in encoders]
+        coordinates = [ib_encoder_to_point(meaning_dists, prior, encoder) for encoder in encoders]
 
     else:
         for beta in tqdm(betas):
             encoder = ib_blahut_arimoto(max_signals, beta, prior, meaning_dists)
-            coordinates.append(ib_encoder_to_point(encoder, meaning_dists, prior))
+            coordinates.append(ib_encoder_to_point(meaning_dists, prior, encoder))
             encoders.append(encoder)
 
     return {
