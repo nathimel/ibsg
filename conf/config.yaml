@@ -29,14 +29,14 @@ filepaths:
   # holds curve points
   curve_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}
 
-  # string to replace when saving a curve that is agnostic to simulation sweeps
-  common_sweeps: discr_need=${game.discriminative_need_beta}/seed=${seed}
-
-  simulation_subdir: dynamics=${simulation.dynamics.name}/num_trials=${simulation.num_trials}/population_size=${simulation.dynamics.population_size}
+  # for plots etc. that summarize simulation sweeps
+  sim_sweep_subdir: ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/population_size=${simulation.dynamics.population_size}/num_trials=${simulation.num_trials}/seed=${seed}
 
   # where the points corresponding to a single simulation will be saved
-  leaf_subdir: ${filepaths.curve_subdir}/${filepaths.common_sweeps}/${filepaths.simulation_subdir}
+  simulation_subdir: ${filepaths.sim_sweep_subdir}/discr_need=${game.discriminative_need_beta} # note the only thing varying is discr_need
 
+  # where the current working directory will be when hydra is running
+  leaf_subdir: ${filepaths.simulation_subdir}
 
   # hydra run root directory
   hydra_run_root: outputs
