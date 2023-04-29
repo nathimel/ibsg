@@ -7,13 +7,8 @@ def numeric_col_to_categorical(df: pd.DataFrame, col: str) -> pd.DataFrame:
     """Change a float valued column (e.g. trial or round) to Categorical for visualization."""
     # adjust values to Categorical where appropriate
     df[col] = df[col].astype(int).astype(str)
-    df = df.assign(trial=pd.Categorical(df[col]))
+    df = df.assign(col=pd.Categorical(df[col]))
     return df
-
-
-# Canonical plotting functions
-
-
 
 
 def basic_tradeoff_plot(
