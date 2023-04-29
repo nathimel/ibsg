@@ -41,7 +41,7 @@ def trajectories_df(trials: list[Game]) -> pd.DataFrame:
                     torch.Tensor(trial.points), # (num_rounds, 4)
                     torch.arange(len(trial.points))[:, None]
                 )),
-                torch.ones(len(trial.ib_points))[:, None] * trial_num+1),
+                torch.ones(len(trial.points))[:, None] * trial_num+1),
             ),
             columns=["complexity", "accuracy", "distortion", "mse", "round", "trial"]) for trial_num, trial in enumerate(trials)
         ])
