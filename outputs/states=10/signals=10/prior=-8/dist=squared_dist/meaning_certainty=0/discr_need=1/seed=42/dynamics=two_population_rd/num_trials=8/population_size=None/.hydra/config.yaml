@@ -26,15 +26,16 @@ simulation:
 seed: 42
 filepaths:
   curve_points_save_fn: curve_points.csv
-  ub_curve_points_save_fn: ub_curve_points.csv
+  mse_curve_points_save_fn: mse_curve_points.csv
   simulation_points_save_fn: simulation_points.csv
-  ub_points_save_fn: ub_points.csv
   trajectory_points_save_fn: trajectory_points.csv
   variant_points_save_fn: variant_points.csv
-  tradeoff_plot_fn: tradeoff.png
-  ub_plot_fn: ub.png
-  comm_cost_plot_fn: comm_cost.png
-  game_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}
-  common_sweep_subdir: discr_need=${game.discriminative_need_beta}/seed=${seed}
+  complexity_accuracy_plot_fn: complexity_accuracy.png
+  complexity_distortion_plot_fn: complexity_distortion.png
+  complexity_mse_plot_fn: complexity_mse.png
+  curve_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}
+  common_sweeps: discr_need=${game.discriminative_need_beta}/seed=${seed}
   simulation_subdir: dynamics=${simulation.dynamics.name}/num_trials=${simulation.num_trials}/population_size=${simulation.dynamics.population_size}
-  leaf_subdir: ${filepaths.game_subdir}/${filepaths.common_sweep_subdir}/${filepaths.simulation_subdir}
+  leaf_subdir: ${filepaths.curve_subdir}/${filepaths.common_sweeps}/${filepaths.simulation_subdir}
+  hydra_run_root: outputs
+  hydra_sweep_root: multirun

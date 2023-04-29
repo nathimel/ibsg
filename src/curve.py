@@ -13,7 +13,7 @@ def main(config: DictConfig):
     util.set_seed(config.seed)
 
     curve_fn = util.get_curve_fn(config)
-    ub_curve_fn = util.get_curve_fn(config, "ub")
+    mse_curve_fn = util.get_curve_fn(config, "mse")
 
     g = Game.from_hydra(config)
     print("computing ib curve...")
@@ -30,10 +30,10 @@ def main(config: DictConfig):
 
     util.save_points_df(curve_fn, util.points_to_df(ib_points, columns=["complexity", "accuracy", "distortion"]))
 
-    print("computing ub curve...")
-    ub_points = get_rd_curve(g.prior, g.dist_mat)
+    print("computing mse curve...")
+    mse_points = get_rd_curve(g.prior, g.dist_mat)
 
-    util.save_points_df(ub_curve_fn, util.points_to_df(ub_points, columns=["complexity", "mse"]))
+    util.save_points_df(mse_curve_fn, util.points_to_df(mse_points, columns=["complexity", "mse"]))
 
 if __name__ == "__main__":
     main()

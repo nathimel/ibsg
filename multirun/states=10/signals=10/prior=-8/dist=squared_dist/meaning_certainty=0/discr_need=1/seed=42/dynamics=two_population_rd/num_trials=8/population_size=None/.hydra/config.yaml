@@ -8,7 +8,7 @@ game:
   maxbeta: 5
   minbeta: -2
   numbeta: 1500
-  num_processes: 8
+  num_processes: null
 simulation:
   dynamics:
     name: two_population_rd
@@ -22,7 +22,7 @@ simulation:
   num_trials: 8
   trajectory: false
   multiprocessing: true
-  num_processes: 1
+  num_processes: null
 seed: 42
 filepaths:
   curve_points_save_fn: curve_points.csv
@@ -33,7 +33,8 @@ filepaths:
   variant_points_save_fn: variant_points.csv
   tradeoff_plot_fn: tradeoff.png
   ub_plot_fn: ub.png
+  comm_cost_plot_fn: comm_cost.png
   game_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}
-  common_sweep_subdir: discr_need=${game.discriminative_need_beta}/seed=${seed}
+  curve_above_subdir: discr_need=${game.discriminative_need_beta}/seed=${seed}
   simulation_subdir: dynamics=${simulation.dynamics.name}/num_trials=${simulation.num_trials}/population_size=${simulation.dynamics.population_size}
-  leaf_subdir: ${filepaths.game_subdir}/${filepaths.common_sweep_subdir}/${filepaths.simulation_subdir}
+  leaf_subdir: ${filepaths.game_subdir}/${filepaths.curve_above_subdir}/${filepaths.simulation_subdir}

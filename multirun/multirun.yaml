@@ -111,16 +111,11 @@ hydra:
   overrides:
     hydra:
     - hydra.mode=MULTIRUN
-    task:
-    - simulation.use_decoder=False
-    - game.discriminative_need_beta=range(-3, 4, 0.5)
-    - game.meaning_dist_beta=0
-    - game.num_states=50
-    - game.num_signals=50
+    task: []
   job:
-    name: plot
+    name: curve
     chdir: true
-    override_dirname: simulation.use_decoder=False
+    override_dirname: ''
     id: ???
     num: ???
     config_name: config
@@ -145,12 +140,12 @@ hydra:
   runtime:
     version: 1.3.2
     version_base: '1.3'
-    cwd: /dfs8/pub/nimel/projects/ibsg
+    cwd: /Users/nathanielimel/uci/projects/ibsg
     config_sources:
     - path: hydra.conf
       schema: pkg
       provider: hydra
-    - path: /dfs8/pub/nimel/projects/ibsg/conf
+    - path: /Users/nathanielimel/uci/projects/ibsg/conf
       schema: file
       provider: main
     - path: ''
@@ -172,8 +167,8 @@ hydra:
       hydra/output: default
   verbose: false
 game:
-  num_states: 50
-  num_signals: 50
+  num_states: 10
+  num_signals: 10
   distance: squared_dist
   discriminative_need_beta: 1
   meaning_dist_beta: 0
@@ -208,6 +203,6 @@ filepaths:
   ub_plot_fn: ub.png
   comm_cost_plot_fn: comm_cost.png
   game_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}
-  common_sweep_subdir: discr_need=${game.discriminative_need_beta}/seed=${seed}
+  curve_above_subdir: discr_need=${game.discriminative_need_beta}/seed=${seed}
   simulation_subdir: dynamics=${simulation.dynamics.name}/num_trials=${simulation.num_trials}/population_size=${simulation.dynamics.population_size}
-  leaf_subdir: ${filepaths.game_subdir}/${filepaths.common_sweep_subdir}/${filepaths.simulation_subdir}
+  leaf_subdir: ${filepaths.game_subdir}/${filepaths.curve_above_subdir}/${filepaths.simulation_subdir}

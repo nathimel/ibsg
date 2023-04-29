@@ -1,8 +1,8 @@
 hydra:
   run:
-    dir: outputs/${filepaths.leaf_subdir}
+    dir: ${filepaths.hydra_run_root}/${filepaths.leaf_subdir}
   sweep:
-    dir: multirun
+    dir: ${filepaths.hydra_sweep_root}
     subdir: ${filepaths.leaf_subdir}
   launcher:
     _target_: hydra._internal.core_plugins.basic_launcher.BasicLauncher
@@ -140,18 +140,18 @@ hydra:
   runtime:
     version: 1.3.2
     version_base: '1.3'
-    cwd: /dfs8/pub/nimel/projects/ibsg
+    cwd: /Users/nathanielimel/uci/projects/ibsg
     config_sources:
     - path: hydra.conf
       schema: pkg
       provider: hydra
-    - path: /dfs8/pub/nimel/projects/ibsg/conf
+    - path: /Users/nathanielimel/uci/projects/ibsg/conf
       schema: file
       provider: main
     - path: ''
       schema: structured
       provider: schema
-    output_dir: /dfs8/pub/nimel/projects/ibsg/outputs/states=10/signals=10/prior=-8/dist=squared_dist/meaning_certainty=0/discr_need=1/seed=42/dynamics=two_population_rd/num_trials=8/population_size=None
+    output_dir: /Users/nathanielimel/uci/projects/ibsg/outputs/states=10/signals=10/prior=-8/dist=squared_dist/meaning_certainty=0/discr_need=1/seed=42/dynamics=two_population_rd/num_trials=8/population_size=None
     choices:
       simulation: basic
       simulation/dynamics: two_population_rd

@@ -111,15 +111,11 @@ hydra:
   overrides:
     hydra:
     - hydra.mode=MULTIRUN
-    task:
-    - simulation.use_decoder=False
-    - game.meaning_dist_beta=0
-    - game.num_states=10
-    - game.num_signals=10
+    task: []
   job:
     name: curve
     chdir: true
-    override_dirname: simulation.use_decoder=False
+    override_dirname: ''
     id: '0'
     num: 0
     config_name: config

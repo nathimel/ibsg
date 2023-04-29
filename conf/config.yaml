@@ -9,28 +9,44 @@ seed: 42
 
 # Paths of files used for consuming and producing data
 filepaths: 
-  # TODO: refactor naming for ib, ub
-  # experiment outputs
-  curve_points_save_fn: curve_points.csv # I[M:W], I[W:U], E[D_KL[M || M']]
-  ub_curve_points_save_fn: ub_curve_points.csv # E[(u - u)^2]
+
+  # Curves
+  curve_points_save_fn: curve_points.csv # (I[M:W], I[W:U], E[D_KL[M || M']])
+  mse_curve_points_save_fn: mse_curve_points.csv # (I[M:W], E[(u - u)^2])
+
+  # Simulation
   simulation_points_save_fn: simulation_points.csv # final point, for all trials
-  ub_points_save_fn: ub_points.csv # final point, for all trials
   trajectory_points_save_fn: trajectory_points.csv # all points, for all trials
   variant_points_save_fn: variant_points.csv
-  tradeoff_plot_fn: tradeoff.png
-  ub_plot_fn: ub.png
-  comm_cost_plot_fn: comm_cost.png
+
+  # Plots
+  complexity_accuracy_plot_fn: complexity_accuracy.png
+  complexity_distortion_plot_fn: complexity_distortion.png
+  complexity_mse_plot_fn: complexity_mse.png
 
   # hydra automatic folder naming
-  game_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}
-  # typical params to sweep for basic analysis
-  common_sweep_subdir: discr_need=${game.discriminative_need_beta}/seed=${seed}
+
+  # holds curve points
+  curve_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}
+
+  # string to replace when saving a curve that is agnostic to simulation sweeps
+  common_sweeps: discr_need=${game.discriminative_need_beta}/seed=${seed}
+
   simulation_subdir: dynamics=${simulation.dynamics.name}/num_trials=${simulation.num_trials}/population_size=${simulation.dynamics.population_size}
-  leaf_subdir: ${filepaths.game_subdir}/${filepaths.common_sweep_subdir}/${filepaths.simulation_subdir}
+
+  # where the points corresponding to a single simulation will be saved
+  leaf_subdir: ${filepaths.curve_subdir}/${filepaths.common_sweeps}/${filepaths.simulation_subdir}
+
+
+  # hydra run root directory
+  hydra_run_root: outputs
+
+  # hydra multirun root directory
+  hydra_sweep_root: multirun
 
 hydra:
   run:
-    dir: outputs/${filepaths.leaf_subdir}
+    dir: ${filepaths.hydra_run_root}/${filepaths.leaf_subdir}
   job:
     chdir: True
     config:
@@ -49,7 +65,7 @@ hydra:
           - seed
 
   sweep:
-    dir: multirun
+    dir: ${filepaths.hydra_sweep_root}
     subdir: ${filepaths.leaf_subdir}
   
 # example command for sweeping params
