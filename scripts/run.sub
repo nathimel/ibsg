@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#SBATCH --job-name=run.sh  ## job name
+#SBATCH -p free              ## use free partition
+#SBATCH --nodes=1            ## use 1 node, don't ask for multiple
+#SBATCH --ntasks=1           ## ask for 1 CPU
+#SBATCH --mem-per-cpu=1G     ## ask for 1Gb memory per CPU
+#SBATCH --error=scripts/outputs/err.txt ## just overwrite one error file
+#SBATCH --mail-type=end               ## send email when the job ends
+#SBATCH --mail-user=nimel@uci.edu  ## use this email address
+
+# Run command hostname and assign output to a variable
+hn=`hostname`
+echo "Running job on host $hn"
+
+# Just overwrite one output file
+time ./scripts/hpc_run.sh "$@" > scripts/outputs/out.txt
