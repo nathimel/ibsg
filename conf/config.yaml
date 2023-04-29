@@ -18,6 +18,7 @@ filepaths:
   simulation_points_save_fn: simulation_points.csv # final point, for all trials
   trajectory_points_save_fn: trajectory_points.csv # all points, for all trials
   variant_points_save_fn: variant_points.csv
+  final_encoders_save_fn: final_encoders.csv # final encoders for all trials
 
   # Plots
   complexity_accuracy_plot_fn: complexity_accuracy.png

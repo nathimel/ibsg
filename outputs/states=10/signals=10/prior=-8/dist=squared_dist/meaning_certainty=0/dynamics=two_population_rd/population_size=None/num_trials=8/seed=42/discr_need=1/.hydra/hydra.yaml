@@ -113,7 +113,7 @@ hydra:
     - hydra.mode=RUN
     task: []
   job:
-    name: plot
+    name: run_simulations
     chdir: true
     override_dirname: ''
     id: ???

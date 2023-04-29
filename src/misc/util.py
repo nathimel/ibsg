@@ -48,6 +48,33 @@ def trajectories_df(trials: list[Game]) -> pd.DataFrame:
     return df
 
 
+def encoders_to_df(encoders: list[torch.Tensor], col: str = "trial") -> pd.DataFrame:
+    """Get a dataframe with columns ['meanings', 'words', 'p(w|m)'].
+
+    Args:
+        col: {"trial", "round"} whether `encoders` is a list of final encoders across trials, or intermediate encoders across game rounds.
+    """
+    num_meanings, num_words = encoders[0].shape
+
+    dfs = []
+    for encoder in encoders:
+
+        meanings = torch.tensor([[i] * num_words for i in range(num_meanings)]).flatten()
+        words = torch.tensor(list(range(num_words)) * num_meanings)
+        dfs.append( pd.DataFrame(
+            torch.stack([meanings, words, encoder.flatten()]).T,
+            columns=["meanings", "words", "p(w|m)"],
+        ) )
+
+    return pd.concat(dfs)
+
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# File handling
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
 def get_curve_fn(config: DictConfig, curve_type: str = "ib", curve_dir: str = None) -> str:
     """Get the full path of the IB curve, relative to hydra interpolations."""
     if curve_dir is None:

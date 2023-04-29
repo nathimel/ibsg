@@ -20,7 +20,7 @@ simulation:
     population_init_maxbeta: 5
   use_decoder: false
   num_trials: 8
-  trajectory: false
+  trajectory: true
   multiprocessing: true
   num_processes: null
 seed: 42
@@ -30,6 +30,7 @@ filepaths:
   simulation_points_save_fn: simulation_points.csv
   trajectory_points_save_fn: trajectory_points.csv
   variant_points_save_fn: variant_points.csv
+  final_encoders_save_fn: final_encoders.csv
   complexity_accuracy_plot_fn: complexity_accuracy.png
   complexity_distortion_plot_fn: complexity_distortion.png
   complexity_mse_plot_fn: complexity_mse.png
