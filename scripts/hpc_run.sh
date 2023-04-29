@@ -14,3 +14,4 @@ python src/curve.py "$@"
 
 echo 'python src/plot.py "$@"'
 python src/plot.py "$@"
+

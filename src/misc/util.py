@@ -30,7 +30,7 @@ def save_points_df(fn: str, df: pd.DataFrame) -> None:
     print(f"Saved {len(df)} language points to {os.path.join(os.getcwd(), fn)}")
 
 def trajectories_df(trials: list[Game]) -> pd.DataFrame:
-    """Collect the (complexity, accuracy) trajectories of every game across trials and store in one dataframe."""
+    """Collect the (complexity, accuracy, distortion, mse) trajectories of every game across trials and store in one dataframe."""
     # build a df for each and concatenate
     df = pd.concat([
         pd.DataFrame(
@@ -38,12 +38,12 @@ def trajectories_df(trials: list[Game]) -> pd.DataFrame:
             data=torch.hstack((
                 # label rounds
                 torch.hstack((
-                    torch.Tensor(trial.ib_points),
-                    torch.arange(len(trial.ib_points))[:, None]
+                    torch.Tensor(trial.points), # (num_rounds, 4)
+                    torch.arange(len(trial.points))[:, None]
                 )),
                 torch.ones(len(trial.ib_points))[:, None] * trial_num+1),
             ),
-            columns=["complexity", "accuracy", "round", "trial"]) for trial_num, trial in enumerate(trials)
+            columns=["complexity", "accuracy", "distortion", "mse", "round", "trial"]) for trial_num, trial in enumerate(trials)
         ])
     return df
 
