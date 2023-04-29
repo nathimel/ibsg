@@ -1,6 +1,6 @@
 game:
-  num_states: 10
-  num_signals: 10
+  num_states: 1000
+  num_signals: 1000
   distance: squared_dist
   discriminative_need_beta: 1
   meaning_dist_beta: 0
