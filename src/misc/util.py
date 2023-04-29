@@ -48,9 +48,10 @@ def trajectories_df(trials: list[Game]) -> pd.DataFrame:
     return df
 
 
-def get_curve_fn(config: DictConfig, curve_type: str = "ib") -> str:
+def get_curve_fn(config: DictConfig, curve_type: str = "ib", curve_dir: str = None) -> str:
     """Get the full path of the IB curve, relative to hydra interpolations."""
-    curve_dir = os.getcwd().replace(config.filepaths.leaf_subdir, config.filepaths.curve_subdir)
+    if curve_dir is None:
+        curve_dir = os.getcwd().replace(config.filepaths.leaf_subdir, config.filepaths.curve_subdir)
 
     if curve_type == "ib":
         curve_fn = os.path.join(curve_dir, config.filepaths.curve_points_save_fn)

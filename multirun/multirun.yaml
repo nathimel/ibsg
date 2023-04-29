@@ -1,8 +1,8 @@
 hydra:
   run:
-    dir: outputs/${filepaths.leaf_subdir}
+    dir: ${filepaths.hydra_run_root}/${filepaths.leaf_subdir}
   sweep:
-    dir: multirun
+    dir: ${filepaths.hydra_sweep_root}
     subdir: ${filepaths.leaf_subdir}
   launcher:
     _target_: hydra._internal.core_plugins.basic_launcher.BasicLauncher
@@ -111,11 +111,16 @@ hydra:
   overrides:
     hydra:
     - hydra.mode=MULTIRUN
-    task: []
+    task:
+    - simulation.use_decoder=False
+    - game.discriminative_need_beta=range(-3, 4, 0.5)
+    - game.meaning_dist_beta=0
+    - game.num_states=100
+    - game.num_signals=100
   job:
     name: curve
     chdir: true
-    override_dirname: ''
+    override_dirname: simulation.use_decoder=False
     id: ???
     num: ???
     config_name: config
@@ -167,8 +172,8 @@ hydra:
       hydra/output: default
   verbose: false
 game:
-  num_states: 10
-  num_signals: 10
+  num_states: 100
+  num_signals: 100
   distance: squared_dist
   discriminative_need_beta: 1
   meaning_dist_beta: 0
@@ -188,21 +193,22 @@ simulation:
     population_init_maxbeta: 5
   use_decoder: false
   num_trials: 8
-  trajectory: false
+  trajectory: true
   multiprocessing: true
   num_processes: null
 seed: 42
 filepaths:
   curve_points_save_fn: curve_points.csv
-  ub_curve_points_save_fn: ub_curve_points.csv
+  mse_curve_points_save_fn: mse_curve_points.csv
   simulation_points_save_fn: simulation_points.csv
-  ub_points_save_fn: ub_points.csv
   trajectory_points_save_fn: trajectory_points.csv
   variant_points_save_fn: variant_points.csv
-  tradeoff_plot_fn: tradeoff.png
-  ub_plot_fn: ub.png
-  comm_cost_plot_fn: comm_cost.png
-  game_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}
-  curve_above_subdir: discr_need=${game.discriminative_need_beta}/seed=${seed}
-  simulation_subdir: dynamics=${simulation.dynamics.name}/num_trials=${simulation.num_trials}/population_size=${simulation.dynamics.population_size}
-  leaf_subdir: ${filepaths.game_subdir}/${filepaths.curve_above_subdir}/${filepaths.simulation_subdir}
+  complexity_accuracy_plot_fn: complexity_accuracy.png
+  complexity_distortion_plot_fn: complexity_distortion.png
+  complexity_mse_plot_fn: complexity_mse.png
+  curve_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}
+  sim_sweep_subdir: ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/population_size=${simulation.dynamics.population_size}/num_trials=${simulation.num_trials}/seed=${seed}
+  simulation_subdir: ${filepaths.sim_sweep_subdir}/discr_need=${game.discriminative_need_beta}
+  leaf_subdir: ${filepaths.simulation_subdir}
+  hydra_run_root: outputs
+  hydra_sweep_root: multirun

@@ -9,7 +9,7 @@ use_decoder: False # whether to use the emergent decoder when computing IB coord
 num_trials: 8 # default should be cpu_count
 
 # whether to save trajectory points
-trajectory: False
+trajectory: True
 
 multiprocessing: True # N.B. just for running simulations of dynamics for now, not for e.g. genetic algorithm, analysis
 num_processes: null # null defaults to cpu_count
