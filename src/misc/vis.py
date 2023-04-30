@@ -121,4 +121,5 @@ def basic_encoder_heatmap(df: pd.DataFrame) -> pn.ggplot:
     return (
         pn.ggplot(df, pn.aes(**dict(zip(["x", "y", "fill"], encoder_columns[:3]))))
         + pn.geom_tile()
+        + pn.scale_fill_cmap(limits=[0,1])
     )
