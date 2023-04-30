@@ -100,9 +100,9 @@ class FinitePopulationDynamics(Dynamics):
     ) -> float:
         """Compute pairwise fitness as F[L, L'] = F[(P, Q'), (P', Q)] = 1/2(f(P,Q')) + 1/2(f(P', Q))
 
-        where f(X,Y) = sum( Prior @ Meanings @ X @ Y * Utility )
+        where f(X,Y) = sum( diag(prior) @ X @ Y * Utility )
         """
-        f = lambda X,Y: torch.sum(torch.diag(self.game.prior) @ self.game.meaning_dists @ X @ Y * self.game.utility)
+        f = lambda X,Y: torch.sum(torch.diag(self.game.prior) @ X @ Y * self.game.utility)
         return (f(p, q_) + f(p_, q)) / 2.0
     
 
