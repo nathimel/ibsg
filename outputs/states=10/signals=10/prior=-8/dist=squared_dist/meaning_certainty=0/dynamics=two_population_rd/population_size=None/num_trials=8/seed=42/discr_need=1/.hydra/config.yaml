@@ -5,6 +5,7 @@ game:
   discriminative_need_beta: 1
   meaning_dist_beta: 0
   prior_init_beta: -8
+  overwrite_curves: false
   maxbeta: 5
   minbeta: -2
   numbeta: 1500

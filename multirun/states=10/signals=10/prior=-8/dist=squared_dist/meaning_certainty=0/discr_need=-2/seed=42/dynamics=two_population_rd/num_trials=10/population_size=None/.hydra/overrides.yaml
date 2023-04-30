@@ -1,3 +1,0 @@
-- simulation.use_decoder=False
-- game.discriminative_need_beta=-2
-- game.meaning_dist_beta=0

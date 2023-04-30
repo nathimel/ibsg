@@ -8,7 +8,8 @@ from misc.util import encoder_columns
 def numeric_col_to_categorical(df: pd.DataFrame, col: str) -> pd.DataFrame:
     """Change a float valued column (e.g. trial or round) to Categorical for visualization."""
     # adjust values to Categorical where appropriate
-    df[col] = df[col].astype(int).astype(str)
+    # df[col] = df[col].astype(int).astype(str)
+    df[col] = df[col].astype(int)    
     df = df.assign(**{col: pd.Categorical(df[col])})
     return df
 
@@ -36,7 +37,9 @@ def basic_tradeoff_plot(
             alpha=0.6,
         )
 
+    sim_data["trial"] = sim_data["trial"].astype(int) + 1
     sim_data = numeric_col_to_categorical(sim_data, "trial")
+
     plot = plot + pn.geom_point(  # simulation langs
         data=sim_data,
         mapping=pn.aes(color="trial"),

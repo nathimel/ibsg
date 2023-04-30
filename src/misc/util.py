@@ -112,6 +112,11 @@ def encoders_to_df(encoders: torch.Tensor, col: str = "trial") -> pd.DataFrame:
 # File handling
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+def ensure_dir(path: str) -> None:
+    if not os.path.isdir(path):
+        os.makedirs(path)
+        print(f"Created directory {path}.")
+
 
 def get_curve_fn(config: DictConfig, curve_type: str = "ib", curve_dir: str = None) -> str:
     """Get the full path of the IB curve, relative to hydra interpolations."""

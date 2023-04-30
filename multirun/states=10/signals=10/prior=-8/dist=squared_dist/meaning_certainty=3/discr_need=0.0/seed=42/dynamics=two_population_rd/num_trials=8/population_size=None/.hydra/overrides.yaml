@@ -1,5 +1,0 @@
-- simulation.use_decoder=False
-- game.discriminative_need_beta=0.0
-- game.meaning_dist_beta=3
-- game.num_states=10
-- game.num_signals=10

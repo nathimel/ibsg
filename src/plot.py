@@ -30,7 +30,8 @@ def main(config):
     comp_mse_plot_fn = fullpath(fps.complexity_mse_plot_fn)
 
     faceted_encoders_fn = fullpath(fps.faceted_encoders_plot_fn)
-    single_encoder_dir = fullpath(fps.encoder_plots_dir)
+    single_encoders_dir = fullpath(fps.encoder_plots_dir)
+    util.ensure_dir(single_encoders_dir)
 
     # load data
     sim_data = pd.read_csv(sim_fn)
@@ -51,7 +52,7 @@ def main(config):
     plot_kwargs = {
         "trajectory_data": traj_data, 
         "variant_data": variant_data,
-        }
+    }
 
     ca_plot = vis.basic_tradeoff_plot(*plot_args, **plot_kwargs, y="accuracy")
     cd_plot = vis.basic_tradeoff_plot(*plot_args, **plot_kwargs, y="distortion")
@@ -64,7 +65,7 @@ def main(config):
     util.save_plot(comp_dist_plot_fn, cd_plot)
     util.save_plot(comp_mse_plot_fn, mse_plot)
     util.save_plot(faceted_encoders_fn, faceted_encoders_plot)
-    [util.save_plot(f"{i+1}.png", plot) for i, plot in enumerate(encoder_plots)]
+    [util.save_plot(os.path.join(single_encoders_dir, f"trial_{i+1}.png"), plot) for i, plot in enumerate(encoder_plots)]
 
 if __name__ == "__main__":
     main()

@@ -1,4 +1,0 @@
-- simulation.use_decoder=False
-- game.discriminative_need_beta=0
-- game.meaning_dist_beta=-2
-- simulation/dynamics=nowak_krakauer
