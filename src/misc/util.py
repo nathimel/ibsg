@@ -29,13 +29,43 @@ def save_points_df(fn: str, df: pd.DataFrame) -> None:
     df.to_csv(fn, index=False)
     print(f"Saved {len(df)} language points to {os.path.join(os.getcwd(), fn)}")
 
+def save_encoders_df(fn: str, df: pd.DataFrame) -> None:
+    if "trial" in df.columns:
+        num = df["trial"].max()
+    elif "round" in df.columns:
+        num = df["round"].max()
+    else:
+        breakpoint()
+        raise Exception
+    df.to_csv(fn, index=False)
+    print(f"Saved {num} encoders to {os.path.join(os.getcwd(), fn)}")
+
+def save_final_encoders(fn: str, trials: list[Game]) -> None:
+    torch.save(torch.stack([g.ib_encoders[-1] for g in trials]), fn)
+    print(f"Saved {len(trials)} encoders to {os.path.join(os.getcwd(), fn)}")
+
+def load_encoders(fn: str) -> pd.DataFrame:
+    """Load encoders saved in a .pt file, and convert from torch.tensor to pd.DataFrame."""
+    return encoders_to_df(torch.load(fn))
+
+
+points_columns = ["complexity", "accuracy", "distortion", "mse"]
+
+def final_points_df(trials: list[Game]) -> pd.DataFrame:
+    """Collect the (complexity, accuracy, ...) points for the final round of every game across trials and store in one dataframe."""
+    return points_to_df(
+        [(*g.points[-1], i) for i, g in enumerate(trials)], 
+        columns = points_columns + ["trial"],
+    )
+
+
 def trajectories_df(trials: list[Game]) -> pd.DataFrame:
     """Collect the (complexity, accuracy, distortion, mse) trajectories of every game across trials and store in one dataframe."""
     # build a df for each and concatenate
     df = pd.concat([
         pd.DataFrame(
             # label trials
-            data=torch.hstack((
+            data = torch.hstack((
                 # label rounds
                 torch.hstack((
                     torch.Tensor(trial.points), # (num_rounds, 4)
@@ -43,30 +73,38 @@ def trajectories_df(trials: list[Game]) -> pd.DataFrame:
                 )),
                 torch.ones(len(trial.points))[:, None] * trial_num+1),
             ),
-            columns=["complexity", "accuracy", "distortion", "mse", "round", "trial"]) for trial_num, trial in enumerate(trials)
+            columns = points_columns + ["round", "trial"]) for trial_num, trial in enumerate(trials)
         ])
     return df
 
+encoder_columns = ["words", "meanings", "naming probability \n", "p", ]
 
-def encoders_to_df(encoders: list[torch.Tensor], col: str = "trial") -> pd.DataFrame:
-    """Get a dataframe with columns ['meanings', 'words', 'p(w|m)'].
+def encoders_to_df(encoders: torch.Tensor, col: str = "trial") -> pd.DataFrame:
+    """Get a dataframe with columns ['meanings', 'words', 'p', 'naming probability \n'].
 
     Args:
+
+        encoders: tensor of shape `(trials, meanings, words)`
+    
         col: {"trial", "round"} whether `encoders` is a list of final encoders across trials, or intermediate encoders across game rounds.
     """
     num_meanings, num_words = encoders[0].shape
 
-    dfs = []
-    for encoder in encoders:
-
-        meanings = torch.tensor([[i] * num_words for i in range(num_meanings)]).flatten()
-        words = torch.tensor(list(range(num_words)) * num_meanings)
-        dfs.append( pd.DataFrame(
-            torch.stack([meanings, words, encoder.flatten()]).T,
-            columns=["meanings", "words", "p(w|m)"],
-        ) )
-
-    return pd.concat(dfs)
+    meanings = torch.tensor([[i] * num_words for i in range(num_meanings)]).flatten()
+    words = torch.tensor(list(range(num_words)) * num_meanings)
+    ones = torch.ones_like(encoders[0]).flatten()
+    return pd.concat([
+        pd.DataFrame(
+            torch.stack([
+                ones * i, # trial
+                words, 
+                meanings,
+                encoder.flatten(), # 'naming probability \n' is alias for 'p'
+                encoder.flatten(), # p = p(word | meaning)
+            ]).T,
+            columns=[col] + encoder_columns,
+        ) for i, encoder in enumerate(encoders)
+    ])
 
 
 

@@ -216,8 +216,13 @@ class ReplicatorDynamics(Dynamics):
             Q_prev = copy.deepcopy(self.Q)
 
             # track data
-            self.game.points.append(self.get_point(self.P, self.Q))
-            self.game.ib_encoders.append(self.P)
+            self.game.points.append(self.get_point( normalize_rows(self.P), normalize_rows(self.Q)))
+
+            if not torch.allclose(self.P.sum(dim=1), torch.ones(self.P.shape[1])):
+                # not catching error
+                breakpoint()
+
+            self.game.ib_encoders.append(normalize_rows(self.P)) # normalization in evolution step insufficient
 
             self.evolution_step() # N.B.: fitness requires population update 
 
@@ -250,22 +255,27 @@ class TwoPopulationRD(ReplicatorDynamics):
 
             freq(receiver)' = freq(receiver) * fitness_relative_to_prior_and_sender(receiver)
         """
-        P = self.P # `[states, signals]`
-        Q = self.Q # `[signals, states]`
-        U = self.game.utility # `[states, states]`
-        M = self.game.meaning_dists # `[states, states]`
-        p = self.game.prior # `[states,]`
+        # P = self.P # `[states, signals]`
+        # Q = self.Q # `[signals, states]`
+        # U = self.game.utility # `[states, states]`
+        # M = self.game.meaning_dists # `[states, states]`
+        # p = self.game.prior # `[states,]`
 
-        P *= (Q @ U).T
-        # P = M @ P 
-        P = normalize_rows(P)
+        # P *= (Q @ U).T
+        # # P = M @ P 
+        # P = normalize_rows(P)
 
-        Q *= p * (U @ P).T
-        # Q = Q @ M
-        Q = normalize_rows(Q)
+        # Q *= p * (U @ P).T
+        # # Q = Q @ M
+        # Q = normalize_rows(Q)
 
-        self.P = P
-        self.Q = Q
+        # self.P = copy.deepcopy(P)
+        # self.Q = copy.deepcopy(Q)
+        self.P *= (self.Q @ self.game.utility).T
+        self.P = normalize_rows(self.P)
+
+        self.Q *= self.game.prior * (self.game.utility @ self.P).T
+        self.Q = normalize_rows(self.Q)
 
 dynamics_map = {
     "moran_process": MoranProcess,

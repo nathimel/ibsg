@@ -1,6 +1,8 @@
 import plotnine as pn
 import pandas as pd
 
+from misc.util import encoder_columns
+
 # Plotting util functions
 
 def numeric_col_to_categorical(df: pd.DataFrame, col: str) -> pd.DataFrame:
@@ -34,9 +36,10 @@ def basic_tradeoff_plot(
             alpha=0.6,
         )
 
+    sim_data = numeric_col_to_categorical(sim_data, "trial")
     plot = plot + pn.geom_point(  # simulation langs
-        sim_data,
-        color="blue",
+        data=sim_data,
+        mapping=pn.aes(color="trial"),
         shape="o",
         size=4,
     )
@@ -74,8 +77,45 @@ def bound_only_plot(
         pn.ggplot(data=curve_data, mapping=pn.aes(x="complexity", y=y))
         + pn.xlab("Complexity $I[M:W]$ bits")
         + pn.ylab(ystr)
-        + pn.scale_color_cmap("cividis")
     )
     plot = plot + pn.geom_line()
     # plot = plot + pn.geom_point()
     return plot
+
+
+# encoders stuff
+
+def faceted_encoders(df: pd.DataFrame) -> pn.ggplot:
+    """Return a plot of different encoder heatmap subplots, faceted by trial."""
+    return (
+        basic_encoder_heatmap(df)
+        + pn.facet_grid("trial ~ .")
+        + pn.theme(
+            axis_text_y=pn.element_blank(),
+            axis_text_x=pn.element_blank(),
+        )
+    )
+
+def get_n_heatmaps(df: pd.DataFrame, all_trials: bool = True, n: int = 8,) -> list[pn.ggplot]:
+    """Return a list of heatmaps, one for each encoder corresponding to each trial. If `all_trials` is False, get `n` heatmaps, which is 8 by default."""
+    trials = df["trial"].unique()
+    if not all_trials:
+        trials = trials[:8]
+    return [
+        (
+            basic_encoder_heatmap(df[df["trial"] == trial])
+            + pn.ggtitle(f"Trial {trial}")
+        )
+        for trial in trials
+    ]
+
+
+def basic_encoder_heatmap(df: pd.DataFrame) -> pn.ggplot:
+    """Return a single heatmap plot for an encoder."""
+    df["trial"] = df["trial"].astype(int) + 1
+    df = numeric_col_to_categorical(df, "meanings")
+    df = numeric_col_to_categorical(df, "words")
+    return (
+        pn.ggplot(df, pn.aes(**dict(zip(["x", "y", "fill"], encoder_columns[:3]))))
+        + pn.geom_tile()
+    )

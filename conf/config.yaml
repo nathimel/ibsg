@@ -18,12 +18,14 @@ filepaths:
   simulation_points_save_fn: simulation_points.csv # final point, for all trials
   trajectory_points_save_fn: trajectory_points.csv # all points, for all trials
   variant_points_save_fn: variant_points.csv
-  final_encoders_save_fn: final_encoders.csv # final encoders for all trials
+  final_encoders_save_fn: final_encoders.pt # final encoders for all trials
 
   # Plots
   complexity_accuracy_plot_fn: complexity_accuracy.png
   complexity_distortion_plot_fn: complexity_distortion.png
   complexity_mse_plot_fn: complexity_mse.png
+  encoder_plots_dir: encoder_plots # dir for encoder heatmap plots per trial
+  faceted_encoders_plot_fn: faceted_encoders.png # plots encoders together from all trials  
 
   # hydra automatic folder naming
 

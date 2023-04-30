@@ -14,22 +14,21 @@ def main(config):
     trials = run_trials(config)
 
     # (I[M:W], I[W:U], KL[M, M'], MSE)
-    points_df = util.points_to_df(
-        [g.points[-1] for g in trials], 
-        columns = ["complexity", "accuracy", "distortion", "mse"]
-    )
+    points_df = util.final_points_df(trials)
     util.save_points_df(fn=config.filepaths.simulation_points_save_fn, df=points_df)
 
+    # save trajectories from every trial
     if config.simulation.trajectory:
-        # save trajectories from every trial
         trajs_df = util.trajectories_df(trials)
         util.save_points_df(fn=config.filepaths.trajectory_points_save_fn, df=trajs_df)
 
-    # variant_points_df = get_hypothetical_variants(trials, 100)
-    # util.save_points_df(fn=config.filepaths.variant_points_save_fn, df=variant_points_df)
+    # save rotations of final encoders
+    if config.simulation.variants:
+        variant_points_df = get_hypothetical_variants(trials, 100)
+        util.save_points_df(fn=config.filepaths.variant_points_save_fn, df=variant_points_df)
 
     # save the final encoders to a csv
-    util.encoders_to_df([g.ib_encoders[-1] for g in trials]).to_csv(config.filepaths.final_encoders_save_fn)
+    util.save_final_encoders(config.filepaths.final_encoders_save_fn, trials)
 
 if __name__ == "__main__":
     main()

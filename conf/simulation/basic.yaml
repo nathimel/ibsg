@@ -8,8 +8,14 @@ use_decoder: False # whether to use the emergent decoder when computing IB coord
 # simulation parameters
 num_trials: 8 # default should be cpu_count
 
+# TODO: make a vis config group lol
+plot_all_encoders: True # whether to save an encoder plot for every trial
+
 # whether to save trajectory points
 trajectory: True
+
+# whether to save variant points
+variants: False # N.B., not working yet
 
 multiprocessing: True # N.B. just for running simulations of dynamics for now, not for e.g. genetic algorithm, analysis
 num_processes: null # null defaults to cpu_count
