@@ -48,6 +48,7 @@ class Game:
         meaning_dists = normalize_rows(generate_sim_matrix(universe, 10 ** meaning_dist_beta, dist_mat))
 
         # Constant
+        self.universe = universe
         self.num_states = num_states
         self.num_signals = num_signals
         self.prior = prior

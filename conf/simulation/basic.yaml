@@ -1,7 +1,15 @@
 defaults: 
-  # - dynamics: moran_process
-  # - dynamics: nowak_krakauer  
   - dynamics: two_population_rd
+  - _self_ # the current config overrides the values of all configs listed above
+
+
+# below are default configs that are specific to only some dynamics, but we nontheless need them here in order to perform hydra's string interpolation for recursive path creation.
+imprecise_imitation_beta: 0 # replicator dynamics
+population_size: null # finite population dynamics
+graph_beta: null # same
+
+
+# Below are default configs that will be actually used by each simulation
 
 use_decoder: False # whether to use the emergent decoder when computing IB coordinate
 

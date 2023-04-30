@@ -8,7 +8,6 @@ from game.graph import generate_adjacency_matrix
 from misc.tools import random_stochastic_matrix, normalize_rows
 
 from tqdm import tqdm
-from multiprocessing import cpu_count
 
 
 ##############################################################################
@@ -200,9 +199,15 @@ class ReplicatorDynamics(Dynamics):
         self.max_its = kwargs["max_its"]
         self.threshold = kwargs["threshold"]
         self.init_beta = kwargs["population_init_beta"]
+        self.imprecise_imitation_beta = kwargs["imprecise_imitation_beta"]
 
-        self.P = random_stochastic_matrix((self.game.num_states, self.game.num_signals), self.init_beta)
-        self.Q = random_stochastic_matrix((self.game.num_signals, self.game.num_states), self.init_beta)
+        self.P = random_stochastic_matrix((self.game.num_states, self.game.num_signals), self.init_beta) # Sender 'population frequencies'
+        self.Q = random_stochastic_matrix((self.game.num_signals, self.game.num_states), self.init_beta) # Receiver 'population frequencies'
+
+        # construct probability of confusing any two meanings
+        self.C = None
+        # TODO: implement confusion matrix generalization
+        raise NotImplementedError
 
     def run(self):
         i = 0
