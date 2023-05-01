@@ -77,7 +77,7 @@ def trajectories_df(trials: list[Game]) -> pd.DataFrame:
         ])
     return df
 
-encoder_columns = ["words", "meanings", "naming probability \n", "p", ]
+encoder_columns = ["word", "meaning", "naming probability \n", "p", ]
 
 def encoders_to_df(encoders: torch.Tensor, col: str = "trial") -> pd.DataFrame:
     """Get a dataframe with columns ['meanings', 'words', 'p', 'naming probability \n'].

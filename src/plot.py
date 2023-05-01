@@ -29,9 +29,12 @@ def main(config):
     comp_dist_plot_fn = fullpath(fps.complexity_distortion_plot_fn)
     comp_mse_plot_fn = fullpath(fps.complexity_mse_plot_fn)
 
-    faceted_encoders_fn = fullpath(fps.faceted_encoders_plot_fn)
-    single_encoders_dir = fullpath(fps.encoder_plots_dir)
-    util.ensure_dir(single_encoders_dir)
+    faceted_lines_plot_fn = fullpath(fps.encoders_faceted_lines_plot_fn)
+    faceted_tiles_plot_fn = fullpath(fps.encoders_faceted_tiles_plot_fn)
+    tile_plots_dir = fullpath(fps.encoder_tile_plots_dir)
+    line_plots_dir = fullpath(fps.encoder_line_plots_dir)
+    util.ensure_dir(tile_plots_dir)
+    util.ensure_dir(line_plots_dir)
 
     # load data
     sim_data = pd.read_csv(sim_fn)
@@ -58,14 +61,21 @@ def main(config):
     cd_plot = vis.basic_tradeoff_plot(*plot_args, **plot_kwargs, y="distortion")
     mse_plot = vis.basic_tradeoff_plot(mse_curve_data, sim_data, **plot_kwargs, y="mse")
 
-    faceted_encoders_plot = vis.faceted_encoders(encoders_data)
-    encoder_plots = vis.get_n_heatmaps(encoders_data)
+    faceted_lines_plot = vis.faceted_encoders(encoders_data, "line")
+    faceted_tiles_plot = vis.faceted_encoders(encoders_data, "tile")
+
+    tile_plots = vis.get_n_encoder_plots(encoders_data, "tile")
+    line_plots = vis.get_n_encoder_plots(encoders_data, "line")
 
     util.save_plot(comp_acc_plot_fn, ca_plot)
     util.save_plot(comp_dist_plot_fn, cd_plot)
     util.save_plot(comp_mse_plot_fn, mse_plot)
-    util.save_plot(faceted_encoders_fn, faceted_encoders_plot)
-    [util.save_plot(os.path.join(single_encoders_dir, f"trial_{i+1}.png"), plot) for i, plot in enumerate(encoder_plots)]
+
+    util.save_plot(faceted_lines_plot_fn, faceted_lines_plot)
+    util.save_plot(faceted_tiles_plot_fn, faceted_tiles_plot)
+
+    [util.save_plot(os.path.join(tile_plots_dir, f"trial_{i+1}.png"), plot) for i, plot in enumerate(tile_plots)]
+    [util.save_plot(os.path.join(line_plots_dir, f"trial_{i+1}.png"), plot) for i, plot in enumerate(line_plots)]
 
 if __name__ == "__main__":
     main()

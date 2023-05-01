@@ -1,14 +1,4 @@
 name: two_population_rd
-max_its: 200
-threshold: 1e-5
-
-# # dummy until I hear from omry
-# population_size: null
-# graph_beta: null
-
-# for creating Sender, Receivers in seed 'population'
-population_init_minbeta: -2
-population_init_maxbeta: 5
 
 # inverse temperature param for confusion matrix controlling imprecision of conditional imitation in replicator dynamics (Franke & Correia, 2018)
 imprecise_imitation_beta: 0

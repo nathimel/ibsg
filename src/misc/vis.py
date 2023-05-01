@@ -2,6 +2,7 @@ import plotnine as pn
 import pandas as pd
 
 from misc.util import encoder_columns
+from typing import Callable
 
 # Plotting util functions
 
@@ -86,12 +87,33 @@ def bound_only_plot(
     return plot
 
 
-# encoders stuff
+# Encoders
 
-def faceted_encoders(df: pd.DataFrame) -> pn.ggplot:
-    """Return a plot of different encoder heatmap subplots, faceted by trial."""
+def get_n_encoder_plots(df: pd.DataFrame, plot_type: str, all_trials: bool = True, n: int = 8,) -> list[pn.ggplot]:
+    """Return a list of plots, one for each encoder corresponding to each trial. If `all_trials` is False, get `n` plots, which is 8 by default.
+    
+    Args: 
+        plot_type: {"tile", "line"}
+    """
+    trials = df["trial"].unique()
+    if not all_trials:
+        trials = trials[:8]
+    return [
+        (
+            plots[plot_type](df[df["trial"] == trial])
+            + pn.ggtitle(f"Trial {trial}")
+        )
+        for trial in trials
+    ]
+
+def faceted_encoders(df: pd.DataFrame, plot_type: str) -> pn.ggplot:
+    """Return a plot of different encoder subplots, faceted by trial.
+    
+    Args: 
+        plot_type: {"tile", "line"}    
+    """
     return (
-        basic_encoder_heatmap(df)
+        plots[plot_type](df)
         + pn.facet_grid("trial ~ .")
         + pn.theme(
             axis_text_y=pn.element_blank(),
@@ -99,27 +121,37 @@ def faceted_encoders(df: pd.DataFrame) -> pn.ggplot:
         )
     )
 
-def get_n_heatmaps(df: pd.DataFrame, all_trials: bool = True, n: int = 8,) -> list[pn.ggplot]:
-    """Return a list of heatmaps, one for each encoder corresponding to each trial. If `all_trials` is False, get `n` heatmaps, which is 8 by default."""
-    trials = df["trial"].unique()
-    if not all_trials:
-        trials = trials[:8]
-    return [
-        (
-            basic_encoder_heatmap(df[df["trial"] == trial])
-            + pn.ggtitle(f"Trial {trial}")
-        )
-        for trial in trials
-    ]
-
-
-def basic_encoder_heatmap(df: pd.DataFrame) -> pn.ggplot:
-    """Return a single heatmap plot for an encoder."""
+# Heatmaps
+def basic_encoder_tile(df: pd.DataFrame) -> pn.ggplot:
+    """Return a single tile (heatmap) plot for an encoder."""
     df["trial"] = df["trial"].astype(int) + 1
-    df = numeric_col_to_categorical(df, "meanings")
-    df = numeric_col_to_categorical(df, "words")
+    df = numeric_col_to_categorical(df, "meaning")
+    df = numeric_col_to_categorical(df, "word")
     return (
         pn.ggplot(df, pn.aes(**dict(zip(["x", "y", "fill"], encoder_columns[:3]))))
         + pn.geom_tile()
         + pn.scale_fill_cmap(limits=[0,1])
     )
+
+# Lines
+def basic_encoder_lineplot(df: pd.DataFrame) -> pn.ggplot:
+    "Return a single line plot for an encoder."
+    df["trial"] = df["trial"].astype(int) + 1
+    # N.B.: meaning must stay numeric!
+    df = numeric_col_to_categorical(df, "word")
+    df = numeric_col_to_categorical(df, "trial")
+    return (
+        pn.ggplot(df, pn.aes(x="meaning", y="p"))
+        + pn.geom_line(
+        mapping=pn.aes(
+            color="word",
+            ),
+        size=1,
+        )
+        + pn.ylim([0,1])
+    )    
+
+plots = {
+    "tile": basic_encoder_tile,
+    "line": basic_encoder_lineplot,
+}

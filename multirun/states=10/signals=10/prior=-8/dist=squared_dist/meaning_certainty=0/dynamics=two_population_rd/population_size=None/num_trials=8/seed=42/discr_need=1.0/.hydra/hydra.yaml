@@ -111,18 +111,13 @@ hydra:
   overrides:
     hydra:
     - hydra.mode=MULTIRUN
-    task:
-    - game.discriminative_need_beta=1.0
-    - game.meaning_dist_beta=0
-    - game.num_states=10
-    - game.num_signals=10
-    - simulation.multiprocessing=False
+    task: []
   job:
     name: plot
     chdir: true
-    override_dirname: simulation.multiprocessing=False
-    id: '8'
-    num: 8
+    override_dirname: ''
+    id: '0'
+    num: 0
     config_name: config
     env_set: {}
     env_copy: []
@@ -135,6 +130,7 @@ hydra:
         - game.num_states
         - game.num_signals
         - simulation.dynamics.population_size
+        - simulation.dynamics.imprecise_imitation_beta
         - game.prior_init_beta
         - game.distance
         - game.meaning_dist_beta
