@@ -1,17 +1,3 @@
-no change     /opt/apps/miniconda3/4.8.5/condabin/conda
-no change     /opt/apps/miniconda3/4.8.5/bin/conda
-no change     /opt/apps/miniconda3/4.8.5/bin/conda-env
-no change     /opt/apps/miniconda3/4.8.5/bin/activate
-no change     /opt/apps/miniconda3/4.8.5/bin/deactivate
-no change     /opt/apps/miniconda3/4.8.5/etc/profile.d/conda.sh
-no change     /opt/apps/miniconda3/4.8.5/etc/fish/conf.d/conda.fish
-no change     /opt/apps/miniconda3/4.8.5/shell/condabin/Conda.psm1
-no change     /opt/apps/miniconda3/4.8.5/shell/condabin/conda-hook.ps1
-no change     /opt/apps/miniconda3/4.8.5/lib/python3.8/site-packages/xontrib/conda.xsh
-no change     /opt/apps/miniconda3/4.8.5/etc/profile.d/conda.csh
-no change     /data/homezvol0/nimel/.bashrc
-No action taken.
-python src/run_simulations.py "$@"
 game:
   num_states: 10
   num_signals: 10
@@ -62,8 +48,3 @@ filepaths:
   leaf_subdir: ${filepaths.simulation_subdir}
   hydra_run_root: outputs
   hydra_sweep_root: multirun
-
-python src/curve.py "$@"
-data found, skipping ib curve estimation.
-data found, skipping mse curve estimation
-python src/plot.py "$@"
