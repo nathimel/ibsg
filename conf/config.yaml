@@ -35,7 +35,7 @@ filepaths:
   curve_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_alpha}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_gamma}
 
   # for plots etc. that summarize simulation sweeps
-  sim_sweep_subdir:  ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/population_size=${simulation.dynamics.population_size}/num_trials=${simulation.num_trials}/seed=${seed} # note that population size is null in RD
+  sim_sweep_subdir:  ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/ii=${simulation.dynamics.imprecise_imitation_gamma}/population_size=${simulation.dynamics.population_size}/num_trials=${simulation.num_trials}/seed=${seed} # note that population size is null in RD
 
   # where the points corresponding to a single simulation will be saved
   simulation_subdir: ${filepaths.sim_sweep_subdir}/discr_need=${game.discriminative_need_gamma} # note both discr need and ii will be swept
@@ -61,6 +61,7 @@ hydra:
           - game.num_states
           - game.num_signals
           - simulation.dynamics.population_size
+          - simulation.dynamics.imprecise_imitation_gamma
           - game.prior_init_alpha
           - game.distance
           - game.meaning_dist_gamma

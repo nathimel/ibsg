@@ -20,6 +20,12 @@ class Dynamics:
     def __init__(self, game: Game, **kwargs) -> None:
         self.game = game
 
+        self.max_its = kwargs["max_its"]
+        self.threshold = kwargs["threshold"]
+        self.confusion_gamma = kwargs["imprecise_imitation_gamma"]
+
+        self.confusion = normalize_rows(generate_sim_matrix(self.game.universe, self.confusion_gamma, self.game.dist_mat))
+
         pt_args = [self.game.meaning_dists, self.game.prior, self.game.dist_mat]
 
         self.get_point = lambda encoder, _: ib_encoder_to_measurements(*pt_args, encoder=encoder,)
@@ -47,13 +53,12 @@ class FinitePopulationDynamics(Dynamics):
             init_gamma: a float controlling the sharpness of the seed population (composed of a Sender P and Receiver Q) agents' distributions        
         """
         super().__init__(game, **kwargs)
-        self.max_its = kwargs["max_its"]
-        self.threshold = kwargs["threshold"]
         self.n = kwargs["population_size"]
+        self.population_init_gamma = kwargs["population_init_gamma"]
 
         # create a population of n many (P,Q) agents
-        self.Ps = random_stochastic_matrix((self.n, self.game.num_states, self.game.num_signals), kwargs["population_init_gamma"])
-        self.Qs = random_stochastic_matrix((self.n, self.game.num_states, self.game.num_states), kwargs["population_init_gamma"])
+        self.Ps = random_stochastic_matrix((self.n, self.game.num_states, self.game.num_signals), self.population_init_gamma)
+        self.Qs = random_stochastic_matrix((self.n, self.game.num_states, self.game.num_states), self.population_init_gamma)
 
         # define the adjacency matrix for the environment of interacting agents
         self.adj_mat = generate_adjacency_matrix(self.n, kwargs["graph"])
@@ -100,9 +105,11 @@ class FinitePopulationDynamics(Dynamics):
     ) -> float:
         """Compute pairwise fitness as F[L, L'] = F[(P, Q'), (P', Q)] = 1/2(f(P,Q')) + 1/2(f(P', Q))
 
-        where f(X,Y) = sum( diag(prior) @ X @ Y * Utility )
+        where f(X,Y) = sum( diag(prior) @ C @ X @ Y @ C * Utility )
+
+        where X is a sender, Y is a receiver, and C is a symmetric confusion matrix, to compare to IB meaning distributions.
         """
-        f = lambda X,Y: torch.sum(torch.diag(self.game.prior) @ X @ Y * self.game.utility)
+        f = lambda X,Y: torch.sum(torch.diag(self.game.prior) @ self.confusion @ X @ Y @ self.confusion * self.game.utility)
         return (f(p, q_) + f(p_, q)) / 2.0
     
 
@@ -136,8 +143,6 @@ class FinitePopulationDynamics(Dynamics):
                 converged = True
 
         progress_bar.close()
-        # torch.set_printoptions(sci_mode=False)
-        # print(mean_p)
 
 
 ##############################################################################
@@ -197,8 +202,6 @@ class ReplicatorDynamics(Dynamics):
     """Discrete Time Replicator Dynamics, with perceptual uncertainty in meaning distributions (see Franke and Correia, 2018 on imprecise imitation)."""
     def __init__(self, game: Game, **kwargs) -> None:
         super().__init__(game, **kwargs)
-        self.max_its = kwargs["max_its"]
-        self.threshold = kwargs["threshold"]
         self.init_gamma = 10 ** kwargs["population_init_gamma"]
 
         self.P = random_stochastic_matrix((self.game.num_states, self.game.num_signals), self.init_gamma) # Sender 'population frequencies'
@@ -254,15 +257,15 @@ class TwoPopulationRD(ReplicatorDynamics):
         P = self.P # `[states, signals]`
         Q = self.Q # `[signals, states]`
         U = self.game.utility # `[states, states]`
-        M = self.game.meaning_dists # `[states, states]`
+        C = self.confusion # `[states, states]`, compare self.game.meaning_dists
         p = self.game.prior # `[states,]`
 
         P *= (Q @ U).T
-        P = M @ P 
+        P = C @ P 
         P = normalize_rows(P)
 
         Q *= p * (U @ P).T
-        Q = Q @ M # assumption that m(u) = u(m).
+        Q = Q @ C # C symmetric, and if C = M, we thus assume m(u) = u(m).
         Q = normalize_rows(Q)
 
         self.P = copy.deepcopy(P)

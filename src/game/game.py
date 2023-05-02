@@ -38,7 +38,7 @@ class Game:
         universe = [i for i in range(num_states)]
 
         # specify prior and distance matrix for all trials
-        prior = random_stochastic_matrix((num_states, ), beta = prior_init_alpha)
+        prior = random_stochastic_matrix((num_states, ), beta = prior_init_alpha) # N.B.: we assume p(states) = p(meanings)
         dist_mat = generate_dist_matrix(universe, distance)
 
         # construct utility function
