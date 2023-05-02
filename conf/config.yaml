@@ -75,4 +75,4 @@ hydra:
     subdir: ${filepaths.leaf_subdir}
   
 # example command for sweeping params
-# python run_simulations.py -m game.similarity.param=range(1,10, 2)
+# python run_simulations.py -m simulation.dynamics.imprecise_imitation_gamma=2
