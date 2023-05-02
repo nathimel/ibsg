@@ -22,7 +22,7 @@ class Dynamics:
 
         self.max_its = kwargs["max_its"]
         self.threshold = kwargs["threshold"]
-        self.confusion_gamma = kwargs["imprecise_imitation_gamma"]
+        self.confusion_gamma = 10 ** kwargs["imprecise_imitation_gamma"]
 
         self.confusion = normalize_rows(generate_sim_matrix(self.game.universe, self.confusion_gamma, self.game.dist_mat))
 

@@ -74,8 +74,8 @@ class Game:
             config.game.num_signals,
             10 ** config.game.prior_init_alpha,
             config.game.distance,
-            config.game.discriminative_need_gamma, # input to softmax
-            config.game.meaning_dist_gamma, # input to softmax, do not 10 **
+            10 ** config.game.discriminative_need_gamma, # input to softmax
+            10 ** config.game.meaning_dist_gamma, # input to softmax
             maxbeta = config.game.maxbeta, # we want about 1.0 - 2.0
             minbeta = 10 ** config.game.minbeta,
             numbeta = config.game.numbeta,
