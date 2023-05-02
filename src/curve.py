@@ -16,7 +16,7 @@ def main(config: DictConfig):
     mse_curve_fn = util.get_curve_fn(config, "mse")
 
     g = Game.from_hydra(config)
-    breakpoint()
+    # breakpoint()
 
     if config.game.overwrite_curves or not os.path.isfile(curve_fn):
         print("computing ib curve...")
