@@ -1,0 +1,6 @@
+- simulation.use_decoder=False
+- game.meaning_dist_gamma=0
+- simulation.dynamics.imprecise_imitation_gamma=1
+- game.num_states=50
+- game.num_signals=5
+- simulation/dynamics=two_population_rd

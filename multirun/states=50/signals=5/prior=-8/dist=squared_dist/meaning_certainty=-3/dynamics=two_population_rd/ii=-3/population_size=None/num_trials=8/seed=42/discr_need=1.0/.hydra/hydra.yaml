@@ -119,7 +119,7 @@ hydra:
     - game.num_signals=5
     - simulation/dynamics=two_population_rd
   job:
-    name: run_simulations
+    name: plot
     chdir: true
     override_dirname: simulation.use_decoder=False,simulation/dynamics=two_population_rd
     id: '0'
@@ -147,18 +147,18 @@ hydra:
   runtime:
     version: 1.3.2
     version_base: '1.3'
-    cwd: /Users/nathanielimel/uci/projects/ibsg
+    cwd: /dfs8/pub/nimel/projects/ibsg
     config_sources:
     - path: hydra.conf
       schema: pkg
       provider: hydra
-    - path: /Users/nathanielimel/uci/projects/ibsg/conf
+    - path: /dfs8/pub/nimel/projects/ibsg/conf
       schema: file
       provider: main
     - path: ''
       schema: structured
       provider: schema
-    output_dir: /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=-3/dynamics=two_population_rd/ii=-3/population_size=None/num_trials=8/seed=42/discr_need=1.0
+    output_dir: /dfs8/pub/nimel/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=-3/dynamics=two_population_rd/ii=-3/population_size=None/num_trials=8/seed=42/discr_need=1.0
     choices:
       simulation: basic
       simulation/dynamics: two_population_rd
