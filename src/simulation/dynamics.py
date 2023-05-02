@@ -109,6 +109,7 @@ class FinitePopulationDynamics(Dynamics):
 
         where X is a sender, Y is a receiver, and C is a symmetric confusion matrix, to compare to IB meaning distributions.
         """
+        # BUG: shape error here
         f = lambda X,Y: torch.sum(torch.diag(self.game.prior) @ self.confusion @ X @ Y @ self.confusion * self.game.utility)
         return (f(p, q_) + f(p_, q)) / 2.0
     
@@ -267,6 +268,9 @@ class TwoPopulationRD(ReplicatorDynamics):
         Q *= p * (U @ P).T
         Q = Q @ C # C symmetric, and if C = M, we thus assume m(u) = u(m).
         Q = normalize_rows(Q)
+
+        if torch.any((self.P==0).sum(-1)):
+            raise Exception("Dynamics yielded a row of encoder with all zeros.")
 
         self.P = copy.deepcopy(P)
         self.Q = copy.deepcopy(Q)

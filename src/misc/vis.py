@@ -95,12 +95,14 @@ def get_n_encoder_plots(df: pd.DataFrame, plot_type: str, all_trials: bool = Tru
     Args: 
         plot_type: {"tile", "line"}
     """
-    trials = df["trial"].unique()
+    data = df.copy()
+    data["trial"] = data["trial"].astype(int) + 1
+    trials = data["trial"].unique()
     if not all_trials:
         trials = trials[:8]
     return [
         (
-            plots[plot_type](df[df["trial"] == trial])
+            plots[plot_type](data[data["trial"] == trial])
             + pn.ggtitle(f"Trial {trial}")
         )
         for trial in trials
@@ -124,9 +126,7 @@ def faceted_encoders(df: pd.DataFrame, plot_type: str) -> pn.ggplot:
 # Heatmaps
 def basic_encoder_tile(df: pd.DataFrame) -> pn.ggplot:
     """Return a single tile (heatmap) plot for an encoder."""
-    df["trial"] = df["trial"].astype(int) + 1
-    df = numeric_col_to_categorical(df, "meaning")
-    df = numeric_col_to_categorical(df, "word")
+    df = format_encoder_df(df, ["word", "meaning"])
     return (
         pn.ggplot(df, pn.aes(**dict(zip(["x", "y", "fill"], encoder_columns[:3]))))
         + pn.geom_tile()
@@ -136,10 +136,7 @@ def basic_encoder_tile(df: pd.DataFrame) -> pn.ggplot:
 # Lines
 def basic_encoder_lineplot(df: pd.DataFrame) -> pn.ggplot:
     "Return a single line plot for an encoder."
-    df["trial"] = df["trial"].astype(int) + 1
-    # N.B.: meaning must stay numeric!
-    df = numeric_col_to_categorical(df, "word")
-    df = numeric_col_to_categorical(df, "trial")
+    df = format_encoder_df(df, ["word"]) # meanings must be numeric!
     return (
         pn.ggplot(df, pn.aes(x="meaning", y="p"))
         + pn.geom_line(
@@ -150,6 +147,14 @@ def basic_encoder_lineplot(df: pd.DataFrame) -> pn.ggplot:
         )
         + pn.ylim([0,1])
     )    
+
+def format_encoder_df(df: pd.DataFrame, numeric_to_categorical: list[str]) -> pd.DataFrame:
+    # create new dataframe labeled by 1-indexed trials
+    data = df.copy()
+    data["trial"] = data["trial"].astype(int)
+    for col in numeric_to_categorical:
+        data = numeric_col_to_categorical(data, col)
+    return data
 
 plots = {
     "tile": basic_encoder_tile,
