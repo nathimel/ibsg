@@ -10,10 +10,10 @@ def generate_adjacency_matrix(n: int, graph: str = 'complete', self_connections:
 
         self_connections: whether to allow an agent to communicate with itself (weird)
     """
-    if isinstance(graph, str):
+    if graph == "complete":
         graph = torch.ones((n, n))
 
-    elif isinstance(graph, float):
+    elif graph == "random":
         # generate a random UNWEIGHTED graph
         graph = torch.zeros(n,n)
         while not (graph - torch.eye(n,n)).any(): # at least one irreflexive connection

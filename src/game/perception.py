@@ -39,12 +39,10 @@ def generate_dist_matrix(
     """
     return torch.Tensor(
         [
-            # torch.Tensor(
                 [
                     distance_measures[distance](t, u)
                     for u in universe
                 ]
-            # )
             for t in universe
         ]
     )

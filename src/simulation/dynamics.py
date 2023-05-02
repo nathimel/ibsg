@@ -4,6 +4,7 @@ import torch
 
 from analysis.ib import ib_encoder_to_measurements
 from game.game import Game
+from game.perception import generate_sim_matrix
 from game.graph import generate_adjacency_matrix
 from misc.tools import random_stochastic_matrix, normalize_rows
 
@@ -43,7 +44,7 @@ class FinitePopulationDynamics(Dynamics):
 
             threshold: a float controlling convergence of evolution
 
-            init_beta: a float controlling the sharpness of the seed population (composed of a Sender P and Receiver Q) agents' distributions        
+            init_gamma: a float controlling the sharpness of the seed population (composed of a Sender P and Receiver Q) agents' distributions        
         """
         super().__init__(game, **kwargs)
         self.max_its = kwargs["max_its"]
@@ -51,8 +52,8 @@ class FinitePopulationDynamics(Dynamics):
         self.n = kwargs["population_size"]
 
         # create a population of n many (P,Q) agents
-        self.Ps = random_stochastic_matrix((self.n, self.game.num_states, self.game.num_signals), kwargs["population_init_beta"])
-        self.Qs = random_stochastic_matrix((self.n, self.game.num_states, self.game.num_states), kwargs["population_init_beta"])
+        self.Ps = random_stochastic_matrix((self.n, self.game.num_states, self.game.num_signals), kwargs["population_init_gamma"])
+        self.Qs = random_stochastic_matrix((self.n, self.game.num_states, self.game.num_states), kwargs["population_init_gamma"])
 
         # define the adjacency matrix for the environment of interacting agents
         self.adj_mat = generate_adjacency_matrix(self.n, kwargs["graph"])
@@ -198,16 +199,10 @@ class ReplicatorDynamics(Dynamics):
         super().__init__(game, **kwargs)
         self.max_its = kwargs["max_its"]
         self.threshold = kwargs["threshold"]
-        self.init_beta = kwargs["population_init_beta"]
-        self.imprecise_imitation_beta = kwargs["imprecise_imitation_beta"]
+        self.init_gamma = 10 ** kwargs["population_init_gamma"]
 
-        self.P = random_stochastic_matrix((self.game.num_states, self.game.num_signals), self.init_beta) # Sender 'population frequencies'
-        self.Q = random_stochastic_matrix((self.game.num_signals, self.game.num_states), self.init_beta) # Receiver 'population frequencies'
-
-        # construct probability of confusing any two meanings
-        self.C = None
-        # TODO: implement confusion matrix generalization
-        raise NotImplementedError
+        self.P = random_stochastic_matrix((self.game.num_states, self.game.num_signals), self.init_gamma) # Sender 'population frequencies'
+        self.Q = random_stochastic_matrix((self.game.num_signals, self.game.num_states), self.init_gamma) # Receiver 'population frequencies'
 
     def run(self):
         i = 0
@@ -267,7 +262,7 @@ class TwoPopulationRD(ReplicatorDynamics):
         P = normalize_rows(P)
 
         Q *= p * (U @ P).T
-        Q = Q @ M
+        Q = Q @ M # assumption that m(u) = u(m).
         Q = normalize_rows(Q)
 
         self.P = copy.deepcopy(P)

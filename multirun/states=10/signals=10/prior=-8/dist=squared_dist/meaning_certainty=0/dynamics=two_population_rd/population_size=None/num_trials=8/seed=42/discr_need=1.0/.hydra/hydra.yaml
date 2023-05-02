@@ -130,11 +130,10 @@ hydra:
         - game.num_states
         - game.num_signals
         - simulation.dynamics.population_size
-        - simulation.dynamics.imprecise_imitation_beta
-        - game.prior_init_beta
+        - game.prior_init_alpha
         - game.distance
-        - game.meaning_dist_beta
-        - game.discriminative_need_beta
+        - game.meaning_dist_gamma
+        - game.discriminative_need_gamma
         - simulation.dynamics.name
         - simulation.num_trials
         - seed

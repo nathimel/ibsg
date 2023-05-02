@@ -11,10 +11,10 @@ class Game:
         self, 
         num_states: int, 
         num_signals: int, 
-        prior_init_beta: float, 
+        prior_init_alpha: float, 
         distance: str, 
-        discr_need_beta: float,
-        meaning_dist_beta: float,
+        discr_need_gamma: float,
+        meaning_dist_gamma: float,
         **kwargs,
         ) -> None:
         """Construct an evolutionary game.
@@ -30,7 +30,7 @@ class Game:
 
             distance: the kind of distance measure to use as input to the similarity-based utility and meaning distributions.
 
-            discr_need_beta: a float controlling the uniform-ness of the payoff / utility / fitness function, representing discriminative need. Higher discr -> all or nothing reward.
+            discr_need_gamma: a float controlling the uniform-ness of the payoff / utility / fitness function, representing discriminative need. Higher discr -> all or nothing reward.
             
             meaning_dist_temp: a float controlling the uniform-ness of the meaning distributions P(U|M), which represent perceptual uncertainty. higher temp -> full certainty.
         """
@@ -38,14 +38,14 @@ class Game:
         universe = [i for i in range(num_states)]
 
         # specify prior and distance matrix for all trials
-        prior = random_stochastic_matrix((num_states, ), beta = 10 ** prior_init_beta)
+        prior = random_stochastic_matrix((num_states, ), beta = prior_init_alpha)
         dist_mat = generate_dist_matrix(universe, distance)
 
         # construct utility function
-        utility = generate_sim_matrix(universe, 10 ** discr_need_beta, dist_mat)
+        utility = generate_sim_matrix(universe, discr_need_gamma, dist_mat)
 
         # construct perceptually uncertain meaning distributions
-        meaning_dists = normalize_rows(generate_sim_matrix(universe, 10 ** meaning_dist_beta, dist_mat))
+        meaning_dists = normalize_rows(generate_sim_matrix(universe, meaning_dist_gamma, dist_mat))
 
         # Constant
         self.universe = universe
@@ -72,10 +72,10 @@ class Game:
         return cls(
             config.game.num_states,
             config.game.num_signals,
-            config.game.prior_init_beta,
+            10 ** config.game.prior_init_alpha,
             config.game.distance,
-            config.game.discriminative_need_beta,
-            config.game.meaning_dist_beta,
+            config.game.discriminative_need_gamma, # input to softmax
+            config.game.meaning_dist_gamma, # input to softmax, do not 10 **
             maxbeta = config.game.maxbeta, # we want about 1.0 - 2.0
             minbeta = 10 ** config.game.minbeta,
             numbeta = config.game.numbeta,

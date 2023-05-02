@@ -1,2 +1,2 @@
 name: moran_process
-graph: complete # 'complete' or float beta for random  
+graph: complete # 'complete' or 'random'

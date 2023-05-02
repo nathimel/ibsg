@@ -2,9 +2,9 @@ game:
   num_states: 10
   num_signals: 10
   distance: squared_dist
-  discriminative_need_beta: 1.0
-  meaning_dist_beta: 0
-  prior_init_beta: -8
+  discriminative_need_gamma: 1.0
+  meaning_dist_gamma: 0
+  prior_init_alpha: -8
   overwrite_curves: false
   maxbeta: 5
   minbeta: -2
@@ -13,19 +13,18 @@ game:
 simulation:
   dynamics:
     name: two_population_rd
-    imprecise_imitation_beta: 0
     max_its: 200
     threshold: 1.0e-05
-    population_init_minbeta: -2
-    population_init_maxbeta: 5
+    population_init_minalpha: -2
+    population_init_maxalpha: 5
     population_size: null
-    graph_beta: null
+    graph: null
   use_decoder: false
   num_trials: 8
   plot_all_encoders: true
   trajectory: true
   variants: false
-  multiprocessing: true
+  multiprocessing: false
   num_processes: null
 seed: 42
 filepaths:
@@ -42,9 +41,9 @@ filepaths:
   encoder_line_plots_dir: encoder_line_plots
   encoders_faceted_lines_plot_fn: encoders_faceted_lines.png
   encoders_faceted_tiles_plot_fn: encoders_faceted_tiles.png
-  curve_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_beta}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_beta}
+  curve_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_alpha}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_gamma}
   sim_sweep_subdir: ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/population_size=${simulation.dynamics.population_size}/num_trials=${simulation.num_trials}/seed=${seed}
-  simulation_subdir: ${filepaths.sim_sweep_subdir}/discr_need=${game.discriminative_need_beta}
+  simulation_subdir: ${filepaths.sim_sweep_subdir}/discr_need=${game.discriminative_need_gamma}
   leaf_subdir: ${filepaths.simulation_subdir}
   hydra_run_root: outputs
   hydra_sweep_root: multirun

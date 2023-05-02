@@ -7,19 +7,19 @@ distance: squared_dist # squared_dist or abs_dist
 # inverse temp params for generating random distributions: lower -> more uniform distribution
 
 # 0 is useless, \infty is perfect; to sweep
-# N.B.: base 10, so -\infty => 0, \infty => \infty
 
 # NOTE: these parameters constrain each other; if they are not both low, only high complexity+accuracy langs will emerge.
 
-discriminative_need_beta: 1.0 # for utility in the games
-meaning_dist_beta: 0 # for perceptually uncertain meaning dists
+# sim-based distribution, sim(x,y) = exp(-gamma * d(x,y)), and 0 => uniform.
+discriminative_need_gamma: 1.0 # for utility in the games
+meaning_dist_gamma: 1 # for perceptually uncertain meaning dists = imprecise imitation in replicator dynamics (Franke and Correia, 2018).
 
-prior_init_beta: -8 # for communicative need distribution = prior over states (N.B., dirac deltas causes nans)
+prior_init_alpha: -8 # for communicative need distribution = prior over states (N.B., dirac deltas causes nans)
 
 # equally spaced beta for IB curve sweep
 overwrite_curves: False # whether to skip curve estimation
-maxbeta: 5
-minbeta: -2
+maxbeta: 5  # will not be exponentiated
+minbeta: -2 # will be exponentiated, i.e. 10 ** minbeta
 numbeta: 1500
 # use multiprocessing to compute bound
 num_processes: null 
