@@ -58,7 +58,6 @@ def run_simulation(config: DictConfig, population_init_beta) -> Game:
         **config.simulation.dynamics, 
         use_decoder = config.simulation.use_decoder,
         population_init_beta = population_init_beta,
-        imprecise_imitation_beta = config.simulation.dynamics.imprecise_imitation_beta,
         )
     dynamics.run()
     return dynamics.game

@@ -5,13 +5,9 @@ from misc import util
 from simulation.driver import run_trials
 from simulation.variants import get_hypothetical_variants
 
-from omegaconf import OmegaConf
 
 @hydra.main(version_base=None, config_path="../conf", config_name="config")
 def main(config):
-
-    print(OmegaConf.to_yaml(config))
-
     util.set_seed(config.seed)
 
     # setup and run experiment

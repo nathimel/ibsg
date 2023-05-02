@@ -5,6 +5,9 @@ from plotnine import ggplot
 from omegaconf import DictConfig
 from game.game import Game
 
+# To silence 'SettingWithCopyWarning'
+pd.options.mode.chained_assignment = None  # default='warn'
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Random
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -139,5 +142,5 @@ def get_curve_fn(config: DictConfig, curve_type: str = "ib", curve_dir: str = No
 
 def save_plot(fn: str, plot: ggplot, width=10, height=10, dpi=300) -> None:
     """Save a plot with some default settings."""
-    plot.save(fn, width=10, height=10, dpi=300)
+    plot.save(fn, width=width, height=height, dpi=dpi, verbose=False)
     print(f"Saved a plot to {fn}")
