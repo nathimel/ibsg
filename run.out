@@ -1,0 +1,423 @@
+[2023-05-02 16:04:56,349][HYDRA] Launching 49 jobs locally
+[2023-05-02 16:04:56,349][HYDRA] 	#0 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:05:00,442][HYDRA] 	#1 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:05:04,035][HYDRA] 	#2 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:05:07,678][HYDRA] 	#3 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+[2023-05-02 16:05:11,377][HYDRA] 	#4 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:05:15,120][HYDRA] 	#5 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:05:19,040][HYDRA] 	#6 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:05:22,842][HYDRA] 	#7 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:05:26,910][HYDRA] 	#8 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:05:30,841][HYDRA] 	#9 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:05:34,823][HYDRA] 	#10 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+[2023-05-02 16:05:38,818][HYDRA] 	#11 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:05:42,901][HYDRA] 	#12 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:05:47,145][HYDRA] 	#13 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:05:51,526][HYDRA] 	#14 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:05:56,181][HYDRA] 	#15 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:06:00,958][HYDRA] 	#16 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:06:05,323][HYDRA] 	#17 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+[2023-05-02 16:06:09,729][HYDRA] 	#18 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:06:14,343][HYDRA] 	#19 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:06:18,972][HYDRA] 	#20 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:06:23,533][HYDRA] 	#21 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:06:28,170][HYDRA] 	#22 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:06:32,858][HYDRA] 	#23 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:06:37,228][HYDRA] 	#24 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+[2023-05-02 16:06:41,516][HYDRA] 	#25 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:06:45,853][HYDRA] 	#26 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:06:50,374][HYDRA] 	#27 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:06:54,756][HYDRA] 	#28 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:06:59,130][HYDRA] 	#29 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:07:03,538][HYDRA] 	#30 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:07:07,965][HYDRA] 	#31 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+[2023-05-02 16:07:12,362][HYDRA] 	#32 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:07:16,825][HYDRA] 	#33 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:07:21,358][HYDRA] 	#34 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:07:25,877][HYDRA] 	#35 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:07:30,294][HYDRA] 	#36 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:07:34,687][HYDRA] 	#37 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:07:39,191][HYDRA] 	#38 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+[2023-05-02 16:07:43,668][HYDRA] 	#39 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:07:48,212][HYDRA] 	#40 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:07:52,776][HYDRA] 	#41 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:07:57,209][HYDRA] 	#42 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:01,715][HYDRA] 	#43 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:06,157][HYDRA] 	#44 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:10,583][HYDRA] 	#45 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:15,103][HYDRA] 	#46 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:19,635][HYDRA] 	#47 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:24,165][HYDRA] 	#48 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:33,855][HYDRA] Launching 49 jobs locally
+[2023-05-02 16:08:33,855][HYDRA] 	#0 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:33,965][HYDRA] 	#1 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:34,074][HYDRA] 	#2 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:34,184][HYDRA] 	#3 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:34,303][HYDRA] 	#4 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:34,405][HYDRA] 	#5 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:34,511][HYDRA] 	#6 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:34,680][HYDRA] 	#7 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:34,788][HYDRA] 	#8 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:34,900][HYDRA] 	#9 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:35,008][HYDRA] 	#10 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:35,120][HYDRA] 	#11 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:35,226][HYDRA] 	#12 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:35,343][HYDRA] 	#13 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:35,463][HYDRA] 	#14 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:35,572][HYDRA] 	#15 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:35,684][HYDRA] 	#16 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:35,794][HYDRA] 	#17 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:35,902][HYDRA] 	#18 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:36,018][HYDRA] 	#19 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:36,120][HYDRA] 	#20 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:36,222][HYDRA] 	#21 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:36,326][HYDRA] 	#22 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:36,432][HYDRA] 	#23 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:36,541][HYDRA] 	#24 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:36,647][HYDRA] 	#25 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:36,745][HYDRA] 	#26 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:36,866][HYDRA] 	#27 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:37,033][HYDRA] 	#28 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:37,138][HYDRA] 	#29 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:37,242][HYDRA] 	#30 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:37,344][HYDRA] 	#31 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:37,458][HYDRA] 	#32 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:37,563][HYDRA] 	#33 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:37,681][HYDRA] 	#34 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:37,801][HYDRA] 	#35 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:37,916][HYDRA] 	#36 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:38,017][HYDRA] 	#37 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:38,117][HYDRA] 	#38 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:38,217][HYDRA] 	#39 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:38,315][HYDRA] 	#40 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:38,417][HYDRA] 	#41 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:38,523][HYDRA] 	#42 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:38,633][HYDRA] 	#43 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:38,742][HYDRA] 	#44 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:38,841][HYDRA] 	#45 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:38,950][HYDRA] 	#46 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:39,061][HYDRA] 	#47 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:39,164][HYDRA] 	#48 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+data found, skipping ib curve estimation.
+data found, skipping mse curve estimation
+[2023-05-02 16:08:43,903][HYDRA] Launching 49 jobs locally
+[2023-05-02 16:08:43,903][HYDRA] 	#0 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:43,996][HYDRA] 	#1 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:44,089][HYDRA] 	#2 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:44,176][HYDRA] 	#3 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:44,259][HYDRA] 	#4 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:44,350][HYDRA] 	#5 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:44,438][HYDRA] 	#6 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-3 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:44,530][HYDRA] 	#7 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:44,613][HYDRA] 	#8 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:44,748][HYDRA] 	#9 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:44,829][HYDRA] 	#10 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:44,908][HYDRA] 	#11 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:44,995][HYDRA] 	#12 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:45,086][HYDRA] 	#13 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-2 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:45,176][HYDRA] 	#14 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:45,268][HYDRA] 	#15 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:45,351][HYDRA] 	#16 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:45,429][HYDRA] 	#17 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:45,505][HYDRA] 	#18 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:45,585][HYDRA] 	#19 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:45,674][HYDRA] 	#20 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=-1 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:08:45,750][HYDRA] 	#21 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/complexity_accuracy.png
+[2023-05-02 16:08:46,543][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+[2023-05-02 16:08:46,643][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/complexity_distortion.png
+[2023-05-02 16:08:47,033][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+[2023-05-02 16:08:47,074][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/complexity_mse.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoders_faceted_lines.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoders_faceted_tiles.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoder_tile_plots/trial_1.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoder_tile_plots/trial_2.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoder_tile_plots/trial_3.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoder_tile_plots/trial_4.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoder_tile_plots/trial_5.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoder_tile_plots/trial_6.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoder_tile_plots/trial_7.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoder_tile_plots/trial_8.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoder_line_plots/trial_1.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoder_line_plots/trial_2.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoder_line_plots/trial_3.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoder_line_plots/trial_4.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoder_line_plots/trial_5.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoder_line_plots/trial_6.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoder_line_plots/trial_7.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-3/encoder_line_plots/trial_8.png
+[2023-05-02 16:08:55,684][HYDRA] 	#22 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/complexity_accuracy.png
+[2023-05-02 16:08:56,326][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+[2023-05-02 16:08:56,369][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/complexity_distortion.png
+[2023-05-02 16:08:56,738][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+[2023-05-02 16:08:56,778][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/complexity_mse.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoders_faceted_lines.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoders_faceted_tiles.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoder_tile_plots/trial_1.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoder_tile_plots/trial_2.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoder_tile_plots/trial_3.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoder_tile_plots/trial_4.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoder_tile_plots/trial_5.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoder_tile_plots/trial_6.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoder_tile_plots/trial_7.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoder_tile_plots/trial_8.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoder_line_plots/trial_1.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoder_line_plots/trial_2.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoder_line_plots/trial_3.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoder_line_plots/trial_4.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoder_line_plots/trial_5.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoder_line_plots/trial_6.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoder_line_plots/trial_7.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-2/encoder_line_plots/trial_8.png
+[2023-05-02 16:09:05,454][HYDRA] 	#23 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/complexity_accuracy.png
+[2023-05-02 16:09:06,087][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+[2023-05-02 16:09:06,131][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/complexity_distortion.png
+[2023-05-02 16:09:06,500][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+[2023-05-02 16:09:06,541][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/complexity_mse.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoders_faceted_lines.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoders_faceted_tiles.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoder_tile_plots/trial_1.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoder_tile_plots/trial_2.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoder_tile_plots/trial_3.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoder_tile_plots/trial_4.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoder_tile_plots/trial_5.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoder_tile_plots/trial_6.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoder_tile_plots/trial_7.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoder_tile_plots/trial_8.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoder_line_plots/trial_1.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoder_line_plots/trial_2.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoder_line_plots/trial_3.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoder_line_plots/trial_4.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoder_line_plots/trial_5.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoder_line_plots/trial_6.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoder_line_plots/trial_7.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=-1/encoder_line_plots/trial_8.png
+[2023-05-02 16:09:15,126][HYDRA] 	#24 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/complexity_accuracy.png
+[2023-05-02 16:09:15,767][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+[2023-05-02 16:09:15,811][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/complexity_distortion.png
+[2023-05-02 16:09:16,185][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+[2023-05-02 16:09:16,229][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/complexity_mse.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoders_faceted_lines.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoders_faceted_tiles.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoder_tile_plots/trial_1.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoder_tile_plots/trial_2.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoder_tile_plots/trial_3.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoder_tile_plots/trial_4.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoder_tile_plots/trial_5.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoder_tile_plots/trial_6.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoder_tile_plots/trial_7.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoder_tile_plots/trial_8.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoder_line_plots/trial_1.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoder_line_plots/trial_2.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoder_line_plots/trial_3.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoder_line_plots/trial_4.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoder_line_plots/trial_5.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoder_line_plots/trial_6.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoder_line_plots/trial_7.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=0/encoder_line_plots/trial_8.png
+[2023-05-02 16:09:24,839][HYDRA] 	#25 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/complexity_accuracy.png
+[2023-05-02 16:09:25,490][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+[2023-05-02 16:09:25,537][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/complexity_distortion.png
+[2023-05-02 16:09:25,913][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+[2023-05-02 16:09:25,960][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/complexity_mse.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoders_faceted_lines.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoders_faceted_tiles.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoder_tile_plots/trial_1.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoder_tile_plots/trial_2.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoder_tile_plots/trial_3.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoder_tile_plots/trial_4.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoder_tile_plots/trial_5.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoder_tile_plots/trial_6.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoder_tile_plots/trial_7.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoder_tile_plots/trial_8.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoder_line_plots/trial_1.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoder_line_plots/trial_2.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoder_line_plots/trial_3.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoder_line_plots/trial_4.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoder_line_plots/trial_5.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoder_line_plots/trial_6.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoder_line_plots/trial_7.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=1/encoder_line_plots/trial_8.png
+[2023-05-02 16:09:34,635][HYDRA] 	#26 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/complexity_accuracy.png
+[2023-05-02 16:09:35,275][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+[2023-05-02 16:09:35,322][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/complexity_distortion.png
+[2023-05-02 16:09:35,700][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+[2023-05-02 16:09:35,748][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/complexity_mse.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoders_faceted_lines.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoders_faceted_tiles.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoder_tile_plots/trial_1.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoder_tile_plots/trial_2.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoder_tile_plots/trial_3.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoder_tile_plots/trial_4.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoder_tile_plots/trial_5.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoder_tile_plots/trial_6.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoder_tile_plots/trial_7.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoder_tile_plots/trial_8.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoder_line_plots/trial_1.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoder_line_plots/trial_2.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoder_line_plots/trial_3.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoder_line_plots/trial_4.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoder_line_plots/trial_5.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoder_line_plots/trial_6.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoder_line_plots/trial_7.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=2/encoder_line_plots/trial_8.png
+[2023-05-02 16:09:44,464][HYDRA] 	#27 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=0 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/complexity_accuracy.png
+[2023-05-02 16:09:45,112][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+[2023-05-02 16:09:45,159][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/complexity_distortion.png
+[2023-05-02 16:09:45,544][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+[2023-05-02 16:09:45,586][matplotlib.mathtext][INFO] - Substituting symbol E from STIXNonUnicode
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/complexity_mse.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoders_faceted_lines.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoders_faceted_tiles.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoder_tile_plots/trial_1.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoder_tile_plots/trial_2.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoder_tile_plots/trial_3.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoder_tile_plots/trial_4.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoder_tile_plots/trial_5.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoder_tile_plots/trial_6.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoder_tile_plots/trial_7.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoder_tile_plots/trial_8.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoder_line_plots/trial_1.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoder_line_plots/trial_2.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoder_line_plots/trial_3.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoder_line_plots/trial_4.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoder_line_plots/trial_5.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoder_line_plots/trial_6.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoder_line_plots/trial_7.png
+Saved a plot to /Users/nathanielimel/uci/projects/ibsg/multirun/states=50/signals=5/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_trials=8/seed=42/discr_need=3/encoder_line_plots/trial_8.png
+[2023-05-02 16:09:53,874][HYDRA] 	#28 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:54,455][HYDRA] 	#29 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:54,533][HYDRA] 	#30 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:54,611][HYDRA] 	#31 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:54,688][HYDRA] 	#32 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:54,765][HYDRA] 	#33 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:54,844][HYDRA] 	#34 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=1 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:54,921][HYDRA] 	#35 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:54,999][HYDRA] 	#36 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:55,077][HYDRA] 	#37 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:55,155][HYDRA] 	#38 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:55,233][HYDRA] 	#39 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:55,309][HYDRA] 	#40 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:55,386][HYDRA] 	#41 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=2 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:55,464][HYDRA] 	#42 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=-3 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:55,540][HYDRA] 	#43 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=-2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:55,617][HYDRA] 	#44 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=-1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:55,694][HYDRA] 	#45 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=0 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:55,771][HYDRA] 	#46 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=1 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:55,848][HYDRA] 	#47 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=2 game.num_states=50 game.num_signals=5
+[2023-05-02 16:09:55,925][HYDRA] 	#48 : simulation.use_decoder=False game.meaning_dist_gamma=0 simulation.dynamics.imprecise_imitation_gamma=3 game.discriminative_need_gamma=3 game.num_states=50 game.num_signals=5

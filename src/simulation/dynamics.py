@@ -1,6 +1,7 @@
 import copy
 
 import torch
+import warnings
 
 from analysis.ib import ib_encoder_to_measurements
 from game.game import Game
@@ -26,7 +27,7 @@ class Dynamics:
 
         self.confusion = normalize_rows(generate_sim_matrix(self.game.universe, self.confusion_gamma, self.game.dist_mat))
 
-        pt_args = [self.game.meaning_dists, self.game.prior, self.game.dist_mat]
+        pt_args = [self.game.meaning_dists, self.game.prior, self.game.dist_mat, self.confusion]
 
         self.get_point = lambda encoder, _: ib_encoder_to_measurements(*pt_args, encoder=encoder,)
 
@@ -242,7 +243,19 @@ class ReplicatorDynamics(Dynamics):
 
         Changes in agent type (pure strategies) depend only on their frequency and their fitness.
         """
-        raise NotImplementedError        
+        raise NotImplementedError
+    
+    def warn_if_all_zero(self) -> None:
+        """Check if a Sender's encoder or Receiver's decoder is all zeros, and warn appropriately.
+
+            N.B.: This means the entire universe is ineffable. Since this feature of the model appears to reflect a logical (albeit remote) possibility, our analysis proceeds as usual (rather than, e.g., assigning a uniform distribution to every row).
+        """
+        if torch.any(self.P.sum() == 0):
+            warnings.warn("Dynamics yielded an encoder with all zeros.")
+        
+        if torch.any(self.Q.sum() == 0):
+            warnings.warn("Dynamics yielded a decoder with all zeros.")
+
 
 class TwoPopulationRD(ReplicatorDynamics):
     def __init__(self, game: Game, **kwargs) -> None:
@@ -269,11 +282,10 @@ class TwoPopulationRD(ReplicatorDynamics):
         Q = Q @ C # C symmetric, and if C = M, we thus assume m(u) = u(m).
         Q = normalize_rows(Q)
 
-        if torch.any((self.P==0).sum(-1)):
-            raise Exception("Dynamics yielded a row of encoder with all zeros.")
-
         self.P = copy.deepcopy(P)
         self.Q = copy.deepcopy(Q)
+
+        self.warn_if_all_zero()
 
 dynamics_map = {
     "moran_process": MoranProcess,

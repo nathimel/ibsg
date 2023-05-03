@@ -17,26 +17,30 @@ def ib_encoder_to_measurements(
     meaning_dists: torch.Tensor,
     prior: torch.Tensor,
     dist_mat: torch.Tensor,    
+    confusion: torch.Tensor,
     encoder: torch.Tensor,     
     decoder: torch.Tensor = None,
 ) -> tuple[float]:
     """Return (complexity, accuracy, distortion, mean squared error) point.
     
     Args:
-        meaning_dists: array of shape `(|meanings|, |meanings|)` representing the distribution over world states given meanings.        
+        meaning_dists: array of shape `(|meanings|, |meanings|)` representing the distribution over world states given meanings.
 
-        prior: array of shape `|M|` representing the cognitive source
+        prior: array of shape `|meanings|` representing the cognitive source
 
-        dist_mat: array of shape `(|M|, |M|)` representing pairwise distance/error for computing MSE.        
+        dist_mat: array of shape `(|meanings|, |meanings|)` representing pairwise distance/error for computing MSE.
 
-        encoder: array of shape `(|M|, |W|)` representing P(W | M)
+        confusion: array of shape `(|meanings|, |meanings|)` representing the distribution over world states given meanings.
 
-        decoder: array of shape `(|W|, |M|)` representing P(M | W). If is None, and the Bayesian optimal decoder will be inferred.
+        encoder: array of shape `(|meanings|, |words|)` representing P(W | M)
+
+        decoder: array of shape `(|words|, |meanings|)` representing P(M | W). If is None, and the Bayesian optimal decoder will be inferred.
     """
     # NOTE: altk requires numpy
     meaning_dists = np.array(meaning_dists)
     prior = np.array(prior)
-    dist_mat = np.array(dist_mat)    
+    dist_mat = np.array(dist_mat)
+    confusion = np.array(confusion)
     encoder = np.array(encoder)
     if decoder is not None:
         decoder = np.array(decoder)
@@ -49,7 +53,12 @@ def ib_encoder_to_measurements(
         encoder,
         decoder,
     )
-    mse = expected_distortion(prior, encoder @ decoder, dist_mat)
+
+    system = confusion @ encoder @ decoder @ confusion
+    # NOTE: Here is where we rectify the assumption about ineffable meanings, by replacing rows of all zeros with uniform distributions. This amounts to assuming there is low MI between meanings and words.   
+    # This is also done when computing the IB coordinates; see https://github.com/CLMBRs/altk/blob/main/src/altk/effcomm/util.py#L142.
+    system = np.array([row if row.sum() else np.ones(len(row)) / len(row) for row in system])
+    mse = expected_distortion(prior, system, dist_mat)
 
     return (complexity, accuracy, distortion, mse)
 

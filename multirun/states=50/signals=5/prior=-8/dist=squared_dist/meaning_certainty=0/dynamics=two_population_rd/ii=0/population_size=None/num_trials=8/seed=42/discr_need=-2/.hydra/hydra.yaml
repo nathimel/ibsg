@@ -122,8 +122,8 @@ hydra:
     name: plot
     chdir: true
     override_dirname: simulation.use_decoder=False
-    id: '1'
-    num: 1
+    id: '22'
+    num: 22
     config_name: config
     env_set: {}
     env_copy: []

@@ -114,14 +114,15 @@ hydra:
     task:
     - simulation.use_decoder=False
     - game.meaning_dist_gamma=0
-    - simulation.dynamics.imprecise_imitation_gamma=0
+    - simulation.dynamics.imprecise_imitation_gamma=3
     - game.discriminative_need_gamma=range(-3, 4)
     - game.num_states=50
     - game.num_signals=5
+    - simulation.multiprocessing=False
   job:
-    name: plot
+    name: run_simulations
     chdir: true
-    override_dirname: simulation.use_decoder=False
+    override_dirname: simulation.multiprocessing=False,simulation.use_decoder=False
     id: ???
     num: ???
     config_name: config
@@ -191,7 +192,7 @@ simulation:
     threshold: 1.0e-05
     population_init_minalpha: -2
     population_init_maxalpha: 5
-    imprecise_imitation_gamma: 0
+    imprecise_imitation_gamma: 3
     population_size: null
     graph: null
     name: two_population_rd
@@ -200,7 +201,7 @@ simulation:
   plot_all_encoders: true
   trajectory: true
   variants: false
-  multiprocessing: true
+  multiprocessing: false
   num_processes: null
 seed: 42
 filepaths:
