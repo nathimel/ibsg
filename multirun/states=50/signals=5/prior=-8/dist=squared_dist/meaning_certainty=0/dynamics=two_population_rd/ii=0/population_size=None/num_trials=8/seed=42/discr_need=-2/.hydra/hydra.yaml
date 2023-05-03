@@ -118,12 +118,13 @@ hydra:
     - game.discriminative_need_gamma=-2
     - game.num_states=50
     - game.num_signals=5
+    - simulation.multiprocessing=False
   job:
-    name: plot
+    name: run_simulations
     chdir: true
-    override_dirname: simulation.use_decoder=False
-    id: '22'
-    num: 22
+    override_dirname: simulation.multiprocessing=False,simulation.use_decoder=False
+    id: '1'
+    num: 1
     config_name: config
     env_set: {}
     env_copy: []

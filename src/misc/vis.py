@@ -114,8 +114,10 @@ def faceted_encoders(df: pd.DataFrame, plot_type: str) -> pn.ggplot:
     Args: 
         plot_type: {"tile", "line"}    
     """
+    data = df.copy()
+    data["trial"] = data["trial"].astype(int) + 1    
     return (
-        plots[plot_type](df)
+        plots[plot_type](data)
         + pn.facet_grid("trial ~ .")
         + pn.theme(
             axis_text_y=pn.element_blank(),

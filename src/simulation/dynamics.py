@@ -59,7 +59,7 @@ class FinitePopulationDynamics(Dynamics):
 
         # create a population of n many (P,Q) agents
         self.Ps = random_stochastic_matrix((self.n, self.game.num_states, self.game.num_signals), self.population_init_gamma)
-        self.Qs = random_stochastic_matrix((self.n, self.game.num_states, self.game.num_states), self.population_init_gamma)
+        self.Qs = random_stochastic_matrix((self.n, self.game.num_signals, self.game.num_states), self.population_init_gamma)
 
         # define the adjacency matrix for the environment of interacting agents
         self.adj_mat = generate_adjacency_matrix(self.n, kwargs["graph"])
@@ -111,7 +111,9 @@ class FinitePopulationDynamics(Dynamics):
         where X is a sender, Y is a receiver, and C is a symmetric confusion matrix, to compare to IB meaning distributions.
         """
         # BUG: shape error here
-        f = lambda X,Y: torch.sum(torch.diag(self.game.prior) @ self.confusion @ X @ Y @ self.confusion * self.game.utility)
+        f = lambda X,Y: torch.sum(
+            torch.diag(self.game.prior) @ self.confusion @ X @ Y @ self.confusion * self.game.utility
+            )
         return (f(p, q_) + f(p_, q)) / 2.0
     
 

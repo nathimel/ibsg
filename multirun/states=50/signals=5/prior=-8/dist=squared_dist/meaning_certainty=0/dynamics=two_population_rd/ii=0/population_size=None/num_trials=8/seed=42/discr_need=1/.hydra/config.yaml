@@ -25,7 +25,7 @@ simulation:
   plot_all_encoders: true
   trajectory: true
   variants: false
-  multiprocessing: true
+  multiprocessing: false
   num_processes: null
 seed: 42
 filepaths:
