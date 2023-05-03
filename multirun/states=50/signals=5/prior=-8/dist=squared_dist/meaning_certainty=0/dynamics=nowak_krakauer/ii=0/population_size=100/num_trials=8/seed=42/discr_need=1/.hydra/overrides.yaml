@@ -1,0 +1,6 @@
+- game.num_states=50
+- game.num_signals=5
+- game.meaning_dist_gamma=0
+- simulation.dynamics.imprecise_imitation_gamma=0
+- simulation/dynamics=nowak_krakauer
+- game.discriminative_need_gamma=1

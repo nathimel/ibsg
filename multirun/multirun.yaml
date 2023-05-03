@@ -112,17 +112,16 @@ hydra:
     hydra:
     - hydra.mode=MULTIRUN
     task:
-    - simulation.use_decoder=False
-    - game.meaning_dist_gamma=0
-    - simulation.dynamics.imprecise_imitation_gamma=0
-    - game.discriminative_need_gamma=-3
     - game.num_states=50
     - game.num_signals=5
+    - game.meaning_dist_gamma=0
+    - simulation.dynamics.imprecise_imitation_gamma=0
     - simulation/dynamics=nowak_krakauer
+    - game.discriminative_need_gamma=-2,-1,1,2
   job:
-    name: plot
+    name: run_simulations
     chdir: true
-    override_dirname: simulation.use_decoder=False,simulation/dynamics=nowak_krakauer
+    override_dirname: simulation/dynamics=nowak_krakauer
     id: ???
     num: ???
     config_name: config
@@ -178,7 +177,7 @@ game:
   num_states: 50
   num_signals: 5
   distance: squared_dist
-  discriminative_need_gamma: -3
+  discriminative_need_gamma: 1.0
   meaning_dist_gamma: 0
   prior_init_alpha: -8
   overwrite_curves: false
