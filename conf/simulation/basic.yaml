@@ -12,7 +12,7 @@ dynamics:
   population_init_maxalpha: 5  
 
   # specific to only some dynamics, but we nontheless need them here in order to perform hydra's string interpolation for recursive path creation.
-  imprecise_imitation_gamma: 1 #, # will be exponentiated by 10, replicator dynamics, possibly finite pop
+  imprecise_imitation_gamma: 0 #, # will be exponentiated by 10, replicator dynamics, possibly finite pop
   population_size: null # finite population dynamics
   graph: null # same  
 
