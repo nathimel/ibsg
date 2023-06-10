@@ -2,9 +2,11 @@ import torch
 import numpy as np
 
 from altk.effcomm import util
+from altk.effcomm import information
 from altk.effcomm.information import (
     expected_distortion,
-    ib_encoder_to_point
+    ib_encoder_to_point,
+    get_rd_curve,
 )
 
 from omegaconf import DictConfig
@@ -42,6 +44,8 @@ def ib_encoder_to_measurements(
     dist_mat = np.array(dist_mat)
     confusion = np.array(confusion)
     encoder = np.array(encoder)
+    # NOTE: Here is where we rectify ineffable meanings, by replacing rows of all zeros with uniform distributions.
+    encoder = util.rows_zero_to_uniform(encoder)    
     if decoder is not None:
         decoder = np.array(decoder)
     else:
@@ -54,18 +58,52 @@ def ib_encoder_to_measurements(
         decoder,
     )
 
-    system = confusion @ encoder @ decoder @ confusion
-    # NOTE: Here is where we rectify the assumption about ineffable meanings, by replacing rows of all zeros with uniform distributions. This amounts to assuming there is low MI between meanings and words.   
-    # This is also done when computing the IB coordinates; see https://github.com/CLMBRs/altk/blob/main/src/altk/effcomm/util.py#L142.
-    system = np.array([row if row.sum() else np.ones(len(row)) / len(row) for row in system])
+    # NOTE: use meaning dists, not confusions!
+    # system = confusion @ encoder @ decoder @ confusion
+    system = meaning_dists @ encoder @ decoder @ meaning_dists
+
+    # rectify ineffability again
+    system = util.rows_zero_to_uniform(system)
     mse = expected_distortion(prior, system, dist_mat)
 
     return (complexity, accuracy, distortion, mse)
 
 
+# IB CURVE ESTIMATION
+
+def get_bottleneck(config: DictConfig) -> list[tuple]:
+    """Compute the `(complexity, accuracy, comm_cost)` values corresponding to an Information Bottleneck theoretical bound. 
+    
+    The config specifies whether to use the embo package, which is faster and filters non-monotonicity, or a homebuilt version, which can be useful for sanity checks.
+
+    Args:
+        config: A Hydra DictConfig the config file for the experiment.
+
+    Returns:
+        a list of tuples of the form [(comp_i, acc_i, comm_cost_i), ... ] for each i in config.game.num_beta.
+    """
+    g = Game.from_hydra(config)
+    func = config.game.ib_bound_function
+    if func == "embo":
+        bottleneck = information.get_bottleneck(
+            prior=g.prior,
+            meaning_dists=g.meaning_dists,
+            maxbeta=g.maxbeta,
+            minbeta=g.minbeta,
+            numbeta=g.numbeta,
+            processes=g.num_processes,
+        )
+        return list(zip(*bottleneck))
+    
+    if func == "homebuilt":
+        return get_ib_curve_(config)["coordinates"]
+
+    raise ValueError(f"IB bound functions include 'embo', 'homebuilt', but received {func}.")
+
 def infima(curve_points: torch.Tensor):
     """Fix any randomness in curve leading to nonmonotonicity."""
-    # We can fix random noise that tends to occur at the high complexity region by ensuring monotonicity: that as we increase beta, accuracy must increase. If accuracy does not increase, drop these values.
+    # We can fix random noise that tends to occur at the high complexity region by ensuring monotonicity: that as we increase beta, accuracy must increase. If accuracy does not increase, drop these values. I'll implement this if embo ever gives trouble and I want to move to homebuilt.
+    raise NotImplementedError
 
 
 def ib_blahut_arimoto(
@@ -78,7 +116,7 @@ def ib_blahut_arimoto(
     ignore_converge: bool = False,    
     init_temperature: float = 1,
 ) -> torch.Tensor:
-    """Compute the optimal IB encoder, using the IB-method. Implementation belongs to Futrell.
+    """Compute the optimal IB encoder, using the IB-method.
 
     Args:
         num_words: size of the target support (vocabulary size)
@@ -150,7 +188,19 @@ def ib_blahut_arimoto(
     return lnq.squeeze(U_dim).exp()  # remove dummy U dimension, convert from logspace
 
 def get_ib_curve_(config: DictConfig):
-    """Reverse deterministic annealing (Zaslavsky and Tishby, 2019)"""
+    """Reverse deterministic annealing (Zaslavsky and Tishby, 2019).
+    
+    Args: 
+        config: A Hydra DictConfig the config file for the experiment.
+
+    Returns: a dict of containing the IB optimal encoders and their coordinates, of the form
+
+        {
+            "encoders": a list of encoders of shape `(num_meanings, num_signals)`,\n
+            "coordinates": a list of `(complexity, accuracy, comm_cost)` coordinates,
+        }
+
+    """
     # load params
     evol_game = Game.from_hydra(config)
     prior = evol_game.prior
@@ -164,7 +214,7 @@ def get_ib_curve_(config: DictConfig):
     # curve can get sparse in the high-interest regions, beta 1.02-1.1
 
     # Multiprocessing
-    if len(prior) > 100:
+    if len(prior) >= 100:
         num_processes = cpu_count()
         with Pool(num_processes) as p:
             async_results = [

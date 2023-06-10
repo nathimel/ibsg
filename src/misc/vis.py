@@ -7,7 +7,7 @@ from typing import Callable
 # Plotting util functions
 
 def numeric_col_to_categorical(df: pd.DataFrame, col: str) -> pd.DataFrame:
-    """Change a float valued column (e.g. trial or round) to Categorical for visualization."""
+    """Change a float valued column (e.g. run or round) to Categorical for visualization."""
     # adjust values to Categorical where appropriate
     # df[col] = df[col].astype(int).astype(str)
     df[col] = df[col].astype(int)    
@@ -17,7 +17,7 @@ def numeric_col_to_categorical(df: pd.DataFrame, col: str) -> pd.DataFrame:
 
 def basic_tradeoff_plot(
     curve_data: pd.DataFrame,
-    sim_data: pd.DataFrame,
+    simulation_data: pd.DataFrame,
     variant_data: pd.DataFrame = None,
     trajectory_data: pd.DataFrame = None,
     y: str = "accuracy",
@@ -38,24 +38,24 @@ def basic_tradeoff_plot(
             alpha=0.6,
         )
 
-    sim_data["trial"] = sim_data["trial"].astype(int) + 1
-    sim_data = numeric_col_to_categorical(sim_data, "trial")
+    sim_data = simulation_data.copy()
+    sim_data["run"] = sim_data["run"].astype(int) + 1
+    sim_data = numeric_col_to_categorical(sim_data, "run")
 
     plot = plot + pn.geom_point(  # simulation langs
         data=sim_data,
-        mapping=pn.aes(color="trial"),
+        mapping=pn.aes(color="run"),
         shape="o",
         size=4,
     )
 
     if trajectory_data is not None:
-        trajectory_data = numeric_col_to_categorical(trajectory_data, "trial")
+        traj_data = trajectory_data.copy()
+        traj_data = numeric_col_to_categorical(traj_data, "run")
         plot = plot + pn.geom_line(
-            data=trajectory_data,
+            data=traj_data,
             mapping=pn.aes(
-                # x="complexity",
-                # y="accuracy",
-                color="trial",
+                color="run",
                 # color="round",
                 ), # categorical
             # shape='d',
@@ -76,9 +76,10 @@ def bound_only_plot(
     elif y == "mse":
         ystr = "Distortion $\mathbb{E}[(u - \hat{u})^2]$"
 
+    data = curve_data.copy()
     plot = (
         # Set data and the axes
-        pn.ggplot(data=curve_data, mapping=pn.aes(x="complexity", y=y))
+        pn.ggplot(data=data, mapping=pn.aes(x="complexity", y=y))
         + pn.xlab("Complexity $I[M:W]$ bits")
         + pn.ylab(ystr)
     )
@@ -89,36 +90,36 @@ def bound_only_plot(
 
 # Encoders
 
-def get_n_encoder_plots(df: pd.DataFrame, plot_type: str, all_trials: bool = True, n: int = 8,) -> list[pn.ggplot]:
-    """Return a list of plots, one for each encoder corresponding to each trial. If `all_trials` is False, get `n` plots, which is 8 by default.
+def get_n_encoder_plots(df: pd.DataFrame, plot_type: str, all_runs: bool = True, n: int = 8,) -> list[pn.ggplot]:
+    """Return a list of plots, one for each encoder corresponding to each run. If `all_runs` is False, get `n` plots, which is 8 by default.
     
     Args: 
         plot_type: {"tile", "line"}
     """
     data = df.copy()
-    data["trial"] = data["trial"].astype(int) + 1
-    trials = data["trial"].unique()
-    if not all_trials:
-        trials = trials[:8]
+    data["run"] = data["run"].astype(int) + 1
+    runs = data["run"].unique()
+    if not all_runs:
+        runs = runs[:8]
     return [
         (
-            plots[plot_type](data[data["trial"] == trial])
-            + pn.ggtitle(f"Trial {trial}")
+            plots[plot_type](data[data["run"] == run])
+            + pn.ggtitle(f"run {run}")
         )
-        for trial in trials
+        for run in runs
     ]
 
 def faceted_encoders(df: pd.DataFrame, plot_type: str) -> pn.ggplot:
-    """Return a plot of different encoder subplots, faceted by trial.
+    """Return a plot of different encoder subplots, faceted by run.
     
     Args: 
         plot_type: {"tile", "line"}    
     """
     data = df.copy()
-    data["trial"] = data["trial"].astype(int) + 1    
+    data["run"] = data["run"].astype(int) + 1    
     return (
         plots[plot_type](data)
-        + pn.facet_grid("trial ~ .")
+        + pn.facet_grid("run ~ .")
         + pn.theme(
             axis_text_y=pn.element_blank(),
             axis_text_x=pn.element_blank(),
@@ -151,9 +152,9 @@ def basic_encoder_lineplot(df: pd.DataFrame) -> pn.ggplot:
     )    
 
 def format_encoder_df(df: pd.DataFrame, numeric_to_categorical: list[str]) -> pd.DataFrame:
-    # create new dataframe labeled by 1-indexed trials
+    # create new dataframe labeled by 1-indexed runs
     data = df.copy()
-    data["trial"] = data["trial"].astype(int)
+    data["run"] = data["run"].astype(int)
     for col in numeric_to_categorical:
         data = numeric_col_to_categorical(data, col)
     return data

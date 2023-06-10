@@ -74,8 +74,8 @@ def main(config):
     util.save_plot(faceted_lines_plot_fn, faceted_lines_plot)
     util.save_plot(faceted_tiles_plot_fn, faceted_tiles_plot)
 
-    [util.save_plot(os.path.join(tile_plots_dir, f"trial_{i+1}.png"), plot) for i, plot in enumerate(tile_plots)]
-    [util.save_plot(os.path.join(line_plots_dir, f"trial_{i+1}.png"), plot) for i, plot in enumerate(line_plots)]
+    [util.save_plot(os.path.join(tile_plots_dir, f"run_{i+1}.png"), plot) for i, plot in enumerate(tile_plots)]
+    [util.save_plot(os.path.join(line_plots_dir, f"run_{i+1}.png"), plot) for i, plot in enumerate(line_plots)]
 
 if __name__ == "__main__":
     main()

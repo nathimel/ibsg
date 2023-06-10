@@ -1,0 +1,3 @@
+- game.num_states=50
+- game.num_signals=5
+- simulation.num_trials=1

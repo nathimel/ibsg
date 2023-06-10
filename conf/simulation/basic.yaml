@@ -21,10 +21,10 @@ dynamics:
 use_decoder: False # whether to use the emergent decoder when computing IB coordinate
 
 # simulation parameters
-num_trials: 8 # default should be cpu_count
+num_runs: 8 # default should be cpu_count
 
 # TODO: make a vis config group lol
-plot_all_encoders: True # whether to save an encoder plot for every trial
+plot_all_encoders: True # whether to save an encoder plot for every run
 
 # whether to save trajectory points
 trajectory: True

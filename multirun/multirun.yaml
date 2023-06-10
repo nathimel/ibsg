@@ -112,15 +112,14 @@ hydra:
     hydra:
     - hydra.mode=MULTIRUN
     task:
-    - game.num_states=330
-    - game.num_signals=10
-    - game.meaning_dist_gamma=0
-    - simulation.dynamics.imprecise_imitation_gamma=0
-    - game.discriminative_need_gamma=-3
+    - game.num_states=100
+    - game.num_signals=100
+    - game.meaning_dist_gamma=-3
+    - game.overwrite_curves=True
   job:
     name: plot
     chdir: true
-    override_dirname: ''
+    override_dirname: game.overwrite_curves=True
     id: ???
     num: ???
     config_name: config
@@ -141,7 +140,7 @@ hydra:
         - game.meaning_dist_gamma
         - game.discriminative_need_gamma
         - simulation.dynamics.name
-        - simulation.num_trials
+        - simulation.num_runs
         - seed
   runtime:
     version: 1.3.2
@@ -173,13 +172,14 @@ hydra:
       hydra/output: default
   verbose: false
 game:
-  num_states: 330
-  num_signals: 10
+  num_states: 100
+  num_signals: 100
   distance: squared_dist
-  discriminative_need_gamma: -3
-  meaning_dist_gamma: 0
+  discriminative_need_gamma: 1.0
+  meaning_dist_gamma: -3
   prior_init_alpha: -8
-  overwrite_curves: false
+  ib_bound_function: embo
+  overwrite_curves: true
   maxbeta: 5
   minbeta: -2
   numbeta: 1500
@@ -195,7 +195,7 @@ simulation:
     graph: null
     name: two_population_rd
   use_decoder: false
-  num_trials: 8
+  num_runs: 8
   plot_all_encoders: true
   trajectory: true
   variants: false
@@ -217,7 +217,7 @@ filepaths:
   encoders_faceted_lines_plot_fn: encoders_faceted_lines.png
   encoders_faceted_tiles_plot_fn: encoders_faceted_tiles.png
   curve_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_alpha}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_gamma}
-  sim_sweep_subdir: ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/ii=${simulation.dynamics.imprecise_imitation_gamma}/population_size=${simulation.dynamics.population_size}/num_trials=${simulation.num_trials}/seed=${seed}
+  sim_sweep_subdir: ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/ii=${simulation.dynamics.imprecise_imitation_gamma}/population_size=${simulation.dynamics.population_size}/num_runs=${simulation.num_runs}/seed=${seed}
   simulation_subdir: ${filepaths.sim_sweep_subdir}/discr_need=${game.discriminative_need_gamma}
   leaf_subdir: ${filepaths.simulation_subdir}
   hydra_run_root: outputs

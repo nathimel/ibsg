@@ -212,20 +212,30 @@ class ReplicatorDynamics(Dynamics):
         self.Q = random_stochastic_matrix((self.game.num_signals, self.game.num_states), self.init_gamma) # Receiver 'population frequencies'
 
     def run(self):
-        i = 0
+        its = 0
         converged = False
         progress_bar = tqdm(total=self.max_its)
         while not converged:
-            i += 1
+            its += 1
             progress_bar.update(1)
 
             P_prev = copy.deepcopy(self.P)
             Q_prev = copy.deepcopy(self.Q)
 
             # track data
-            self.game.points.append(self.get_point( normalize_rows(self.P), normalize_rows(self.Q)))
+            # self.game.points.append(self.get_point(normalize_rows(self.P), normalize_rows(self.Q)))
 
-            self.game.ib_encoders.append(normalize_rows(self.P)) # normalization in evolution step insufficient
+            # self.game.ib_encoders.append(normalize_rows(self.P)) # normalization in evolution step insufficient
+
+            for row in P_prev:
+                # less than 1.0
+                if row.sum() and row.sum() < 1.0:
+                    if torch.isclose(row.sum(), torch.Tensor([1.0]), 1e-4):
+                        continue
+                    breakpoint()
+
+            self.game.points.append(self.get_point(P_prev, Q_prev))
+            self.game.ib_encoders.append(P_prev)
 
             self.evolution_step() # N.B.: fitness requires population update 
 
@@ -233,7 +243,7 @@ class ReplicatorDynamics(Dynamics):
             if (
                 torch.abs(self.P - P_prev).sum() < self.threshold
                 and torch.abs(self.Q - Q_prev).sum() < self.threshold
-            ) or (i == self.max_its):
+            ) or (its == self.max_its):
                 converged = True
 
         progress_bar.close()

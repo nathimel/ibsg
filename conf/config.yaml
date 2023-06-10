@@ -14,19 +14,19 @@ filepaths:
   mse_curve_points_save_fn: mse_curve_points.csv # (I[M:W], E[(u - u)^2])
 
   # Simulation
-  simulation_points_save_fn: simulation_points.csv # final point, for all trials
-  trajectory_points_save_fn: trajectory_points.csv # all points, for all trials
+  simulation_points_save_fn: simulation_points.csv # final point, for all runs
+  trajectory_points_save_fn: trajectory_points.csv # all points, for all runs
   variant_points_save_fn: variant_points.csv
-  final_encoders_save_fn: final_encoders.pt # final encoders for all trials
+  final_encoders_save_fn: final_encoders.pt # final encoders for all runs
 
   # Plots
   complexity_accuracy_plot_fn: complexity_accuracy.png
   complexity_distortion_plot_fn: complexity_distortion.png
   complexity_mse_plot_fn: complexity_mse.png
 
-  encoder_tile_plots_dir: encoder_tile_plots # tile plots per trial
+  encoder_tile_plots_dir: encoder_tile_plots # tile plots per run
   encoder_line_plots_dir: encoder_line_plots 
-  encoders_faceted_lines_plot_fn: encoders_faceted_lines.png # for all trials
+  encoders_faceted_lines_plot_fn: encoders_faceted_lines.png # for all runs
   encoders_faceted_tiles_plot_fn: encoders_faceted_tiles.png
 
   # Hydra automatic folder naming
@@ -35,7 +35,7 @@ filepaths:
   curve_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_alpha}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_gamma}
 
   # for plots etc. that summarize simulation sweeps
-  sim_sweep_subdir:  ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/ii=${simulation.dynamics.imprecise_imitation_gamma}/population_size=${simulation.dynamics.population_size}/num_trials=${simulation.num_trials}/seed=${seed} # note that population size is null in RD
+  sim_sweep_subdir:  ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/ii=${simulation.dynamics.imprecise_imitation_gamma}/population_size=${simulation.dynamics.population_size}/num_runs=${simulation.num_runs}/seed=${seed} # note that population size is null in RD
 
   # where the points corresponding to a single simulation will be saved
   simulation_subdir: ${filepaths.sim_sweep_subdir}/discr_need=${game.discriminative_need_gamma} # note both discr need and ii will be swept
@@ -67,7 +67,7 @@ hydra:
           - game.meaning_dist_gamma
           - game.discriminative_need_gamma
           - simulation.dynamics.name
-          - simulation.num_trials
+          - simulation.num_runs
           - seed
 
   sweep:
