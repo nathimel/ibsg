@@ -1,5 +1,6 @@
 """Script to compute the IB curve."""
 import hydra
+import torch
 import os
 
 from analysis.ib import get_bottleneck, get_rd_curve
@@ -28,8 +29,8 @@ def main(config: DictConfig):
         betas = bottleneck_result["betas"]
 
         util.save_points_df(curve_fn, util.points_to_df(ib_points, columns=["complexity", "accuracy", "distortion"]))
-        util.save_tensors(encoders_fn, encoders)
-        util.save_tensors(betas_save_fn, betas)
+        util.save_tensor(encoders_fn, torch.stack(encoders))
+        util.save_tensor(betas_save_fn, torch.tensor(betas))
     
     else:
         print("data found, skipping ib curve estimation.")

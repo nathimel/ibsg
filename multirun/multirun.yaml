@@ -112,9 +112,10 @@ hydra:
     hydra:
     - hydra.mode=MULTIRUN
     task:
-    - simulation.num_runs=1
+    - game.discriminative_need_gamma=range(-3,4)
+    - simulation.dynamics.imprecise_imitation_gamma=1
   job:
-    name: efficiency
+    name: plot
     chdir: true
     override_dirname: ''
     id: ???
@@ -187,12 +188,12 @@ simulation:
     threshold: 1.0e-05
     population_init_minalpha: -2
     population_init_maxalpha: 5
-    imprecise_imitation_gamma: 0
+    imprecise_imitation_gamma: 1
     population_size: null
     graph: null
     name: two_population_rd
   use_decoder: false
-  num_runs: 1
+  num_runs: 8
   plot_all_encoders: true
   trajectory: true
   variants: false

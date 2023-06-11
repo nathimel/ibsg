@@ -1,15 +1,18 @@
 import torch
+import numpy as np
+from typing import Union
 
-def normalize_rows(mat: torch.Tensor) -> torch.Tensor:
-    # each row of 2D array sums to 1.0
-    mat = torch.nan_to_num(
-        mat / mat.sum(dim=1, keepdim=True)
-    )
-
-    # Debug
-    # if not torch.allclose(mat.sum(1), torch.ones(len(mat))):
-        # breakpoint()
-
+def normalize_rows(mat: torch.Tensor):
+    """Normalize each row of 2D array / tensor to sum to 1.0."""
+    # numpy and torch have *almost* the same API :/
+    if isinstance(mat, np.ndarray):
+        mat = np.nan_to_num(
+            mat / mat.sum(1, keepdims=True)
+        )
+    if isinstance(mat, torch.Tensor):
+        mat = torch.nan_to_num(
+            mat / mat.sum(1, keepdim=True)
+        )
     return mat
 
 def random_stochastic_matrix(shape: tuple[int], beta: float = 1e-2): 

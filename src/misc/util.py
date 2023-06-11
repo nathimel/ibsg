@@ -44,13 +44,13 @@ def save_encoders_df(fn: str, df: pd.DataFrame) -> None:
     print(f"Saved {num} encoders to {os.path.join(os.getcwd(), fn)}")
 
 def save_final_encoders(fn: str, runs: list[Game]) -> None:
-    torch.save(torch.stack([g.ib_encoders[-1] for g in runs]), fn)
+    torch.save(torch.stack([torch.tensor(g.ib_encoders[-1]) for g in runs]), fn)
     print(f"Saved {len(runs)} encoders to {os.path.join(os.getcwd(), fn)}")
 
-def save_tensors(fn: str, tensors: list) -> None:
+def save_tensor(fn: str, tensor: torch.Tensor) -> None:
     # case to tensor from np.ndarray
-    torch.save(torch.tensor(tensors), fn)
-    print(f"Saved {len(tensors)} tensors to {os.path.join(os.getcwd(), fn)}")
+    torch.save(tensor, fn)
+    print(f"Saved tensor of {tensor.size()} to {os.path.join(os.getcwd(), fn)}")
 
 def load_encoders_as_df(fn: str) -> pd.DataFrame:
     """Load encoders saved in a .pt file, and convert from torch.tensor to pd.DataFrame."""

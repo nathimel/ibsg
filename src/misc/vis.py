@@ -132,9 +132,11 @@ def basic_efficiency_plot(
 ) -> pn.ggplot:
     """Get a basic histogram/density plot of the distribution of languages over efficiency loss.
     """
+    data = simulation_data.copy()
     plot = ( 
-        pn.ggplot(data=simulation_data, mapping=pn.aes(x="eps"))
-        + pn.geom_histogram()
+        pn.ggplot(data=data, mapping=pn.aes(x="eps"))
+        # + pn.geom_histogram()
+        + pn.geom_density()
         + pn.xlab("Efficiency loss")
         + pn.ylab("count")
     )
@@ -152,7 +154,7 @@ def get_n_encoder_plots(df: pd.DataFrame, plot_type: str, all_runs: bool = True,
     data["run"] = data["run"].astype(int) + 1
     runs = data["run"].unique()
     if not all_runs:
-        runs = runs[:8]
+        runs = runs[:n]
     return [
         (
             plots[plot_type](data[data["run"] == run])

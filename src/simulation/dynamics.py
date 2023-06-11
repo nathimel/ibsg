@@ -4,6 +4,7 @@ import torch
 import warnings
 
 from analysis.ib import ib_encoder_to_measurements
+from altk.effcomm.util import rows_zero_to_uniform
 from game.game import Game
 from game.perception import generate_sim_matrix
 from game.graph import generate_adjacency_matrix
@@ -235,7 +236,9 @@ class ReplicatorDynamics(Dynamics):
                     breakpoint()
 
             self.game.points.append(self.get_point(P_prev, Q_prev))
-            self.game.ib_encoders.append(P_prev)
+            # self.game.ib_encoders.append(P_prev)
+
+            self.game.ib_encoders.append(rows_zero_to_uniform(normalize_rows(P_prev)))
 
             self.evolution_step() # N.B.: fitness requires population update 
 

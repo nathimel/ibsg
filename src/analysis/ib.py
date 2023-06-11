@@ -1,13 +1,15 @@
 import torch
 import numpy as np
 
-from altk.effcomm import util
+from altk.effcomm.util import rows_zero_to_uniform, bayes
 from altk.effcomm import information
 from altk.effcomm.information import (
     expected_distortion,
     ib_encoder_to_point,
     get_rd_curve,
 )
+
+from misc.tools import normalize_rows
 
 from omegaconf import DictConfig
 from game.game import Game
@@ -43,13 +45,13 @@ def ib_encoder_to_measurements(
     prior = np.array(prior)
     dist_mat = np.array(dist_mat)
     confusion = np.array(confusion)
-    encoder = np.array(encoder)
+    # encoder = np.array(encoder)
     # NOTE: Here is where we rectify ineffable meanings, by replacing rows of all zeros with uniform distributions.
-    encoder = util.rows_zero_to_uniform(encoder)    
+    encoder = rows_zero_to_uniform(normalize_rows(encoder))
     if decoder is not None:
         decoder = np.array(decoder)
     else:
-        decoder = util.bayes(encoder, prior)
+        decoder = bayes(encoder, prior)
     
     complexity, accuracy, distortion = ib_encoder_to_point(
         meaning_dists,
@@ -58,12 +60,30 @@ def ib_encoder_to_measurements(
         decoder,
     )
 
+    if complexity < 0:
+        if np.isclose(complexity, 0., atol=1e-5):
+            complexity = 0.
+        else:
+            raise Exception
+    
+    if accuracy < 0:
+        if np.isclose(accuracy, 0., atol=1e-5):
+            accuracy = 0.
+        else:
+            raise Exception
+    
+    if distortion < 0:
+        if np.isclose(distortion, 0., atol=1e-5):
+            distortion = 0.
+        else:
+            raise Exception
+
     # NOTE: use meaning dists, not confusions!
     # system = confusion @ encoder @ decoder @ confusion
     system = meaning_dists @ encoder @ decoder @ meaning_dists
 
     # rectify ineffability again
-    system = util.rows_zero_to_uniform(system)
+    system = rows_zero_to_uniform(normalize_rows(system))
     mse = expected_distortion(prior, system, dist_mat)
 
     return (complexity, accuracy, distortion, mse)
@@ -80,12 +100,17 @@ def get_bottleneck(config: DictConfig) -> list[tuple]:
         config: A Hydra DictConfig the config file for the experiment.
 
     Returns:
-        a list of tuples of the form [(comp_i, acc_i, comm_cost_i), ... ] for each i in config.game.num_beta.
+        bottleneck: A dict of the form
+            {
+            "encoders": a list of encoders of shape `(num_meanings, num_signals)`,\n
+            "coordinates": a list of `(complexity, accuracy, comm_cost)` coordinates,\n
+            "betas": a list of the beta values used for IB method.
+            }
     """
     g = Game.from_hydra(config)
     func = config.game.ib_bound_function
     if func == "embo":
-        return information.get_bottleneck(
+        bottleneck = information.get_bottleneck(
             prior=g.prior,
             meaning_dists=g.meaning_dists,
             maxbeta=g.maxbeta,
@@ -94,12 +119,22 @@ def get_bottleneck(config: DictConfig) -> list[tuple]:
             processes=g.num_processes,
         )
     
-    if func == "homebuilt":
-        return get_ib_curve_(config)
+    elif func == "homebuilt":
+        bottleneck = get_ib_curve_(config)
 
-    raise ValueError(f"IB bound functions include 'embo', 'homebuilt', but received {func}.")
+    else:
+        raise ValueError(f"IB bound functions include 'embo', 'homebuilt', but received {func}.")
 
-def infima(curve_points: torch.Tensor):
+    # interestingly, we sometimes need to normalize encoders from IB method
+    bottleneck["encoders"] = [normalize_rows(torch.tensor(enc)) for enc in bottleneck["encoders"]]
+
+    # convert from numpy to list
+    if isinstance(bottleneck["betas"], np.ndarray):
+        bottleneck["betas"] = bottleneck["betas"].tolist()
+
+    return bottleneck
+
+def ensure_monotonic_bound(curve_points: torch.Tensor):
     """Fix any randomness in curve leading to nonmonotonicity."""
     # We can fix random noise that tends to occur at the high complexity region by ensuring monotonicity: that as we increase beta, accuracy must increase. If accuracy does not increase, drop these values. I'll implement this if embo ever gives trouble and I want to move to homebuilt.
     raise NotImplementedError
@@ -196,7 +231,8 @@ def get_ib_curve_(config: DictConfig):
 
         {
             "encoders": a list of encoders of shape `(num_meanings, num_signals)`,\n
-            "coordinates": a list of `(complexity, accuracy, comm_cost)` coordinates,
+            "coordinates": a list of `(complexity, accuracy, comm_cost)` coordinates,\n
+            "betas": a list of the beta values used for IB method.
         }
 
     """

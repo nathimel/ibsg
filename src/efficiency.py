@@ -24,6 +24,9 @@ def efficiency_loss(emergent, optimal, beta, meaning_dists, prior) -> float:
     
     i.e., a Lagrangian to minimize complexity and maximize accuracy. See Zaslavsky et. al. 2018, "Near-Optimal Trade-Offs", and SI Section 5, for details.
     """
+    # interestingly, optima rows do not always sum to 1
+
+
     # return is complexity, accuracy, comm_cost
     em_complexity, em_acc, _ =  ib_encoder_to_point(meaning_dists, prior, emergent)
     opt_complexity, opt_acc, _ = ib_encoder_to_point(meaning_dists, prior, optimal)
@@ -69,8 +72,9 @@ def main(config: DictConfig):
     fitted_betas = betas[min_gnid_indices]
 
     # Save the most similar optimal encoder to each emergent encoder
+    # breakpoint()
     similar_encoders = optimal_encoders[min_gnid_indices]
-    util.save_tensors(similar_encoders_fn, similar_encoders)
+    util.save_tensor(similar_encoders_fn, similar_encoders)
 
     # Update simulation data to include efficiency measurements
     losses = torch.Tensor([ # compute efficiency loss for each emergent encoder
@@ -112,7 +116,7 @@ def main(config: DictConfig):
     single_encoder_data = sim_data.iloc[[-1]]
     single_optimal_data = opt_data.iloc[[-1]]
     plot = vis.single_gnid_heatmap_tradeoff_plot(curve_data, single_encoder_data, single_optimal_data)
-    plot.save("gnid_last_encoder.png")
+    util.save_plot("gnid_last_encoder.png", plot)
 
 if __name__ == "__main__":
     main()    
