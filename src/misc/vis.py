@@ -58,7 +58,7 @@ def basic_tradeoff_plot(
             data=nearopt_data,
             mapping=pn.aes(color="run"),
             shape="+",
-            size=4,
+            size=5,
         )
 
     if trajectory_data is not None:
@@ -97,6 +97,33 @@ def bound_only_plot(
     )
     # plot = plot + pn.geom_line()
     plot = plot + pn.geom_point()
+    return plot
+
+def single_gnid_heatmap_tradeoff_plot(
+    gnid_curve_data: pd.DataFrame,
+    sim_data: pd.DataFrame, # a single point
+    opt_data: pd.DataFrame, # same
+) -> pn.ggplot:
+    data = gnid_curve_data.copy()
+    plot = (
+        pn.ggplot(data=data, mapping=pn.aes(x="complexity", y="accuracy"))
+        + pn.geom_line(
+            size=3,
+            mapping=pn.aes(color="gNID")
+        )
+        + pn.scale_color_continuous("inferno")
+        + pn.geom_point(
+            data=sim_data,
+            fill="red",
+            size=5,
+            )
+        + pn.geom_point(
+            data=opt_data,
+            color="limegreen",
+            shape="X",
+            size=5,
+        )
+    )
     return plot
 
 

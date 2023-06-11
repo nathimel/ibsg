@@ -10,7 +10,7 @@ from altk.effcomm.util import gNID
 from altk.effcomm.information import ib_encoder_to_point
 from game.game import Game
 from omegaconf import DictConfig
-from misc import util
+from misc import util, vis
 
 
 def efficiency_loss(emergent, optimal, beta, meaning_dists, prior) -> float:
@@ -49,11 +49,13 @@ def main(config: DictConfig):
     nearest_optimal_points_fn = fullpath(fps.nearest_optimal_points_save_fn)    
     betas_fn = util.get_bound_fn(config, "betas")
     encoders_fn = util.get_bound_fn(config, "encoders")
+    curve_fn = util.get_bound_fn(config, "ib")
 
     sim_data = pd.read_csv(sim_fn) # will update gNID and eps
     emergent_encoders = torch.load(emergent_encoders_fn)
     betas = torch.load(betas_fn)
     optimal_encoders = torch.load(encoders_fn) # ordered by beta
+    curve_data = pd.read_csv(curve_fn)
 
     # Compute matrix of pairwise gNID between emergent and optimal
     gNIDs = torch.tensor([
@@ -98,6 +100,16 @@ def main(config: DictConfig):
         points, columns=["complexity", "accuracy", "distortion", "mse", "run"]
         )
     util.save_points_df(nearest_optimal_points_fn, opt_data)
+
+    # inspect a single gnid plot
+
+    # select the last emergent encoder
+    last_encoder_gnids = gNIDs[-1]
+    curve_data["gNID"] = last_encoder_gnids.tolist()
+    single_encoder_data = sim_data.iloc[[-1]]
+    single_optimal_data = opt_data.iloc[[-1]]
+    plot = vis.single_gnid_heatmap_tradeoff_plot(curve_data, single_encoder_data, single_optimal_data)
+    plot.save("gnid_last_encoder.png")
 
 if __name__ == "__main__":
     main()    

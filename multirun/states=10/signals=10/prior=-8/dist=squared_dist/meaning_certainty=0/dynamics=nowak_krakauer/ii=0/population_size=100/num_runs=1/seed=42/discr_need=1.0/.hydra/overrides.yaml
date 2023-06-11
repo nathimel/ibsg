@@ -1,0 +1,3 @@
+- game.overwrite_curves=True
+- simulation/dynamics=nowak_krakauer
+- simulation.num_runs=1

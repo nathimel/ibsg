@@ -112,12 +112,11 @@ hydra:
     hydra:
     - hydra.mode=MULTIRUN
     task:
-    - game.overwrite_curves=True
-    - simulation/dynamics=nowak_krakauer
+    - simulation.num_runs=1
   job:
-    name: plot
+    name: efficiency
     chdir: true
-    override_dirname: game.overwrite_curves=True,simulation/dynamics=nowak_krakauer
+    override_dirname: ''
     id: ???
     num: ???
     config_name: config
@@ -157,7 +156,7 @@ hydra:
     output_dir: ???
     choices:
       simulation: basic
-      simulation/dynamics: nowak_krakauer
+      simulation/dynamics: two_population_rd
       game: basic
       hydra/env: default
       hydra/callbacks: null
@@ -177,7 +176,7 @@ game:
   meaning_dist_gamma: 0
   prior_init_alpha: -8
   ib_bound_function: embo
-  overwrite_curves: true
+  overwrite_curves: false
   maxbeta: 5
   minbeta: -2
   numbeta: 1500
@@ -189,12 +188,11 @@ simulation:
     population_init_minalpha: -2
     population_init_maxalpha: 5
     imprecise_imitation_gamma: 0
-    population_size: 100
-    graph: complete
-    name: nowak_krakauer
-    num_samples: 10
+    population_size: null
+    graph: null
+    name: two_population_rd
   use_decoder: false
-  num_runs: 8
+  num_runs: 1
   plot_all_encoders: true
   trajectory: true
   variants: false
