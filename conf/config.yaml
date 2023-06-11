@@ -12,12 +12,16 @@ filepaths:
   # Curves
   curve_points_save_fn: curve_points.csv # (I[M:W], I[W:U], E[D_KL[M || M']])
   mse_curve_points_save_fn: mse_curve_points.csv # (I[M:W], E[(u - u)^2])
+  optimal_encoders_save_fn: optimal_encoders.pt # the encoders P(W|M) from IB method
+  betas_save_fn: betas.pt # the actual beta values used in IB method
 
   # Simulation
-  simulation_points_save_fn: simulation_points.csv # final point, for all runs
-  trajectory_points_save_fn: trajectory_points.csv # all points, for all runs
+  # all fns below are for saving results from all runs
+  simulation_points_save_fn: simulation_points.csv # final point
+  trajectory_points_save_fn: trajectory_points.csv # all points
   variant_points_save_fn: variant_points.csv
-  final_encoders_save_fn: final_encoders.pt # final encoders for all runs
+  final_encoders_save_fn: final_encoders.pt # final encoders
+  similar_encoders_save_fn: similar_encoders.pt # most similar optimal encoders
 
   # Plots
   complexity_accuracy_plot_fn: complexity_accuracy.png

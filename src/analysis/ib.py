@@ -72,9 +72,9 @@ def ib_encoder_to_measurements(
 # IB CURVE ESTIMATION
 
 def get_bottleneck(config: DictConfig) -> list[tuple]:
-    """Compute the `(complexity, accuracy, comm_cost)` values corresponding to an Information Bottleneck theoretical bound. 
+    """Compute the `(complexity, accuracy, comm_cost)` values and optimal encoders corresponding to an Information Bottleneck theoretical bound. 
     
-    The config specifies whether to use the embo package, which is faster and filters non-monotonicity, or a homebuilt version, which can be useful for sanity checks.
+    The config specifies whether to use the embo package, which is faster and filters non-monotonicity, or a homebuilt version, which can be useful for  sanity checks with minimal overhead.
 
     Args:
         config: A Hydra DictConfig the config file for the experiment.
@@ -85,7 +85,7 @@ def get_bottleneck(config: DictConfig) -> list[tuple]:
     g = Game.from_hydra(config)
     func = config.game.ib_bound_function
     if func == "embo":
-        bottleneck = information.get_bottleneck(
+        return information.get_bottleneck(
             prior=g.prior,
             meaning_dists=g.meaning_dists,
             maxbeta=g.maxbeta,
@@ -93,10 +93,9 @@ def get_bottleneck(config: DictConfig) -> list[tuple]:
             numbeta=g.numbeta,
             processes=g.num_processes,
         )
-        return list(zip(*bottleneck))
     
     if func == "homebuilt":
-        return get_ib_curve_(config)["coordinates"]
+        return get_ib_curve_(config)
 
     raise ValueError(f"IB bound functions include 'embo', 'homebuilt', but received {func}.")
 
@@ -238,4 +237,5 @@ def get_ib_curve_(config: DictConfig):
     return {
         "encoders": encoders,
         "coordinates": coordinates,
+        "beta": betas, # return all betas for now
     }

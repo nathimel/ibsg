@@ -6,35 +6,29 @@ from analysis.ib import get_bottleneck, get_rd_curve
 from omegaconf import DictConfig
 from game.game import Game
 from misc import util
-from multiprocessing import cpu_count
 
-from analysis.ib import get_ib_curve_
 
 @hydra.main(version_base=None, config_path="../conf", config_name="config")
 def main(config: DictConfig):
     util.set_seed(config.seed)
 
-    curve_fn = util.get_curve_fn(config)
-    mse_curve_fn = util.get_curve_fn(config, "mse")
+    curve_fn = util.get_bound_fn(config)
+    mse_curve_fn = util.get_bound_fn(config, "mse")
+    encoders_fn = util.get_bound_fn(config, "encoders")
+    betas_save_fn = util.get_bound_fn(config, "beta")
 
     g = Game.from_hydra(config)
 
     if config.game.overwrite_curves or not os.path.isfile(curve_fn):
         print("computing ib curve...")
 
-        # bottleneck = get_bottleneck(
-        #     prior=g.prior,
-        #     meaning_dists=g.meaning_dists,
-        #     maxbeta=g.maxbeta,
-        #     minbeta=g.minbeta,
-        #     numbeta=g.numbeta,
-        #     processes=g.num_processes,
-        # )
-        # ib_points = list(zip(*bottleneck))
-        # ib_points = get_ib_curve_(config)["coordinates"]        
-        ib_points = get_bottleneck(config)
+        bottleneck_result = get_bottleneck(config)
+        ib_points = bottleneck_result["coordinates"]
+        encoders = bottleneck_result["encoders"]
 
         util.save_points_df(curve_fn, util.points_to_df(ib_points, columns=["complexity", "accuracy", "distortion"]))
+        util.save_tensors(encoders_fn, encoders)
+        util.save_tensors(betas_save_fn)
     
     else:
         print("data found, skipping ib curve estimation.")

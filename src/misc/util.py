@@ -47,17 +47,38 @@ def save_final_encoders(fn: str, runs: list[Game]) -> None:
     torch.save(torch.stack([g.ib_encoders[-1] for g in runs]), fn)
     print(f"Saved {len(runs)} encoders to {os.path.join(os.getcwd(), fn)}")
 
-def load_encoders(fn: str) -> pd.DataFrame:
+def save_tensors(fn: str, tensors: list) -> None:
+    # case to tensor from np.ndarray
+    torch.save(torch.tensor(tensors), fn)
+    print(f"Saved {len(tensors)} tensors to {os.path.join(os.getcwd(), fn)}")
+
+def load_encoders_as_df(fn: str) -> pd.DataFrame:
     """Load encoders saved in a .pt file, and convert from torch.tensor to pd.DataFrame."""
     return encoders_to_df(torch.load(fn))
 
 
-points_columns = ["complexity", "accuracy", "distortion", "mse"]
+points_columns = [
+    "complexity", 
+    "accuracy", 
+    "distortion", 
+    "mse", 
+    "gNID", 
+    "eps", 
+    "beta",
+    ]
 
 def final_points_df(runs: list[Game]) -> pd.DataFrame:
     """Collect the (complexity, accuracy, ...) points for the final round of every game across runs and store in one dataframe."""
     return points_to_df(
-        [(*g.points[-1], i) for i, g in enumerate(runs)], 
+        [
+            (
+                *g.points[-1], # comp, acc, dist, mse,
+                None, # gNID computed later
+                None, # eps (efficiency loss)
+                None, # beta
+                i, # run number
+            )
+        for i, g in enumerate(runs)], 
         columns = points_columns + ["run"],
     )
 
@@ -121,18 +142,22 @@ def ensure_dir(path: str) -> None:
         print(f"Created directory {path}.")
 
 
-def get_curve_fn(config: DictConfig, curve_type: str = "ib", curve_dir: str = None) -> str:
-    """Get the full path of the IB curve, relative to hydra interpolations."""
+def get_bound_fn(config: DictConfig, bound_type: str = "ib", curve_dir: str = None) -> str:
+    """Get the full path of a theoretically optimal bound curve or list of encoders, relative to hydra interpolations."""
     if curve_dir is None:
         curve_dir = os.getcwd().replace(config.filepaths.leaf_subdir, config.filepaths.curve_subdir)
 
-    if curve_type == "ib":
-        curve_fn = os.path.join(curve_dir, config.filepaths.curve_points_save_fn)
-    elif curve_type == "mse":
-        curve_fn = os.path.join(curve_dir, config.filepaths.mse_curve_points_save_fn)
+    if bound_type == "ib":
+        fn = os.path.join(curve_dir, config.filepaths.curve_points_save_fn)
+    elif bound_type == "mse":
+        fn = os.path.join(curve_dir, config.filepaths.mse_curve_points_save_fn)
+    elif bound_type == "encoders": 
+        fn = os.path.join(curve_dir, config.filepaths.optimal_encoders_save_fn)
+    elif bound_type == "beta": 
+        fn = os.path.join(curve_dir, config.filepaths.betas_save_fn)
     else:
         raise ValueError()
-    return curve_fn
+    return fn
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
