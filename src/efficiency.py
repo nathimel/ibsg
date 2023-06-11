@@ -45,8 +45,9 @@ def main(config: DictConfig):
 
     sim_fn = fullpath(fps.simulation_points_save_fn)
     emergent_encoders_fn = fullpath(fps.final_encoders_save_fn)
-    similar_encoders_fn = fullpath(fps.similar_encoders_save_fn)    
-    betas_fn = fullpath(fps.betas_save_fn)    
+    similar_encoders_fn = fullpath(fps.nearest_optimal_save_fn)
+    nearest_optimal_points_fn = fullpath(fps.nearest_optimal_points_save_fn)    
+    betas_fn = util.get_bound_fn(config, "betas")
     encoders_fn = util.get_bound_fn(config, "encoders")
 
     sim_data = pd.read_csv(sim_fn) # will update gNID and eps
@@ -56,19 +57,18 @@ def main(config: DictConfig):
 
     # Compute matrix of pairwise gNID between emergent and optimal
     gNIDs = torch.tensor([
-        [ gNID(em, opt, g.prior) for em in emergent_encoders] for opt in optimal_encoders ])
+        [ gNID(em, opt, g.prior) for opt in optimal_encoders] for em in emergent_encoders ])
     
     # Compute, for emergent encoder, the minimum gNID to an IB optima
-    min_gnid_indices = [torch.argmin(gnids) for gnids in gNIDs]
-    min_gnids = gNIDs[min_gnid_indices]
+    min_gnids, min_gnid_indices = torch.min(gNIDs, dim=1)
     fitted_betas = betas[min_gnid_indices]
 
     # Save the most similar optimal encoder to each emergent encoder
     similar_encoders = optimal_encoders[min_gnid_indices]
-    util.save_encoders(similar_encoders_fn, similar_encoders)
+    util.save_tensors(similar_encoders_fn, similar_encoders)
 
     # Update simulation data to include efficiency measurements
-    losses = [ # compute efficiency loss for each emergent encoder
+    losses = torch.Tensor([ # compute efficiency loss for each emergent encoder
         efficiency_loss(
             emergent_encoder, 
             similar_encoders[i], 
@@ -77,13 +77,27 @@ def main(config: DictConfig):
             g.prior,
         ) 
         for i, emergent_encoder in enumerate(emergent_encoders)
-    ]
+    ])
 
     # Overwrite simulation data
-    sim_data["gNID"] = min_gnids
-    sim_data["eps"] = losses
-    sim_data["beta"] = fitted_betas
-    sim_data.to_csv(sim_fn)
+    sim_data["gNID"] = min_gnids.tolist()
+    sim_data["eps"] = losses.tolist()
+    sim_data["beta"] = fitted_betas.tolist()
+    util.save_points_df(sim_fn, sim_data)
+
+    # Write nearest optimal data for plotting later
+    points = [
+        (   
+            *ib_encoder_to_point(g.meaning_dists, g.prior, similar_encoders[i]), # comp, acc, distortion
+            None, # mse
+            i, # run
+        ) 
+        for i in range(len(emergent_encoders))
+    ]
+    opt_data = pd.DataFrame(
+        points, columns=["complexity", "accuracy", "distortion", "mse", "run"]
+        )
+    util.save_points_df(nearest_optimal_points_fn, opt_data)
 
 if __name__ == "__main__":
     main()    

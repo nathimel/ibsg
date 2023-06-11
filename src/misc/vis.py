@@ -20,6 +20,7 @@ def basic_tradeoff_plot(
     simulation_data: pd.DataFrame,
     variant_data: pd.DataFrame = None,
     trajectory_data: pd.DataFrame = None,
+    nearest_optimal_encoders_data: pd.DataFrame = None,
     y: str = "accuracy",
 ) -> pn.ggplot:
     """Get a basic plotnine point plot of languages in a complexity vs accuracy 2D plot.
@@ -48,6 +49,17 @@ def basic_tradeoff_plot(
         shape="o",
         size=4,
     )
+
+    if nearest_optimal_encoders_data is not None:
+        nearopt_data = nearest_optimal_encoders_data.copy()
+        nearopt_data["run"] = nearopt_data["run"].astype(int) + 1
+        nearopt_data = numeric_col_to_categorical(nearopt_data, "run")
+        plot = plot + pn.geom_point(
+            data=nearopt_data,
+            mapping=pn.aes(color="run"),
+            shape="+",
+            size=4,
+        )
 
     if trajectory_data is not None:
         traj_data = trajectory_data.copy()
@@ -83,10 +95,23 @@ def bound_only_plot(
         + pn.xlab("Complexity $I[M:W]$ bits")
         + pn.ylab(ystr)
     )
-    plot = plot + pn.geom_line()
-    # plot = plot + pn.geom_point()
+    # plot = plot + pn.geom_line()
+    plot = plot + pn.geom_point()
     return plot
 
+
+def basic_efficiency_plot(
+    simulation_data: pd.DataFrame,
+) -> pn.ggplot:
+    """Get a basic histogram/density plot of the distribution of languages over efficiency loss.
+    """
+    plot = ( 
+        pn.ggplot(data=simulation_data, mapping=pn.aes(x="eps"))
+        + pn.geom_histogram()
+        + pn.xlab("Efficiency loss")
+        + pn.ylab("count")
+    )
+    return plot
 
 # Encoders
 

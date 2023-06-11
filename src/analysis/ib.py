@@ -237,5 +237,5 @@ def get_ib_curve_(config: DictConfig):
     return {
         "encoders": encoders,
         "coordinates": coordinates,
-        "beta": betas, # return all betas for now
+        "betas": betas, # return all betas for now
     }

@@ -62,6 +62,8 @@ points_columns = [
     "accuracy", 
     "distortion", 
     "mse", 
+    ]
+efficiency_columns = [
     "gNID", 
     "eps", 
     "beta",
@@ -79,7 +81,7 @@ def final_points_df(runs: list[Game]) -> pd.DataFrame:
                 i, # run number
             )
         for i, g in enumerate(runs)], 
-        columns = points_columns + ["run"],
+        columns = points_columns + efficiency_columns + ["run"],
     )
 
 
@@ -153,7 +155,7 @@ def get_bound_fn(config: DictConfig, bound_type: str = "ib", curve_dir: str = No
         fn = os.path.join(curve_dir, config.filepaths.mse_curve_points_save_fn)
     elif bound_type == "encoders": 
         fn = os.path.join(curve_dir, config.filepaths.optimal_encoders_save_fn)
-    elif bound_type == "beta": 
+    elif bound_type == "betas": 
         fn = os.path.join(curve_dir, config.filepaths.betas_save_fn)
     else:
         raise ValueError()
