@@ -20,16 +20,19 @@ def efficiency_loss(emergent, optimal, beta, meaning_dists, prior) -> float:
     
     where F is the IB objective, q is an emergent encoder, q* is its most similar optimal counterpart, and beta is the value of beta input to the IB method yielding the optimal encoder. The IB objective is given by
 
-       F_[q(w|m)] = I[M:W] − beta * I(W;U)
+       F_[q(w|m)] = I[M:W] - I(W;U) (beta is constant for both q, q*)
     
-    i.e., a Lagrangian to minimize complexity and maximize accuracy. See Zaslavsky et. al. 2018, "Near-Optimal Trade-Offs" for details.
+    i.e., a Lagrangian to minimize complexity and maximize accuracy. See Zaslavsky et. al. 2018, "Near-Optimal Trade-Offs", and SI Section 5, for details.
     """
     # return is complexity, accuracy, comm_cost
     em_complexity, em_acc, _ =  ib_encoder_to_point(meaning_dists, prior, emergent)
     opt_complexity, opt_acc, _ = ib_encoder_to_point(meaning_dists, prior, optimal)
     
-    em_value = em_complexity - beta * em_acc
-    opt_value = opt_complexity - beta * opt_acc
+    # em_value = em_complexity - beta * em_acc
+    # opt_value = opt_complexity - beta * opt_acc
+    em_value = em_complexity - em_acc
+    opt_value = opt_complexity - opt_acc
+
     loss = 1 / beta * (em_value - opt_value) # value is to be minimized, so emergent larger
     return loss
 
