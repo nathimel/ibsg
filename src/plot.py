@@ -61,7 +61,7 @@ def main(config):
     plot_args = [curve_data, sim_data]
 
     plot_kwargs = {
-        # "trajectory_data": traj_data, 
+        "trajectory_data": traj_data, 
         # "variant_data": variant_data,
         "nearest_optimal_encoders_data": nearest_optimal_points_data,
     }

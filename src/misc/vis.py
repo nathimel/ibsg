@@ -43,11 +43,13 @@ def basic_tradeoff_plot(
     sim_data["run"] = sim_data["run"].astype(int) + 1
     sim_data = numeric_col_to_categorical(sim_data, "run")
 
-    plot = plot + pn.geom_point(  # simulation langs
+    plot = plot + pn.geom_jitter(  # simulation langs
         data=sim_data,
         mapping=pn.aes(color="run"),
         shape="o",
         size=4,
+        width=0.1,
+        height=0.1,
     )
 
     if nearest_optimal_encoders_data is not None:
@@ -111,7 +113,7 @@ def single_gnid_heatmap_tradeoff_plot(
             size=3,
             mapping=pn.aes(color="gNID")
         )
-        + pn.scale_color_continuous("inferno")
+        + pn.scale_color_continuous("inferno", limits=(0,1))
         + pn.geom_point(
             data=sim_data,
             fill="red",

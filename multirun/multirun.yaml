@@ -112,12 +112,14 @@ hydra:
     hydra:
     - hydra.mode=MULTIRUN
     task:
+    - simulation.use_decoder=False
     - game.discriminative_need_gamma=range(-3,4)
-    - simulation.dynamics.imprecise_imitation_gamma=1
+    - game.num_states=100
+    - game.num_signals=100
   job:
     name: plot
     chdir: true
-    override_dirname: ''
+    override_dirname: simulation.use_decoder=False
     id: ???
     num: ???
     config_name: config
@@ -170,8 +172,8 @@ hydra:
       hydra/output: default
   verbose: false
 game:
-  num_states: 10
-  num_signals: 10
+  num_states: 100
+  num_signals: 100
   distance: squared_dist
   discriminative_need_gamma: 1.0
   meaning_dist_gamma: 0
@@ -186,9 +188,9 @@ simulation:
   dynamics:
     max_its: 200
     threshold: 1.0e-05
-    population_init_minalpha: -2
-    population_init_maxalpha: 5
-    imprecise_imitation_gamma: 1
+    population_init_minalpha: -10
+    population_init_maxalpha: -10
+    imprecise_imitation_gamma: 0
     population_size: null
     graph: null
     name: two_population_rd

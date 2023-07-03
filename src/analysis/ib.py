@@ -249,7 +249,7 @@ def get_ib_curve_(config: DictConfig):
     # curve can get sparse in the high-interest regions, beta 1.02-1.1
 
     # Multiprocessing
-    if len(prior) >= 100:
+    if len(prior) > 100:
         num_processes = cpu_count()
         with Pool(num_processes) as p:
             async_results = [
@@ -262,7 +262,7 @@ def get_ib_curve_(config: DictConfig):
             p.close()
             p.join()
         encoders = [async_result.get() for async_result in tqdm(async_results)]
-        coordinates = [ib_encoder_to_point(meaning_dists, prior, encoder) for encoder in encoders]
+        coordinates = [ib_encoder_to_point(meaning_dists, prior, normalize_rows(encoder)) for encoder in encoders]
 
     else:
         for beta in tqdm(betas):
