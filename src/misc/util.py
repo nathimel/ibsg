@@ -1,9 +1,11 @@
 import os
 import torch
+import warnings
 import pandas as pd
 from plotnine import ggplot
 from omegaconf import DictConfig
-from game.game import Game
+# from game.game import Game
+from misc import tools
 
 # To silence 'SettingWithCopyWarning'
 pd.options.mode.chained_assignment = None  # default='warn'
@@ -43,14 +45,21 @@ def save_encoders_df(fn: str, df: pd.DataFrame) -> None:
     df.to_csv(fn, index=False)
     print(f"Saved {num} encoders to {os.path.join(os.getcwd(), fn)}")
 
-def save_final_encoders(fn: str, runs: list[Game]) -> None:
+def save_final_encoders(fn: str, runs: list) -> None:
+    """Save the encoders from the last round of each game to a file.
+    
+    Args:
+        fn: the file to save the final encoders to
+
+        runs: a list of Game objects
+    """
     torch.save(torch.stack([torch.tensor(g.ib_encoders[-1]) for g in runs]), fn)
     print(f"Saved {len(runs)} encoders to {os.path.join(os.getcwd(), fn)}")
 
 def save_tensor(fn: str, tensor: torch.Tensor) -> None:
     # case to tensor from np.ndarray
     torch.save(tensor, fn)
-    print(f"Saved tensor of {tensor.size()} to {os.path.join(os.getcwd(), fn)}")
+    print(f"Saved tensor of {tensor.size() if tensor is not None else None} to {os.path.join(os.getcwd(), fn)}")
 
 def load_encoders_as_df(fn: str) -> pd.DataFrame:
     """Load encoders saved in a .pt file, and convert from torch.tensor to pd.DataFrame."""
@@ -69,8 +78,12 @@ efficiency_columns = [
     "beta",
     ]
 
-def final_points_df(runs: list[Game]) -> pd.DataFrame:
-    """Collect the (complexity, accuracy, ...) points for the final round of every game across runs and store in one dataframe."""
+def final_points_df(runs: list) -> pd.DataFrame:
+    """Collect the (complexity, accuracy, ...) points for the final round of every game across runs and store in one dataframe.
+    
+    Args:
+        runs: a list of Game objects
+    """
     return points_to_df(
         [
             (
@@ -85,8 +98,12 @@ def final_points_df(runs: list[Game]) -> pd.DataFrame:
     )
 
 
-def trajectories_df(runs: list[Game]) -> pd.DataFrame:
-    """Collect the (complexity, accuracy, distortion, mse) trajectories of every game across runs and store in one dataframe."""
+def trajectories_df(runs: list) -> pd.DataFrame:
+    """Collect the (complexity, accuracy, distortion, mse) trajectories of every game across runs and store in one dataframe.
+    
+    Args:
+        runs: a list of Game objects
+    """
     # build a df for each and concatenate
     df = pd.concat([
         pd.DataFrame(
@@ -145,7 +162,7 @@ def ensure_dir(path: str) -> None:
 
 
 def get_bound_fn(config: DictConfig, bound_type: str = "ib", curve_dir: str = None) -> str:
-    """Get the full path of a theoretically optimal bound curve or list of encoders, relative to hydra interpolations."""
+    """Get the full path of a theoretically optimal bound curve, list of optimal encoders, or list of saved tradeoff parameters relative to hydra interpolations."""
     if curve_dir is None:
         curve_dir = os.getcwd().replace(config.filepaths.leaf_subdir, config.filepaths.curve_subdir)
 
@@ -161,6 +178,23 @@ def get_bound_fn(config: DictConfig, bound_type: str = "ib", curve_dir: str = No
         raise ValueError()
     return fn
 
+def get_prior_fn(config: DictConfig) -> str:
+    """Get the full path of the prior need distribution over meanings, relative to hydra interpolations."""
+    fullpath = lambda fn: os.path.join(os.getcwd().replace(config.filepaths.leaf_subdir, config.filepaths.prior_subdir), fn)
+    prior_init_alpha = config.game.prior_init_alpha
+
+    if isinstance(prior_init_alpha, int):
+        prior_fn = f"alpha={prior_init_alpha}.pt"
+        fp = fullpath(prior_fn)
+    elif isinstance(prior_init_alpha, str):
+        prior_fn = f"{prior_init_alpha}.pt"
+        fp = fullpath(prior_fn)
+        if not os.path.exists(fp):
+            warnings.warn(f"No existing file was found at {fp}, so it will be created. You must overwrite this file with a tensor of your prior over meanings.")
+    else:
+        raise ValueError("The value for game.prior_init_apha must be an integer or a string.")
+
+    return fp
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Plot

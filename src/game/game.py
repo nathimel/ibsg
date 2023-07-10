@@ -3,7 +3,8 @@ from multiprocessing import cpu_count
 
 from game.perception import generate_dist_matrix, generate_sim_matrix
 
-from misc.tools import normalize_rows, random_stochastic_matrix
+from misc.tools import normalize_rows
+from misc.util import get_prior_fn
 
 class Game:
     """The basic object that contains all of the relevant parameters for the agents, environment, payoffs, etc., that are shared or at least initialized across simulations."""
@@ -11,7 +12,7 @@ class Game:
         self, 
         num_states: int, 
         num_signals: int, 
-        prior_init_alpha: float, 
+        prior: torch.Tensor, 
         distance: str, 
         discr_need_gamma: float,
         meaning_dist_gamma: float,
@@ -26,7 +27,7 @@ class Game:
 
             population_size: the number of agents (P,Q) pairs if simulating finite population evolution.
 
-            prior_type: {'uniform', 'dirac', 'random'} the kind of prior to initialize.
+            prior: the prior distribution over states in the environment.
 
             distance: the kind of distance measure to use as input to the similarity-based utility and meaning distributions.
 
@@ -37,8 +38,7 @@ class Game:
         # define a meaning space with some 'similarity' structure
         universe = [i for i in range(num_states)]
 
-        # specify prior and distance matrix for all trials
-        prior = random_stochastic_matrix((num_states, ), beta = prior_init_alpha) # N.B.: we assume p(states) = p(meanings)
+        # specify distance matrix 
         dist_mat = generate_dist_matrix(universe, distance)
 
         # construct utility function
@@ -51,7 +51,7 @@ class Game:
         self.universe = universe
         self.num_states = num_states
         self.num_signals = num_signals
-        self.prior = prior
+        self.prior = prior  # N.B.: we assume p(states) = p(meanings)
         self.dist_mat = dist_mat
         self.utility = utility
         self.meaning_dists = meaning_dists
@@ -64,15 +64,19 @@ class Game:
 
     @classmethod
     def from_hydra(cls, config):
-        """Automatically construct a evolutionary game from a hydra config."""
+        """Automatically construct a sim-max game from a hydra config."""
 
+        # default to local number of cpus for multiprocessing of simulations
         if config.game.num_processes is None:
             config.game.num_processes = cpu_count()
+
+        # Load prior from file
+        prior = torch.load(get_prior_fn(config))
 
         return cls(
             config.game.num_states,
             config.game.num_signals,
-            10 ** config.game.prior_init_alpha,
+            prior,
             config.game.distance,
             10 ** config.game.discriminative_need_gamma, # input to softmax
             10 ** config.game.meaning_dist_gamma, # input to softmax

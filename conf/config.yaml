@@ -39,8 +39,11 @@ filepaths:
 
   # Hydra automatic folder naming
 
+  # prior
+  prior_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_alpha}
+
   # holds curve points
-  curve_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_alpha}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_gamma}
+  curve_subdir: ${filepaths.prior_subdir}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_gamma}
 
   # for plots etc. that summarize simulation sweeps
   sim_sweep_subdir:  ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/ii=${simulation.dynamics.imprecise_imitation_gamma}/population_size=${simulation.dynamics.population_size}/num_runs=${simulation.num_runs}/seed=${seed} # note that population size is null in RD

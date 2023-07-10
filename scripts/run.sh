@@ -1,5 +1,7 @@
 #!/bin/sh
 
+python src/setup.py "$@"
+
 python src/curve.py "$@"
 
 python src/run_simulations.py "$@"

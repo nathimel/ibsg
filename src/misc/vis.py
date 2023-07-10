@@ -48,8 +48,8 @@ def basic_tradeoff_plot(
         mapping=pn.aes(color="run"),
         shape="o",
         size=4,
-        width=0.1,
-        height=0.1,
+        # width=0.1,
+        # height=0.1,
     )
 
     if nearest_optimal_encoders_data is not None:
