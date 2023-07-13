@@ -1,0 +1,5 @@
+- game.universe=wcs
+- game.prior=wcs_uniform
+- game.num_signals=330
+- game.discriminative_need_gamma=-10
+- simulation.dynamics.imprecise_imitation_gamma=1

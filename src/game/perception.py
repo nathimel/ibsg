@@ -1,19 +1,20 @@
 """Functions for computing similarity distributions and utility functions for signaling games."""
 
 import torch
+from altk.language.semantics import Universe, Referent
 
 # distance measures
-def hamming_dist(t: int, u: int) -> float:
+def hamming_dist(t: torch.Tensor, u: torch.Tensor) -> float:
     # indicator
-    return t == u
+    return torch.equal(t, u)
 
 
-def abs_dist(t: int, u: int) -> float:
-    return abs(t - u)
+def abs_dist(t: torch.Tensor, u: torch.Tensor) -> float:
+    return torch.linalg.vector_norm(t - u)
 
 
-def squared_dist(t: int, u: int) -> float:
-    return (t - u) ** 2
+def squared_dist(t: torch.Tensor, u: torch.Tensor) -> float:
+    return abs_dist(t, u) ** 2
 
 
 distance_measures = {
@@ -22,8 +23,11 @@ distance_measures = {
     "hamming_dist": hamming_dist,
 }
 
+def referent_to_tensor(referent: Referent):
+    return torch.tensor(referent.point, dtype=float)
+
 def generate_dist_matrix(
-    universe: list[int],
+    universe: Universe,
     distance: str = "squared_dist",
 ) -> torch.Tensor:
     """Given a universe, compute the distance for every pair of points in the universe.
@@ -40,15 +44,18 @@ def generate_dist_matrix(
     return torch.Tensor(
         [
                 [
-                    distance_measures[distance](t, u)
-                    for u in universe
+                    distance_measures[distance](
+                        referent_to_tensor(t), 
+                        referent_to_tensor(u),
+                        )
+                    for u in universe.referents
                 ]
-            for t in universe
+            for t in universe.referents
         ]
     )
 
 
-def generate_sim_matrix(universe: list[int], gamma: float, dist_mat: torch.Tensor) -> torch.Tensor:
+def generate_sim_matrix(universe: Universe, gamma: float, dist_mat: torch.Tensor) -> torch.Tensor:
     """Given a universe, compute a similarity score for every pair of points in the universe.
 
     NB: this is a wrapper function that generates the similarity matrix using the data contained in each State.
@@ -61,12 +68,12 @@ def generate_sim_matrix(universe: list[int], gamma: float, dist_mat: torch.Tenso
     return torch.stack(
         [
             exp(
-                target=t,
-                objects=universe,
+                target_index=idx,
+                referents=universe.referents,
                 gamma=gamma,
                 dist_mat=dist_mat,
             )
-            for t in universe
+            for idx in range(len(universe))
         ]
     )
 
@@ -77,17 +84,17 @@ def generate_sim_matrix(universe: list[int], gamma: float, dist_mat: torch.Tenso
 # N.B.: we use **kwargs so that sim_func() can have the same API
 
 def exp(
-    target: int,
-    objects: torch.Tensor,
+    target_index: int,
+    referents: list[Referent],
     gamma: float,
     dist_mat: torch.Tensor,
 ) -> torch.Tensor:
     """The (unnormalized) exponential function sim(x,y) = exp(-gamma * d(x,y)).
 
     Args:
-        target: value of state
+        target: index for a Referent in the distance matrix
 
-        objects: set of points with measurable similarity values
+        objects: list of Referents with measurable similarity values
 
         gamma: perceptual discriminability parameter
 
@@ -96,8 +103,7 @@ def exp(
     Returns:
         a similarity matrix representing pairwise inverse distance between states
     """
-    exp_term = lambda t, u: -gamma * dist_mat[t, u]
-    return torch.exp(torch.stack([exp_term(target, u) for u in objects]))
+    return torch.exp(torch.stack([-gamma * dist_mat[target_index, idx] for idx in range(len(referents))]))
 
 
 def sim_utility(x: int, y: int, sim_mat: torch.Tensor) -> float:

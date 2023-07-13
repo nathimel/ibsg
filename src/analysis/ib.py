@@ -1,3 +1,4 @@
+import os
 import torch
 import numpy as np
 
@@ -237,7 +238,9 @@ def get_ib_curve_(config: DictConfig):
 
     """
     # load params
-    evol_game = Game.from_hydra(config)
+    breakpoint()
+
+    evol_game = Game.from_hydra(config, cwd = os.getcwd())
     prior = evol_game.prior
     meaning_dists = evol_game.meaning_dists
     max_signals = evol_game.num_signals    

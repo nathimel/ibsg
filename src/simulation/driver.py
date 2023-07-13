@@ -22,7 +22,7 @@ def run_simulations(config: DictConfig) -> list[Game]:
         config.simulation.dynamics.population_init_maxalpha, 
         config.simulation.num_runs,
         )
-
+    
     if config.simulation.multiprocessing:
         return run_simulations_multiprocessing(config, population_init_gammas)
     else:

@@ -11,7 +11,7 @@ dynamics:
   # TODO: make this a part of the path, since it should be swept.
   # lower values -> more uniform initialization
   # set minalpha=maxalpha to not vary initialization
-  population_init_minalpha: 2 # will be exponentiated by 10
+  population_init_minalpha: -8 # will be exponentiated by 10
   population_init_maxalpha: 2
 
   # specific to only some dynamics, but we nontheless need them here in order to perform hydra's string interpolation for recursive path creation.

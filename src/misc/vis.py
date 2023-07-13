@@ -43,7 +43,7 @@ def basic_tradeoff_plot(
     sim_data["run"] = sim_data["run"].astype(int) + 1
     sim_data = numeric_col_to_categorical(sim_data, "run")
 
-    plot = plot + pn.geom_jitter(  # simulation langs
+    plot = plot + pn.geom_point(  # simulation langs
         data=sim_data,
         mapping=pn.aes(color="run"),
         shape="o",

@@ -9,6 +9,13 @@ seed: 42
 # Paths of files used for consuming and producing data
 filepaths: 
 
+  # Data to read in
+  # universe
+  universe_fn: data/universe/${game.universe}.csv
+  # prior
+  prior_fn: data/prior/${game.prior}.csv
+
+  # Outputs
   # Curves
   curve_points_save_fn: curve_points.csv # (I[M:W], I[W:U], E[D_KL[M || M']])
   mse_curve_points_save_fn: mse_curve_points.csv # (I[M:W], E[(u - u)^2])
@@ -39,11 +46,8 @@ filepaths:
 
   # Hydra automatic folder naming
 
-  # prior
-  prior_subdir: states=${game.num_states}/signals=${game.num_signals}/prior=${game.prior_init_alpha}
-
   # holds curve points
-  curve_subdir: ${filepaths.prior_subdir}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_gamma}
+  curve_subdir: universe=${game.universe}/num_signals=${game.num_signals}/prior=${game.prior}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_gamma}
 
   # for plots etc. that summarize simulation sweeps
   sim_sweep_subdir:  ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/ii=${simulation.dynamics.imprecise_imitation_gamma}/population_size=${simulation.dynamics.population_size}/num_runs=${simulation.num_runs}/seed=${seed} # note that population size is null in RD

@@ -178,22 +178,32 @@ def get_bound_fn(config: DictConfig, bound_type: str = "ib", curve_dir: str = No
         raise ValueError()
     return fn
 
-def get_prior_fn(config: DictConfig) -> str:
+def get_root(config: DictConfig, cwd = None) -> str:
+    """Get the full path of the root of the repo, relative to hydra interpolations."""
+    return os.path.abspath(os.path.dirname(cwd.replace(config.filepaths.leaf_subdir, "")))
+
+
+def get_prior_fn(config: DictConfig, *args, cwd = None, **kwargs) -> str:
     """Get the full path of the prior need distribution over meanings, relative to hydra interpolations."""
-    fullpath = lambda fn: os.path.join(os.getcwd().replace(config.filepaths.leaf_subdir, config.filepaths.prior_subdir), fn)
-    prior_init_alpha = config.game.prior_init_alpha
+    if cwd is None:
+        cwd = os.getcwd()
 
-    if isinstance(prior_init_alpha, int):
-        prior_fn = f"alpha={prior_init_alpha}.pt"
-        fp = fullpath(prior_fn)
-    elif isinstance(prior_init_alpha, str):
-        prior_fn = f"{prior_init_alpha}.pt"
-        fp = fullpath(prior_fn)
-        if not os.path.exists(fp):
-            warnings.warn(f"No existing file was found at {fp}, so it will be created. You must overwrite this file with a tensor of your prior over meanings.")
-    else:
-        raise ValueError("The value for game.prior_init_apha must be an integer or a string.")
+    # root =os.path.abspath(os.path.join(cwd.replace(config.filepaths.leaf_subdir, ""), os.pardir))
+    # root = os.path.abspath(os.path.dirname(cwd.replace(config.filepaths.leaf_subdir, "")))
+    root = get_root(config, cwd)
+    fp = os.path.join(root, config.filepaths.prior_fn)
 
+    return fp
+
+def get_universe_fn(config: DictConfig, *args, cwd = None, **kwargs) -> str:
+    """Get the full path of the Universe (collection of referents/ world states) determining the size and structure of the semantic space, relative to hydra interpolations."""
+    if cwd is None:
+        cwd = os.getcwd()
+
+    # root =os.path.abspath(os.path.join(cwd.replace(config.filepaths.leaf_subdir, ""), os.pardir))
+    root = get_root(config, cwd)
+    fp = os.path.join(root, config.filepaths.universe_fn)
+    
     return fp
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
