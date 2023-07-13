@@ -118,7 +118,7 @@ hydra:
     - game.discriminative_need_gamma=1
     - simulation.dynamics.imprecise_imitation_gamma=-2
   job:
-    name: plot
+    name: efficiency
     chdir: true
     override_dirname: game.prior=wcs_uniform,game.universe=wcs
     id: '36'

@@ -180,16 +180,13 @@ def get_bound_fn(config: DictConfig, bound_type: str = "ib", curve_dir: str = No
 
 def get_root(config: DictConfig, cwd = None) -> str:
     """Get the full path of the root of the repo, relative to hydra interpolations."""
-    return os.path.abspath(os.path.dirname(cwd.replace(config.filepaths.leaf_subdir, "")))
+    return os.path.abspath(os.path.join(cwd.replace(config.filepaths.leaf_subdir, ""), os.pardir)) # use join, not dirname (which requires path to exist, among other things)
 
 
 def get_prior_fn(config: DictConfig, *args, cwd = None, **kwargs) -> str:
     """Get the full path of the prior need distribution over meanings, relative to hydra interpolations."""
     if cwd is None:
         cwd = os.getcwd()
-
-    # root =os.path.abspath(os.path.join(cwd.replace(config.filepaths.leaf_subdir, ""), os.pardir))
-    # root = os.path.abspath(os.path.dirname(cwd.replace(config.filepaths.leaf_subdir, "")))
     root = get_root(config, cwd)
     fp = os.path.join(root, config.filepaths.prior_fn)
 
@@ -199,8 +196,6 @@ def get_universe_fn(config: DictConfig, *args, cwd = None, **kwargs) -> str:
     """Get the full path of the Universe (collection of referents/ world states) determining the size and structure of the semantic space, relative to hydra interpolations."""
     if cwd is None:
         cwd = os.getcwd()
-
-    # root =os.path.abspath(os.path.join(cwd.replace(config.filepaths.leaf_subdir, ""), os.pardir))
     root = get_root(config, cwd)
     fp = os.path.join(root, config.filepaths.universe_fn)
     
