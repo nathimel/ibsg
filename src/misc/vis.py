@@ -96,6 +96,7 @@ def bound_only_plot(
         pn.ggplot(data=data, mapping=pn.aes(x="complexity", y=y))
         + pn.xlab("Complexity $I[M:W]$ bits")
         + pn.ylab(ystr)
+        + pn.xlim(0, 8) # for wcs
     )
     # plot = plot + pn.geom_line()
     plot = plot + pn.geom_point()

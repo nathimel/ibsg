@@ -92,7 +92,7 @@ def ib_encoder_to_measurements(
 
 # IB CURVE ESTIMATION
 
-def get_bottleneck(config: DictConfig) -> list[tuple]:
+def get_bottleneck(config: DictConfig) -> dict[str, list]:
     """Compute the `(complexity, accuracy, comm_cost)` values and optimal encoders corresponding to an Information Bottleneck theoretical bound. 
     
     The config specifies whether to use the embo package, which is faster and filters non-monotonicity, or a homebuilt version, which can be useful for  sanity checks with minimal overhead.

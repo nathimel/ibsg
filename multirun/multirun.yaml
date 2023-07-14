@@ -113,14 +113,15 @@ hydra:
     - hydra.mode=MULTIRUN
     task:
     - game.universe=wcs
-    - game.prior=wcs_uniform
+    - game.prior=wcs_model
     - game.num_signals=330
-    - game.discriminative_need_gamma=-10,-3,-2,-1,0,1,2,3,10
-    - simulation.dynamics.imprecise_imitation_gamma=range(-3,4)
+    - game.meaning_dist_gamma=wcs_model
+    - simulation.dynamics.imprecise_imitation_gamma=-2
+    - simulation.multiprocessing=False
   job:
-    name: efficiency
+    name: plot
     chdir: true
-    override_dirname: game.prior=wcs_uniform,game.universe=wcs
+    override_dirname: game.prior=wcs_model,game.universe=wcs,simulation.multiprocessing=False
     id: ???
     num: ???
     config_name: config
@@ -174,11 +175,11 @@ hydra:
   verbose: false
 game:
   universe: wcs
-  prior: wcs_uniform
+  prior: wcs_model
   num_signals: 330
   distance: squared_dist
   discriminative_need_gamma: 1.0
-  meaning_dist_gamma: 0
+  meaning_dist_gamma: wcs_model
   ib_bound_function: embo
   overwrite_curves: false
   maxbeta: 5
@@ -191,7 +192,7 @@ simulation:
     threshold: 1.0e-05
     population_init_minalpha: -8
     population_init_maxalpha: 2
-    imprecise_imitation_gamma: 0
+    imprecise_imitation_gamma: -2
     population_size: null
     graph: null
     name: two_population_rd
@@ -200,7 +201,7 @@ simulation:
   plot_all_encoders: true
   trajectory: true
   variants: false
-  multiprocessing: true
+  multiprocessing: false
   num_processes: null
 seed: 42
 filepaths:

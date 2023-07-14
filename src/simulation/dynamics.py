@@ -26,7 +26,9 @@ class Dynamics:
         self.threshold = kwargs["threshold"]
         self.confusion_gamma = 10 ** kwargs["imprecise_imitation_gamma"]
 
-        self.confusion = normalize_rows(generate_sim_matrix(self.game.universe, self.confusion_gamma, self.game.dist_mat))
+        # self.confusion = normalize_rows(generate_sim_matrix(self.game.universe, self.confusion_gamma, self.game.dist_mat))
+        # NOTE: temporarily just equate with ib model naming dists (still have utility to deal with tho)
+        self.confusion = game.meaning_dists
 
         pt_args = [self.game.meaning_dists, self.game.prior, self.game.dist_mat, self.confusion]
 

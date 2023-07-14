@@ -27,7 +27,6 @@ def build_universe(
 
         features: list of column-names of `referents_df` to encode as a feature vector (stored in a tuple named `point`) associated with each referent. For example, if ['x', 'y', 'z'] is passed, then a possible value of referent.point could be (0.2, -8, 10). Default is None, and all columns of `referents_df` except 'name' will be considered features.
     """
-    
     assert (referents_df["name"] == prior_df["name"]).all()
 
     referents = tuple(
