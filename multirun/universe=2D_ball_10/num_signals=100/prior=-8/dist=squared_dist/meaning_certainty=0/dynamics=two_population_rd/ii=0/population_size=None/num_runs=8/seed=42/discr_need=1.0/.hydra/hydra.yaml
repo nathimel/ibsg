@@ -112,16 +112,12 @@ hydra:
     hydra:
     - hydra.mode=MULTIRUN
     task:
-    - game.universe=wcs
-    - game.prior=wcs_model
-    - game.num_signals=330
-    - game.meaning_dist_gamma=wcs_model
-    - simulation.dynamics.imprecise_imitation_gamma=-2
-    - simulation.multiprocessing=False
+    - game.universe=2D_ball_10
+    - game.num_signals=100
   job:
-    name: run_simulations
+    name: setup
     chdir: true
-    override_dirname: game.prior=wcs_model,game.universe=wcs,simulation.multiprocessing=False
+    override_dirname: game.universe=2D_ball_10
     id: '0'
     num: 0
     config_name: config
@@ -158,7 +154,7 @@ hydra:
     - path: ''
       schema: structured
       provider: schema
-    output_dir: /Users/nathanielimel/uci/projects/ibsg/multirun/universe=wcs/num_signals=330/prior=wcs_model/dist=squared_dist/meaning_certainty=wcs_model/dynamics=two_population_rd/ii=-2/population_size=None/num_runs=8/seed=42/discr_need=1.0
+    output_dir: /Users/nathanielimel/uci/projects/ibsg/multirun/universe=2D_ball_10/num_signals=100/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=0/population_size=None/num_runs=8/seed=42/discr_need=1.0
     choices:
       simulation: basic
       simulation/dynamics: two_population_rd
