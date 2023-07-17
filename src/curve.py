@@ -3,8 +3,8 @@ import hydra
 import torch
 import os
 
-from analysis.ib import get_bottleneck, get_rd_curve
 from omegaconf import DictConfig
+from analysis.ib import get_bottleneck, get_rd_curve
 from game.game import Game
 from misc import util
 

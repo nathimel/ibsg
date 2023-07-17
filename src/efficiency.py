@@ -6,10 +6,10 @@ import torch
 
 import pandas as pd
 
+from omegaconf import DictConfig
 from altk.effcomm.util import gNID
 from altk.effcomm.information import ib_encoder_to_point
 from game.game import Game
-from omegaconf import DictConfig
 from misc import util, vis
 
 

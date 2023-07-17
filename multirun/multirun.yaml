@@ -112,13 +112,12 @@ hydra:
     hydra:
     - hydra.mode=MULTIRUN
     task:
-    - game.universe=2ball_300
+    - game.universe=2cube_300
     - game.num_signals=300
-    - game.prior=2ball_300_power_2
   job:
     name: plot
     chdir: true
-    override_dirname: game.prior=2ball_300_power_2,game.universe=2ball_300
+    override_dirname: game.universe=2cube_300
     id: ???
     num: ???
     config_name: config
@@ -171,8 +170,8 @@ hydra:
       hydra/output: default
   verbose: false
 game:
-  universe: 2ball_300
-  prior: 2ball_300_power_2
+  universe: 2cube_300
+  prior: -8
   num_signals: 300
   distance: squared_dist
   discriminative_need_gamma: 1.0

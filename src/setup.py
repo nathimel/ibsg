@@ -1,13 +1,9 @@
 """Minimal script to check that basic construction of the game and analysis works. Useful when run before any real steps of the experiment."""
 
 import hydra
-import os
-import torch
-
 from omegaconf import DictConfig
 
-from misc import util, tools
-
+from misc import util
 from game.game import Game
 
 

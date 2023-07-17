@@ -15,7 +15,7 @@ echo "Running job on host $hn"
 
 # Just overwrite output file
 
-# rm -f scripts/outputs/err.txt
-rm -f scripts/outputs/out.txt
+# rm -f shellscripts/outputs/err.txt
+rm -f shellscripts/outputs/out.txt
 
-time ./scripts/hpc_run.sh "$@" > scripts/outputs/out.txt
+time ./shellscripts/hpc_run.sh "$@" > shellscripts/outputs/out.txt

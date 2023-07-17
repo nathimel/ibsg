@@ -7,9 +7,9 @@ import torch
 import random
 
 from altk.effcomm.information import ib_encoder_to_point
+from omegaconf import DictConfig
 
 from game.game import Game
-from omegaconf import DictConfig
 from misc import util
 
 
