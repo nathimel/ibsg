@@ -111,12 +111,11 @@ hydra:
   overrides:
     hydra:
     - hydra.mode=RUN
-    task:
-    - game.universe=10
+    task: []
   job:
-    name: setup
+    name: plot
     chdir: true
-    override_dirname: game.universe=10
+    override_dirname: ''
     id: ???
     num: ???
     config_name: config

@@ -1,8 +1,11 @@
 import torch
 
-def generate_adjacency_matrix(n: int, graph: str = 'complete', self_connections: bool = False, **kwargs) -> torch.Tensor:
+
+def generate_adjacency_matrix(
+    n: int, graph: str = "complete", self_connections: bool = False, **kwargs
+) -> torch.Tensor:
     """Generate an adjacency matrix for a graph (network) defining the environment of agents, with vertices representing agents, and edges representing communication.
-    
+
     Args:
         n: the number of vertices (agents) in the graph
 
@@ -15,13 +18,15 @@ def generate_adjacency_matrix(n: int, graph: str = 'complete', self_connections:
 
     elif graph == "random":
         # generate a random UNWEIGHTED graph
-        graph = torch.zeros(n,n)
-        while not (graph - torch.eye(n,n)).any(): # at least one irreflexive connection
+        graph = torch.zeros(n, n)
+        while not (
+            graph - torch.eye(n, n)
+        ).any():  # at least one irreflexive connection
             graph = torch.tensor(torch.randn(n, n) > 0, dtype=int)
 
     else:
         raise ValueError("Argument `graph` must be str 'complete' or 'random'.")
-        
+
     if not self_connections:
         graph -= torch.eye(n)
     return graph

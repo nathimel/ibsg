@@ -25,10 +25,13 @@ def main(config):
     # save rotations of final encoders
     if config.simulation.variants:
         variant_points_df = get_hypothetical_variants(runs, 100)
-        util.save_points_df(fn=config.filepaths.variant_points_save_fn, df=variant_points_df)
+        util.save_points_df(
+            fn=config.filepaths.variant_points_save_fn, df=variant_points_df
+        )
 
     # save the final encoders to a csv
     util.save_final_encoders(config.filepaths.final_encoders_save_fn, runs)
+
 
 if __name__ == "__main__":
     main()

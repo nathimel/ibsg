@@ -21,13 +21,13 @@ from multiprocessing import cpu_count, Pool
 def ib_encoder_to_measurements(
     meaning_dists: torch.Tensor,
     prior: torch.Tensor,
-    dist_mat: torch.Tensor,    
+    dist_mat: torch.Tensor,
     confusion: torch.Tensor,
-    encoder: torch.Tensor,     
+    encoder: torch.Tensor,
     decoder: torch.Tensor = None,
 ) -> tuple[float]:
     """Return (complexity, accuracy, distortion, mean squared error) point.
-    
+
     Args:
         meaning_dists: array of shape `(|meanings|, |meanings|)` representing the distribution over world states given meanings.
 
@@ -53,7 +53,7 @@ def ib_encoder_to_measurements(
         decoder = np.array(decoder)
     else:
         decoder = bayes(encoder, prior)
-    
+
     complexity, accuracy, distortion = ib_encoder_to_point(
         meaning_dists,
         prior,
@@ -62,20 +62,20 @@ def ib_encoder_to_measurements(
     )
 
     if complexity < 0:
-        if np.isclose(complexity, 0., atol=1e-5):
-            complexity = 0.
+        if np.isclose(complexity, 0.0, atol=1e-5):
+            complexity = 0.0
         else:
             raise Exception
-    
+
     if accuracy < 0:
-        if np.isclose(accuracy, 0., atol=1e-5):
-            accuracy = 0.
+        if np.isclose(accuracy, 0.0, atol=1e-5):
+            accuracy = 0.0
         else:
             raise Exception
-    
+
     if distortion < 0:
-        if np.isclose(distortion, 0., atol=1e-5):
-            distortion = 0.
+        if np.isclose(distortion, 0.0, atol=1e-5):
+            distortion = 0.0
         else:
             raise Exception
 
@@ -92,9 +92,10 @@ def ib_encoder_to_measurements(
 
 # IB CURVE ESTIMATION
 
+
 def get_bottleneck(config: DictConfig) -> dict[str, list]:
-    """Compute the `(complexity, accuracy, comm_cost)` values and optimal encoders corresponding to an Information Bottleneck theoretical bound. 
-    
+    """Compute the `(complexity, accuracy, comm_cost)` values and optimal encoders corresponding to an Information Bottleneck theoretical bound.
+
     The config specifies whether to use the embo package, which is faster and filters non-monotonicity, or a homebuilt version, which can be useful for  sanity checks with minimal overhead.
 
     Args:
@@ -119,21 +120,26 @@ def get_bottleneck(config: DictConfig) -> dict[str, list]:
             numbeta=g.numbeta,
             processes=g.num_processes,
         )
-    
+
     elif func == "homebuilt":
         bottleneck = get_ib_curve_(config)
 
     else:
-        raise ValueError(f"IB bound functions include 'embo', 'homebuilt', but received {func}.")
+        raise ValueError(
+            f"IB bound functions include 'embo', 'homebuilt', but received {func}."
+        )
 
     # interestingly, we sometimes need to normalize encoders from IB method
-    bottleneck["encoders"] = [normalize_rows(torch.tensor(enc)) for enc in bottleneck["encoders"]]
+    bottleneck["encoders"] = [
+        normalize_rows(torch.tensor(enc)) for enc in bottleneck["encoders"]
+    ]
 
     # convert from numpy to list
     if isinstance(bottleneck["betas"], np.ndarray):
         bottleneck["betas"] = bottleneck["betas"].tolist()
 
     return bottleneck
+
 
 def ensure_monotonic_bound(curve_points: torch.Tensor):
     """Fix any randomness in curve leading to nonmonotonicity."""
@@ -148,7 +154,7 @@ def ib_blahut_arimoto(
     p_U_given_M: torch.Tensor,
     max_its: int = 100,
     eps: float = 1e-5,
-    ignore_converge: bool = False,    
+    ignore_converge: bool = False,
     init_temperature: float = 1,
 ) -> torch.Tensor:
     """Compute the optimal IB encoder, using the IB-method.
@@ -166,7 +172,7 @@ def ib_blahut_arimoto(
 
         eps: accuracy required by the algorithm: the algorithm stops if there is no change in distortion value of more than 'eps' between consequtive iterations
 
-        ignore_converge: whether to run the optimization until `max_it`, ignoring the stopping criterion specified by `eps`.        
+        ignore_converge: whether to run the optimization until `max_it`, ignoring the stopping criterion specified by `eps`.
 
         init_temperature: specifies the entropy of the encoder's initialization distribution
 
@@ -184,7 +190,9 @@ def ib_blahut_arimoto(
     lnp_U_given_M = lnp_U_given_M[:, :, None]  # shape UM1
 
     # q(w|m) is an M x W matrix
-    lnq = ((1 / init_temperature) * torch.randn(1, lnp_M.shape[M_dim], num_words)).log_softmax(
+    lnq = (
+        (1 / init_temperature) * torch.randn(1, lnp_M.shape[M_dim], num_words)
+    ).log_softmax(
         W_dim
     )  # shape 1MW
 
@@ -206,7 +214,7 @@ def ib_blahut_arimoto(
         lnq_inv = lnq_joint - lnq0  # shape 1MW
 
         # now need q(u|w) = \sum_m p(m | w) p(u | m)
-        lnquw = (lnq_inv + lnp_U_given_M).logsumexp(M_dim, keepdim=True) # shape U1W
+        lnquw = (lnq_inv + lnp_U_given_M).logsumexp(M_dim, keepdim=True)  # shape U1W
 
         # now need \sum_u p(u|m) ln q(u|w); use torch.xlogy for 0*log0 case
         d = -(lnp_U_given_M.exp() * lnquw).sum(U_dim, keepdim=True)  # shape 1MW
@@ -222,10 +230,11 @@ def ib_blahut_arimoto(
 
     return lnq.squeeze(U_dim).exp()  # remove dummy U dimension, convert from logspace
 
+
 def get_ib_curve_(config: DictConfig):
     """Reverse deterministic annealing (Zaslavsky and Tishby, 2019).
-    
-    Args: 
+
+    Args:
         config: A Hydra DictConfig the config file for the experiment.
 
     Returns: a dict of containing the IB optimal encoders and their coordinates, of the form
@@ -240,15 +249,17 @@ def get_ib_curve_(config: DictConfig):
     # load params
     breakpoint()
 
-    evol_game = Game.from_hydra(config, cwd = os.getcwd())
+    evol_game = Game.from_hydra(config, cwd=os.getcwd())
     prior = evol_game.prior
     meaning_dists = evol_game.meaning_dists
-    max_signals = evol_game.num_signals    
+    max_signals = evol_game.num_signals
 
     encoders = []
     coordinates = []
 
-    betas = torch.linspace(config.game.maxbeta, config.game.minbeta, config.game.numbeta)
+    betas = torch.linspace(
+        config.game.maxbeta, config.game.minbeta, config.game.numbeta
+    )
     # curve can get sparse in the high-interest regions, beta 1.02-1.1
 
     # Multiprocessing
@@ -257,15 +268,18 @@ def get_ib_curve_(config: DictConfig):
         with Pool(num_processes) as p:
             async_results = [
                 p.apply_async(
-                ib_blahut_arimoto, 
-                args=[max_signals, beta, prior, meaning_dists],
+                    ib_blahut_arimoto,
+                    args=[max_signals, beta, prior, meaning_dists],
                 )
                 for beta in betas
             ]
             p.close()
             p.join()
         encoders = [async_result.get() for async_result in tqdm(async_results)]
-        coordinates = [ib_encoder_to_point(meaning_dists, prior, normalize_rows(encoder)) for encoder in encoders]
+        coordinates = [
+            ib_encoder_to_point(meaning_dists, prior, normalize_rows(encoder))
+            for encoder in encoders
+        ]
 
     else:
         for beta in tqdm(betas):
@@ -276,5 +290,5 @@ def get_ib_curve_(config: DictConfig):
     return {
         "encoders": encoders,
         "coordinates": coordinates,
-        "betas": betas, # return all betas for now
+        "betas": betas,  # return all betas for now
     }

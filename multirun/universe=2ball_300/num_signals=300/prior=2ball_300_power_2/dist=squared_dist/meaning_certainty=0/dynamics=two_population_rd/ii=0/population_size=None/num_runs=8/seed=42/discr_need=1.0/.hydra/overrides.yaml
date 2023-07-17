@@ -1,0 +1,3 @@
+- game.universe=2ball_300
+- game.num_signals=300
+- game.prior=2ball_300_power_2

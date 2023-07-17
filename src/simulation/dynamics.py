@@ -26,21 +26,36 @@ class Dynamics:
         self.threshold = kwargs["threshold"]
         self.confusion_gamma = 10 ** kwargs["imprecise_imitation_gamma"]
 
-        self.confusion = normalize_rows(generate_sim_matrix(self.game.universe, self.confusion_gamma, self.game.dist_mat))
+        self.confusion = normalize_rows(
+            generate_sim_matrix(
+                self.game.universe, self.confusion_gamma, self.game.dist_mat
+            )
+        )
 
-        pt_args = [self.game.meaning_dists, self.game.prior, self.game.dist_mat, self.confusion]
+        pt_args = [
+            self.game.meaning_dists,
+            self.game.prior,
+            self.game.dist_mat,
+            self.confusion,
+        ]
 
-        self.get_point = lambda encoder, _: ib_encoder_to_measurements(*pt_args, encoder=encoder,)
+        self.get_point = lambda encoder, _: ib_encoder_to_measurements(
+            *pt_args,
+            encoder=encoder,
+        )
 
         if kwargs["use_decoder"]:
-            self.get_point = lambda encoder, decoder: ib_encoder_to_measurements(*pt_args, encoder=encoder, decoder=decoder,)
+            self.get_point = lambda encoder, decoder: ib_encoder_to_measurements(
+                *pt_args,
+                encoder=encoder,
+                decoder=decoder,
+            )
 
     def run(self):
         raise NotImplementedError
-    
+
     def evolution_step(self):
-        """The step of evolution that varies between different models.
-        """
+        """The step of evolution that varies between different models."""
         raise NotImplementedError
 
 
@@ -52,15 +67,21 @@ class FinitePopulationDynamics(Dynamics):
 
             threshold: a float controlling convergence of evolution
 
-            init_gamma: a float controlling the sharpness of the seed population (composed of a Sender P and Receiver Q) agents' distributions        
+            init_gamma: a float controlling the sharpness of the seed population (composed of a Sender P and Receiver Q) agents' distributions
         """
         super().__init__(game, **kwargs)
         self.n = kwargs["population_size"]
         self.population_init_gamma = kwargs["population_init_gamma"]
 
         # create a population of n many (P,Q) agents
-        self.Ps = random_stochastic_matrix((self.n, self.game.num_states, self.game.num_signals), self.population_init_gamma)
-        self.Qs = random_stochastic_matrix((self.n, self.game.num_signals, self.game.num_states), self.population_init_gamma)
+        self.Ps = random_stochastic_matrix(
+            (self.n, self.game.num_states, self.game.num_signals),
+            self.population_init_gamma,
+        )
+        self.Qs = random_stochastic_matrix(
+            (self.n, self.game.num_signals, self.game.num_states),
+            self.population_init_gamma,
+        )
 
         # define the adjacency matrix for the environment of interacting agents
         self.adj_mat = generate_adjacency_matrix(self.n, kwargs["graph"])
@@ -68,38 +89,38 @@ class FinitePopulationDynamics(Dynamics):
     def population_mean_weights(self) -> tuple[float]:
         """Return the average agent (Sender, Receiver) weights."""
         return (
-            normalize_rows(torch.mean(self.Ps, dim=0)), 
+            normalize_rows(torch.mean(self.Ps, dim=0)),
             normalize_rows(torch.mean(self.Qs, dim=0)),
-            )
+        )
 
     def measure_fitness(self) -> torch.Tensor:
         """Measure the fitness of communicating individuals in the population.
-        
+
         Returns:
             a 1D array of floats (normalized to [0,1]) of shape `num_agents` such that fitnesses[i] corresponds to the ith individual.
         """
-        payoffs = torch.zeros(self.n) # 1D, since fitness is symmetric
+        payoffs = torch.zeros(self.n)  # 1D, since fitness is symmetric
 
         # iterate over every adjacent pair in the graph
-        for i in range(self.n): 
+        for i in range(self.n):
             for j in range(self.n):
                 # TODO: generalize to stochastic behavior for real-valued edge weights
-                if not self.adj_mat[i,j]:
+                if not self.adj_mat[i, j]:
                     continue
                 # accumulate payoff for interaction symmetrically
                 payoff = self.fitness(
-                    p = self.Ps[i],
-                    q = self.Qs[i],
-                    p_ = self.Ps[j],
-                    q_ = self.Qs[j],
+                    p=self.Ps[i],
+                    q=self.Qs[i],
+                    p_=self.Ps[j],
+                    q_=self.Qs[j],
                 )
                 payoffs[i] += payoff
                 payoffs[j] += payoff
-                
+
         return payoffs / payoffs.sum()
-    
+
     def fitness(
-        self, 
+        self,
         p: torch.Tensor,
         q: torch.Tensor,
         p_: torch.Tensor,
@@ -112,11 +133,15 @@ class FinitePopulationDynamics(Dynamics):
         where X is a sender, Y is a receiver, and C is a symmetric confusion matrix, to compare to IB meaning distributions.
         """
         # BUG: shape error here
-        f = lambda X,Y: torch.sum(
-            torch.diag(self.game.prior) @ self.confusion @ X @ Y @ self.confusion * self.game.utility
-            )
+        f = lambda X, Y: torch.sum(
+            torch.diag(self.game.prior)
+            @ self.confusion
+            @ X
+            @ Y
+            @ self.confusion
+            * self.game.utility
+        )
         return (f(p, q_) + f(p_, q)) / 2.0
-    
 
     def run(self):
         """Main loop to simulate evolution and track data."""
@@ -142,8 +167,9 @@ class FinitePopulationDynamics(Dynamics):
             mean_p, mean_q = self.population_mean_weights()
 
             # Check for convergence
-            if (torch.abs(mean_p - mean_p_prev).sum() < self.threshold
-            and torch.abs(mean_q - mean_q_prev).sum() < self.threshold
+            if (
+                torch.abs(mean_p - mean_p_prev).sum() < self.threshold
+                and torch.abs(mean_q - mean_q_prev).sum() < self.threshold
             ) or (i == self.max_its):
                 converged = True
 
@@ -157,7 +183,12 @@ class FinitePopulationDynamics(Dynamics):
 
 def mutate(parent_behavior: torch.Tensor, num_samples: int):
     eye = torch.eye(parent_behavior.shape[-1])
-    sample_indices = torch.stack([torch.multinomial(sub_p, num_samples, replacement=True) for sub_p in parent_behavior])
+    sample_indices = torch.stack(
+        [
+            torch.multinomial(sub_p, num_samples, replacement=True)
+            for sub_p in parent_behavior
+        ]
+    )
     samples = eye[sample_indices]
     return samples.mean(axis=-2)
 
@@ -187,11 +218,11 @@ class MoranProcess(FinitePopulationDynamics):
         super().__init__(game, **kwargs)
 
     def evolution_step(self):
-        """Simulate evolution in the finite population by running the frequency dependent Moran process, at each iteration randomly replacing an individual with an (randomly selected proportional to fitness) agent's offspring."""            
+        """Simulate evolution in the finite population by running the frequency dependent Moran process, at each iteration randomly replacing an individual with an (randomly selected proportional to fitness) agent's offspring."""
         fitnesses = self.measure_fitness()
 
-        i = torch.multinomial(fitnesses, 1) # birth
-        j = torch.multinomial(torch.ones(self.n), 1) # death
+        i = torch.multinomial(fitnesses, 1)  # birth
+        j = torch.multinomial(torch.ones(self.n), 1)  # death
 
         # replace the random deceased with fitness-sampled offspring
         self.Ps[j] = self.Ps[i]
@@ -203,15 +234,21 @@ class MoranProcess(FinitePopulationDynamics):
 # Discrete Time Replicator Dynamics (with perceptual uncertainty in meanings)
 ##############################################################################
 
+
 class ReplicatorDynamics(Dynamics):
     """Discrete Time Replicator Dynamics, with perceptual uncertainty in meaning distributions (see Franke and Correia, 2018 on imprecise imitation)."""
+
     def __init__(self, game: Game, **kwargs) -> None:
         super().__init__(game, **kwargs)
-        self.init_gamma = 10 ** kwargs["population_init_gamma"] #TODO: debug
+        self.init_gamma = 10 ** kwargs["population_init_gamma"]  # TODO: debug
         # self.init_gamma = 10 ** -8
 
-        self.P = random_stochastic_matrix((self.game.num_states, self.game.num_signals), self.init_gamma) # Sender 'population frequencies'
-        self.Q = random_stochastic_matrix((self.game.num_signals, self.game.num_states), self.init_gamma) # Receiver 'population frequencies'
+        self.P = random_stochastic_matrix(
+            (self.game.num_states, self.game.num_signals), self.init_gamma
+        )  # Sender 'population frequencies'
+        self.Q = random_stochastic_matrix(
+            (self.game.num_signals, self.game.num_states), self.init_gamma
+        )  # Receiver 'population frequencies'
 
     def run(self):
         its = 0
@@ -241,7 +278,7 @@ class ReplicatorDynamics(Dynamics):
 
             self.game.ib_encoders.append(rows_zero_to_uniform(normalize_rows(P_prev)))
 
-            self.evolution_step() # N.B.: fitness requires population update 
+            self.evolution_step()  # N.B.: fitness requires population update
 
             # Check for convergence
             if (
@@ -260,15 +297,15 @@ class ReplicatorDynamics(Dynamics):
         Changes in agent type (pure strategies) depend only on their frequency and their fitness.
         """
         raise NotImplementedError
-    
+
     def warn_if_all_zero(self) -> None:
         """Check if a Sender's encoder or Receiver's decoder is all zeros, and warn appropriately.
 
-            N.B.: This means the entire universe is ineffable. Since this feature of the model appears to reflect a logical (albeit remote) possibility, our analysis proceeds as usual (rather than, e.g., assigning a uniform distribution to every row).
+        N.B.: This means the entire universe is ineffable. Since this feature of the model appears to reflect a logical (albeit remote) possibility, our analysis proceeds as usual (rather than, e.g., assigning a uniform distribution to every row).
         """
         if torch.any(self.P.sum() == 0):
             warnings.warn("Dynamics yielded an encoder with all zeros.")
-        
+
         if torch.any(self.Q.sum() == 0):
             warnings.warn("Dynamics yielded a decoder with all zeros.")
 
@@ -280,28 +317,29 @@ class TwoPopulationRD(ReplicatorDynamics):
     def evolution_step(self):
         """Update steps in the two population replicator dynamics for signaling is given by:
 
-            freq(sender)' = freq(sender) * fitness_relative_to_receiver(sender)
+        freq(sender)' = freq(sender) * fitness_relative_to_receiver(sender)
 
-            freq(receiver)' = freq(receiver) * fitness_relative_to_prior_and_sender(receiver)
+        freq(receiver)' = freq(receiver) * fitness_relative_to_prior_and_sender(receiver)
         """
-        P = self.P # `[states, signals]`
-        Q = self.Q # `[signals, states]`
-        U = self.game.utility # `[states, states]`
-        C = self.confusion # `[states, states]`, compare self.game.meaning_dists
-        p = self.game.prior # `[states,]`
+        P = self.P  # `[states, signals]`
+        Q = self.Q  # `[signals, states]`
+        U = self.game.utility  # `[states, states]`
+        C = self.confusion  # `[states, states]`, compare self.game.meaning_dists
+        p = self.game.prior  # `[states,]`
 
         P *= (Q @ U).T
-        P = C @ P 
+        P = C @ P
         P = normalize_rows(P)
 
         Q *= p * (U @ P).T
-        Q = Q @ C # C symmetric, and if C = M, we thus assume m(u) = u(m).
+        Q = Q @ C  # C symmetric, and if C = M, we thus assume m(u) = u(m).
         Q = normalize_rows(Q)
 
         self.P = copy.deepcopy(P)
         self.Q = copy.deepcopy(Q)
 
         self.warn_if_all_zero()
+
 
 dynamics_map = {
     "moran_process": MoranProcess,

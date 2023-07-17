@@ -113,11 +113,12 @@ hydra:
     - hydra.mode=MULTIRUN
     task:
     - game.universe=2ball_300
-    - game.num_signals=100
+    - game.num_signals=300
+    - game.prior=2ball_300_power_2
   job:
     name: plot
     chdir: true
-    override_dirname: game.universe=2ball_300
+    override_dirname: game.prior=2ball_300_power_2,game.universe=2ball_300
     id: ???
     num: ???
     config_name: config
@@ -171,8 +172,8 @@ hydra:
   verbose: false
 game:
   universe: 2ball_300
-  prior: -8
-  num_signals: 100
+  prior: 2ball_300_power_2
+  num_signals: 300
   distance: squared_dist
   discriminative_need_gamma: 1.0
   meaning_dist_gamma: 0
@@ -199,6 +200,7 @@ simulation:
   variants: false
   multiprocessing: true
   num_processes: null
+  num_approximation_samples: 20
 seed: 42
 filepaths:
   universe_fn: data/universe/${game.universe}.csv
@@ -213,14 +215,21 @@ filepaths:
   final_encoders_save_fn: final_encoders.pt
   nearest_optimal_points_save_fn: nearest_optimal_points.csv
   nearest_optimal_save_fn: nearest_optimal_encoders.pt
+  approximated_encoders_save_fn: approximated_encoders.pt
+  approximated_simulation_points_save_fn: approximated_simulation_points.csv
   complexity_accuracy_plot_fn: complexity_accuracy.png
   complexity_distortion_plot_fn: complexity_distortion.png
   complexity_mse_plot_fn: complexity_mse.png
   efficiency_plot_fn: efficiency.png
+  approximated_complexity_accuracy_plot_fn: approximated_complexity_accuracy.png
+  approximated_complexity_distortion_plot_fn: approximated_complexity_distortion.png
+  approximated_complexity_mse_plot_fn: approximated_complexity_mse.png
   encoder_tile_plots_dir: encoder_tile_plots
   encoder_line_plots_dir: encoder_line_plots
   encoders_faceted_lines_plot_fn: encoders_faceted_lines.png
   encoders_faceted_tiles_plot_fn: encoders_faceted_tiles.png
+  approximated_encoders_faceted_lines_plot_fn: approximated_encoders_faceted_lines.png
+  approximated_encoders_faceted_tiles_plot_fn: approximated_encoders_faceted_tiles.png
   nearest_optimal_faceted_lines_plot_fn: nearest_optimal_faceted_lines.png
   nearest_optimal_faceted_tiles_plot_fn: nearest_optimal_faceted_tiles.png
   curve_subdir: universe=${game.universe}/num_signals=${game.num_signals}/prior=${game.prior}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_gamma}

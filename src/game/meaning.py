@@ -3,15 +3,19 @@ import torch
 import pandas as pd
 from altk.language.semantics import Referent, Universe
 
+
 def load_universe(
     universe_fn: str,
     prior_fn: str,
 ) -> Universe:
     """Construct a universe from csv files."""
     return build_universe(
-        pd.read_csv(universe_fn), 
-        pd.read_csv(prior_fn) if prior_fn is isinstance(prior_fn, str) else None, # ignore if not a filename (e.g. a temp param)
+        pd.read_csv(universe_fn),
+        pd.read_csv(prior_fn)
+        if prior_fn is isinstance(prior_fn, str)
+        else None,  # ignore if not a filename (e.g. a temp param)
     )
+
 
 def build_universe(
     referents_df: pd.DataFrame,
@@ -19,7 +23,7 @@ def build_universe(
     features: list[str] = None,
 ) -> Universe:
     """Construct a universe from dataframes encoding referents and a prior over them.
-    
+
     Args:
         referents_df: DataFrame of referents
 
@@ -31,9 +35,14 @@ def build_universe(
 
     referents = tuple(
         Referent(
-            record["name"], 
-            properties={"point": tuple(record[f] for f in features) if features is not None else record["name"]}
-        ) for record in referents_df.to_dict("records")
+            record["name"],
+            properties={
+                "point": tuple(record[f] for f in features)
+                if features is not None
+                else record["name"]
+            },
+        )
+        for record in referents_df.to_dict("records")
     )
     prior = dict(zip(prior_df["name"], prior_df["probability"]))
 
