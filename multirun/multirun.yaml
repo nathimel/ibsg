@@ -114,10 +114,12 @@ hydra:
     task:
     - game.universe=2cube_300
     - game.num_signals=300
+    - simulation.dynamics.imprecise_imitation_gamma=-2
+    - simulation.approximate_encoders=True
   job:
     name: plot
     chdir: true
-    override_dirname: game.universe=2cube_300
+    override_dirname: game.universe=2cube_300,simulation.approximate_encoders=True
     id: ???
     num: ???
     config_name: config
@@ -188,7 +190,7 @@ simulation:
     threshold: 1.0e-05
     population_init_minalpha: -8
     population_init_maxalpha: 2
-    imprecise_imitation_gamma: 0
+    imprecise_imitation_gamma: -2
     population_size: null
     graph: null
     name: two_population_rd
@@ -197,9 +199,13 @@ simulation:
   plot_all_encoders: true
   trajectory: true
   variants: false
+  num_variants: 100
   multiprocessing: true
   num_processes: null
+  approximate_encoders: true
   num_approximation_samples: 20
+  inspect_gnid: true
+  inspect_gnid_encoder: 8
 seed: 42
 filepaths:
   universe_fn: data/universe/${game.universe}.csv

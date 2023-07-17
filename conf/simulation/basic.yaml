@@ -34,9 +34,15 @@ trajectory: True
 
 # whether to save variant points
 variants: False # N.B., not working yet
+num_variants: 100
 
 multiprocessing: True # N.B. just for running simulations of dynamics for now, not for e.g. genetic algorithm, analysis
 num_processes: null # null defaults to cpu_count
 
 # for approximating encoders via finite sampling
+approximate_encoders: False
 num_approximation_samples: 20
+
+# inspect one gnid result
+inspect_gnid: True
+inspect_gnid_encoder: 8 # 1-indexing, must be <= num_runs

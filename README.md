@@ -32,24 +32,32 @@ The main experimental results can be reproduced by running `./scripts/run.sh`.
 
 This will perform four basic steps by running the following scripts:
 
-1. Simulate evolution:
+1. Estimate the information curve
 
-    `python3 src/run_simulations.py`
-
-    Run one or more trials of an evolutionary dynamics simulation on a sim-max game, and save the resulting (complexity, distortion) points to a csv.
-
-    - This script will also generate and save hypothetical variants of the emergent systems for comparison.
-
-2. Estimate Pareto frontier
-
-    `python3 src/curve.py`
+    `python src/curve.py`
 
     Estimate the IB curve
 
+2. Simulate evolution
+
+    `python src/run_simulations.py`
+
+    Run one or more trials of an evolutionary dynamics simulation on a sim-max game, and save the resulting data.
+
+    - This script can also generate and save hypothetical variants of the emergent systems for comparison.
+
+3. Measure efficiency
+
+    `python src/measure.py`
+
+    Measure the optimality of emergent systems w.r.t the IB  bound, record most similar theoretically optimal systems, and save resulting data.
+    - Optionally: approximate each emergent sender (encoder) distribution via limited sampling of its behavior. This is an exploratory simulation of how real data collection might skew efficiency measurements.
+
 4. Get a basic plot
 
-    `python3 src/plot.py`
+    `python src/plot.py`
 
     Produce a basic plot of the emergent systems on the information plane.
 
-    Code for the more detailed plots can be found in [notebooks/single_figures.ipynb](src/notebooks/paper_figures.ipynb).
+    - This script technically requires steps 3,4
+    - Code for the more detailed plots can be found in [notebooks/paper_figures.ipynb](src/notebooks/paper_figures.ipynb).

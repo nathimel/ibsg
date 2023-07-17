@@ -106,24 +106,25 @@ def main(config):
         fullpath(fps.complexity_distortion_plot_fn),
         fullpath(fps.complexity_mse_plot_fn),
         # kwargs
-        trajectory_data=pd.read_csv(fullpath(fps.trajectory_points_save_fn))
-        if config.simulation.trajectory
-        else None,
+        # trajectory_data=pd.read_csv(fullpath(fps.trajectory_points_save_fn))
+        # if config.simulation.trajectory
+        # else None,
         nearest_opt_data=pd.read_csv(fullpath(fps.nearest_optimal_points_save_fn)),
-        variant_data=pd.read_csv(fullpath(fps.variant_points_save_fn))
-        if config.simulation.variants
-        else None,
+        # variant_data=pd.read_csv(fullpath(fps.variant_points_save_fn))
+        # if config.simulation.variants
+        # else None,
     )
 
     # Tradeoff w sample-approximated encoders
-    generate_tradeoff_plots(
-        *curve_args,
-        pd.read_csv(fullpath(fps.approximated_simulation_points_save_fn)),
-        fullpath(fps.approximated_complexity_accuracy_plot_fn),
-        fullpath(fps.approximated_complexity_distortion_plot_fn),
-        fullpath(fps.approximated_complexity_mse_plot_fn),
-        # comparison is exploratory, don't include kwargs yet
-    )
+    if config.simulation.approximate_encoders:    
+        generate_tradeoff_plots(
+            *curve_args,
+            pd.read_csv(fullpath(fps.approximated_simulation_points_save_fn)),
+            fullpath(fps.approximated_complexity_accuracy_plot_fn),
+            fullpath(fps.approximated_complexity_distortion_plot_fn),
+            fullpath(fps.approximated_complexity_mse_plot_fn),
+            # comparison is exploratory, don't include kwargs yet
+        )
 
     encoder_args = [
         fullpath(fps.encoder_line_plots_dir),
@@ -138,13 +139,14 @@ def main(config):
         "run",
     )
     # sample-approxd encoders
-    generate_encoder_plots(
-        util.load_encoders_as_df(fullpath(fps.approximated_encoders_save_fn)),
-        fullpath(fps.approximated_encoders_faceted_lines_plot_fn),
-        fullpath(fps.approximated_encoders_faceted_tiles_plot_fn),
-        *encoder_args,
-        "approxd_run",
-    )
+    if config.simulation.approximate_encoders:
+        generate_encoder_plots(
+            util.load_encoders_as_df(fullpath(fps.approximated_encoders_save_fn)),
+            fullpath(fps.approximated_encoders_faceted_lines_plot_fn),
+            fullpath(fps.approximated_encoders_faceted_tiles_plot_fn),
+            *encoder_args,
+            "approxd_run",
+        )
     # nearest IB-optimal encoders
     generate_encoder_plots(
         util.load_encoders_as_df(fullpath(fps.nearest_optimal_save_fn)),

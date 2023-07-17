@@ -26,9 +26,13 @@ simulation:
   plot_all_encoders: true
   trajectory: true
   variants: false
+  num_variants: 100
   multiprocessing: true
   num_processes: null
+  approximate_encoders: false
   num_approximation_samples: 20
+  inspect_gnid: true
+  inspect_gnid_encoder: 8
 seed: 42
 filepaths:
   universe_fn: data/universe/${game.universe}.csv

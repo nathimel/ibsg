@@ -115,7 +115,7 @@ hydra:
     - game.universe=2cube_300
     - game.num_signals=300
   job:
-    name: plot
+    name: efficiency
     chdir: true
     override_dirname: game.universe=2cube_300
     id: '0'
