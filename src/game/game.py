@@ -105,8 +105,8 @@ class Game:
             ).tolist()
 
         universe = build_universe(referents_df, prior_df)
-        prior = torch.from_numpy(universe.prior_numpy())
-        if not torch.isclose(prior.float().sum(), torch.tensor([1.0]).float()):
+        prior = torch.from_numpy(universe.prior_numpy()).float()
+        if not torch.isclose(prior.sum(), torch.tensor([1.0])):
             raise Exception(f"Prior does not sum to 1.0. (sum={prior.sum()})")
 
         game = cls(
