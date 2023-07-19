@@ -14,6 +14,6 @@ def normalize_rows(mat: torch.Tensor):
 
 
 def random_stochastic_matrix(shape: tuple[int], beta: float = 1e-2):
-    # lower beta -> more uniform initialization
+    """Generate a random stochastic matrix using energy-based initialization, where lower `beta` -> more uniform initialization."""
     energies = beta * torch.randn(*shape)
     return torch.softmax(energies, dim=-1)

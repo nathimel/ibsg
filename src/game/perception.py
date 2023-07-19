@@ -7,7 +7,7 @@ from altk.language.semantics import Universe, Referent
 # distance measures
 def hamming_dist(t: torch.Tensor, u: torch.Tensor) -> float:
     # indicator
-    return torch.equal(t, u)
+    return 1 - torch.equal(t, u)
 
 
 def abs_dist(t: torch.Tensor, u: torch.Tensor) -> float:

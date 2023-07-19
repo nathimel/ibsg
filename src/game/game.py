@@ -29,17 +29,17 @@ class Game:
         """Construct an evolutionary game.
 
         Args:
-            num_states: the number of states in the environment.
+            universe: a collection of world referents, corresponding to states of nature in the signaling game and the source random variable in IB.
 
-            num_signals: the number of signals available to agents.
+            num_signals: the number of signals available to agents / support of the bottleneck variable in IB.
 
-            prior: the prior distribution over states in the environment.
+            prior: the prior distribution over states in the environment / cognitive source in the IB framework.
 
             distance: the kind of distance measure to use as input to the similarity-based utility and meaning distributions.
 
             discr_need_gamma: a float controlling the uniform-ness of the payoff / utility / fitness function, representing discriminative need. Higher discr -> all or nothing reward.
 
-            meaning_dist_temp: a float controlling the uniform-ness of the meaning distributions P(U|M), which represent perceptual uncertainty. higher temp -> full certainty.
+            meaning_dist_gamm: a float controlling the uniform-ness of the meaning distributions P(U|M), which represent perceptual uncertainty. higher temp -> full certainty.
         """
         # specify distance matrix
         dist_mat = generate_dist_matrix(universe, distance)
@@ -82,7 +82,7 @@ class Game:
 
         # Initialize Universe, default is a list of integers
         if isinstance(config.game.universe, str):
-            referents_df = pd.read_csv(get_universe_fn(config))
+            referents_df = pd.read_csv(get_universe_fn(config, *args, **kwargs))
         elif isinstance(config.game.universe, int):
             referents_df = pd.DataFrame(
                 list(range(1, config.game.universe + 1)), columns=["name"]
@@ -93,12 +93,8 @@ class Game:
             )
         # Set Prior
         if isinstance(config.game.prior, str):
-            prior_df = pd.read_csv(get_prior_fn(config))
+            prior_df = pd.read_csv(get_prior_fn(config, *args, **kwargs))
         else:
-            # prior_df = pd.DataFrame(
-            # list(range(1, len(referents_df)+1)),
-            # columns=["name"]
-            # )
             prior_df = referents_df.copy()[["name"]]
             prior_df["probability"] = random_stochastic_matrix(
                 (len(referents_df),), beta=10**config.game.prior
@@ -110,7 +106,6 @@ class Game:
             raise Exception(f"Prior does not sum to 1.0. (sum={prior.sum()})")
 
         game = cls(
-            # config.game.num_states,
             universe,
             config.game.num_signals,
             prior,

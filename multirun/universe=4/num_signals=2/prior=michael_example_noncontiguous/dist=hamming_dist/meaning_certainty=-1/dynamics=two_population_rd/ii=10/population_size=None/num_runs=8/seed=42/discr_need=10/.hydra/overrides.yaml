@@ -1,0 +1,7 @@
+- game.universe=4
+- game.num_signals=2
+- game.prior=michael_example_noncontiguous
+- game.discriminative_need_gamma=10
+- simulation.dynamics.imprecise_imitation_gamma=10
+- game.meaning_dist_gamma=-1
+- game.distance=hamming_dist

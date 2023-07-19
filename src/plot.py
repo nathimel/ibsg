@@ -109,7 +109,7 @@ def main(config):
         # trajectory_data=pd.read_csv(fullpath(fps.trajectory_points_save_fn))
         # if config.simulation.trajectory
         # else None,
-        nearest_opt_data=pd.read_csv(fullpath(fps.nearest_optimal_points_save_fn)),
+        # nearest_opt_data=pd.read_csv(fullpath(fps.nearest_optimal_points_save_fn)),
         # variant_data=pd.read_csv(fullpath(fps.variant_points_save_fn))
         # if config.simulation.variants
         # else None,

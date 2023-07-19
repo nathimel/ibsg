@@ -44,7 +44,7 @@ def alt_encoders_to_df(encoders: torch.Tensor, meaning_dists: torch.Tensor, prio
                 *ib_encoder_to_point(
                     meaning_dists, prior, encoders[i]
                 ),  # comp, acc, distortion
-                None,  # mse
+                None, # mse
                 i,  # run
             )
             for i in range(len(encoders))
