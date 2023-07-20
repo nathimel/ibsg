@@ -54,16 +54,17 @@ def generate_encoder_plots(
     util.ensure_dir(lines_dir)
 
     # Encoders, faceted by run
-    faceted_lines_plot = vis.faceted_encoders(encoders_data, "line")
-    faceted_tiles_plot = vis.faceted_encoders(encoders_data, "tile")
+    if len(encoders_data["run"].value_counts().to_dict()) - 1:  # > one run
+        faceted_lines_plot = vis.faceted_encoders(encoders_data, "line")
+        faceted_tiles_plot = vis.faceted_encoders(encoders_data, "tile")
+        util.save_plot(faceted_lines_fn, faceted_lines_plot)
+        util.save_plot(faceted_tiles_fn, faceted_tiles_plot)
 
     # Individual encoders
     tile_plots = vis.get_n_encoder_plots(encoders_data, "tile")
     line_plots = vis.get_n_encoder_plots(encoders_data, "line")
 
-    # Save
-    util.save_plot(faceted_lines_fn, faceted_lines_plot)
-    util.save_plot(faceted_tiles_fn, faceted_tiles_plot)
+    # Save each
     [
         util.save_plot(
             os.path.join(tiles_dir, f"{individual_file_prefix}_{i+1}.png"), plot
@@ -116,7 +117,7 @@ def main(config):
     )
 
     # Tradeoff w sample-approximated encoders
-    if config.simulation.approximate_encoders:    
+    if config.simulation.approximate_encoders:
         generate_tradeoff_plots(
             *curve_args,
             pd.read_csv(fullpath(fps.approximated_simulation_points_save_fn)),

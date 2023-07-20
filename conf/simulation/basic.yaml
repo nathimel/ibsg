@@ -11,11 +11,12 @@ dynamics:
   # TODO: make this a part of the path, since it should be swept.
   # lower values -> more uniform initialization
   # set minalpha=maxalpha to not vary initialization
-  population_init_minalpha: -8 # will be exponentiated by 10
-  population_init_maxalpha: 2
+  # population_init_minalpha: -8 # will be exponentiated by 10
+  # population_init_maxalpha: 2
+  population_init_gamma: -8 # will be exponentiated by 10
 
   # specific to only some dynamics, but we nontheless need them here in order to perform hydra's string interpolation for recursive path creation.
-  imprecise_imitation_gamma: 0 #, # will be exponentiated by 10, replicator dynamics, possibly finite pop
+  imprecise_imitation_gamma: 0 # will be exponentiated by 10, replicator dynamics, possibly finite pop
   population_size: null # finite population dynamics
   graph: null # same  
 
@@ -24,7 +25,9 @@ dynamics:
 use_decoder: False # whether to use the emergent decoder when computing IB coordinate
 
 # simulation parameters
-num_runs: 8 # default should be cpu_count
+num_runs: 1 
+# if dynamics are deterministic, there is little point in running twice.
+# if there is nondeterminism in dynamics, take advantage of parallelism and pass all available CPUs.
 
 # TODO: make a vis config group lol
 plot_all_encoders: True # whether to save an encoder plot for every run
@@ -45,4 +48,4 @@ num_approximation_samples: 20
 
 # inspect one gnid result
 inspect_gnid: True
-inspect_gnid_encoder: 8 # 1-indexing, must be <= num_runs
+inspect_gnid_encoder: 1 # 1-indexing, must be <= num_runs

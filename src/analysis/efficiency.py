@@ -35,22 +35,23 @@ def efficiency_loss(emergent, optimal, beta, meaning_dists, prior) -> float:
     return loss
 
 
-def alt_encoders_to_df(encoders: torch.Tensor, meaning_dists: torch.Tensor, prior: torch.Tensor) -> pd.DataFrame:
-    """Convert a tensor of alternative encoders (to the original emergent ones) to a dataframe.
-    """
+def alt_encoders_to_df(
+    encoders: torch.Tensor, meaning_dists: torch.Tensor, prior: torch.Tensor
+) -> pd.DataFrame:
+    """Convert a tensor of alternative encoders (to the original emergent ones) to a dataframe."""
     return util.points_to_df(
         points=[
             (
                 *ib_encoder_to_point(
                     meaning_dists, prior, encoders[i]
                 ),  # comp, acc, distortion
-                None, # mse
+                None,  # mse
                 i,  # run
             )
             for i in range(len(encoders))
         ],
         columns=["complexity", "accuracy", "distortion", "mse", "run"],
-    )    
+    )
 
 
 def finite_sample_encoder(encoder: torch.Tensor, num_samples: int) -> torch.Tensor:
@@ -96,6 +97,8 @@ def hypothetical_variants(encoders: torch.Tensor, num: int) -> torch.Tensor:
             seen.add(tuple(permuted.flatten()))
 
         for permuted_weights in seen:
-            permuted_encoders.append(torch.tensor(permuted_weights).reshape(encoder.shape))
+            permuted_encoders.append(
+                torch.tensor(permuted_weights).reshape(encoder.shape)
+            )
 
     return torch.stack(permuted_encoders)

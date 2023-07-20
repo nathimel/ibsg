@@ -17,23 +17,14 @@ from game.game import Game
 def run_simulations(config: DictConfig) -> list[Game]:
     """Run a simulation for multiple runs."""
 
-    population_init_gammas = torch.linspace(
-        config.simulation.dynamics.population_init_minalpha,
-        config.simulation.dynamics.population_init_maxalpha,
-        config.simulation.num_runs,
-    )
-
     if config.simulation.multiprocessing:
-        return run_simulations_multiprocessing(config, population_init_gammas)
+        return run_simulations_multiprocessing(config)
     else:
-        return [
-            run_simulation(config, population_init_gammas[run])
-            for run in tqdm(range(config.simulation.num_runs))
-        ]
+        return [run_simulation(config) for _ in tqdm(range(config.simulation.num_runs))]
 
 
 def run_simulations_multiprocessing(
-    config: DictConfig, population_init_gammas: torch.Tensor
+    config: DictConfig,
 ) -> list[Game]:
     """Use multiprocessing apply_async to run multiple runs at once."""
     num_processes = cpu_count()
@@ -44,23 +35,22 @@ def run_simulations_multiprocessing(
         async_results = [
             p.apply_async(
                 run_simulation,
-                [config, population_init_gammas[run]],  # args
+                [config],  # args
             )
-            for run in range(config.simulation.num_runs)
+            for _ in range(config.simulation.num_runs)
         ]
         p.close()
         p.join()
     return [async_result.get() for async_result in tqdm(async_results)]
 
 
-def run_simulation(config: DictConfig, population_init_gamma: float) -> Game:
+def run_simulation(config: DictConfig) -> Game:
     """Run one run of a simulation and return the resulting game."""
     dynamics = dynamics_map[config.simulation.dynamics.name]
     dynamics = dynamics(
         Game.from_hydra(config),
         **config.simulation.dynamics,
         use_decoder=config.simulation.use_decoder,
-        population_init_gamma=population_init_gamma,
     )
     dynamics.run()
     return dynamics.game

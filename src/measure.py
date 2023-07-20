@@ -30,10 +30,14 @@ def main(config: DictConfig):
     # Load
     ##########################################################################
 
-    sim_data = pd.read_csv(fullpath(fps.simulation_points_save_fn))  # we will update with gNID and eps
+    sim_data = pd.read_csv(
+        fullpath(fps.simulation_points_save_fn)
+    )  # we will update with gNID and eps
     emergent_encoders = torch.load(fullpath(fps.final_encoders_save_fn))
     betas = torch.load(util.get_bound_fn(config, "betas"))
-    optimal_encoders = torch.load(util.get_bound_fn(config, "encoders"))  # ordered by beta
+    optimal_encoders = torch.load(
+        util.get_bound_fn(config, "encoders")
+    )  # ordered by beta
     curve_data = pd.read_csv(util.get_bound_fn(config, "ib"))
 
     ##########################################################################
@@ -92,6 +96,7 @@ def main(config: DictConfig):
         # select (just one for now) emergent encoder
         idx = config.simulation.inspect_gnid_encoder - 1
         assert idx >= 0, "Use 1-indexing for gnid encoder inspection."
+        assert idx <= len(gNIDs), "Inspection index must be less than num_runs"
         last_encoder_gnids = gNIDs[idx]
         curve_data["gNID"] = last_encoder_gnids.tolist()
         single_encoder_data = sim_data.iloc[[idx]]
@@ -106,28 +111,33 @@ def main(config: DictConfig):
         # approximate
         sampled_encoders = torch.stack(
             [
-                efficiency.finite_sample_encoder(enc, config.simulation.num_approximation_samples)
+                efficiency.finite_sample_encoder(
+                    enc, config.simulation.num_approximation_samples
+                )
                 for enc in emergent_encoders
             ]
         )
         # measure
-        approximate_data = efficiency.alt_encoders_to_df(sampled_encoders, g.meaning_dists, g.prior)
+        approximate_data = efficiency.alt_encoders_to_df(
+            sampled_encoders, g.meaning_dists, g.prior
+        )
         # save
         util.save_tensor(fullpath(fps.approximated_encoders_save_fn), sampled_encoders)
         util.save_points_df(
-            fn=config.filepaths.approximated_simulation_points_save_fn, df=approximate_data
+            fn=config.filepaths.approximated_simulation_points_save_fn,
+            df=approximate_data,
         )
 
     # Variants via rotations of emergent encoders
     if config.simulation.variants:
         util.save_points_df(
-            fn=config.filepaths.variant_points_save_fn, 
+            fn=config.filepaths.variant_points_save_fn,
             df=efficiency.alt_encoders_to_df(
                 efficiency.hypothetical_variants(
                     emergent_encoders,
                     config.simulation.num_variants,
                 ),
-                g.meaning_dists, 
+                g.meaning_dists,
                 g.prior,
             ),
         )

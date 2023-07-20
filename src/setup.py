@@ -14,5 +14,6 @@ def main(config: DictConfig):
     g = Game.from_hydra(config)
     # breakpoint()
 
+
 if __name__ == "__main__":
     main()

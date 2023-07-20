@@ -14,17 +14,17 @@ def main(config):
 
     # (I[M:W], I[W:U], KL[M, M'], MSE)
     util.save_points_df(
-        fn=config.filepaths.simulation_points_save_fn, 
+        fn=config.filepaths.simulation_points_save_fn,
         df=util.final_points_df(runs),
     )
     # save the final round emergent encoders to a csv
-    util.save_final_encoders(config.filepaths.final_encoders_save_fn, runs)    
+    util.save_final_encoders(config.filepaths.final_encoders_save_fn, runs)
 
     # save trajectories from every run
     if config.simulation.trajectory:
         trajs_df = util.trajectories_df(runs)
         util.save_points_df(
-            fn=config.filepaths.trajectory_points_save_fn, 
+            fn=config.filepaths.trajectory_points_save_fn,
             df=trajs_df,
         )
 

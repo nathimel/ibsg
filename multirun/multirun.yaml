@@ -111,11 +111,17 @@ hydra:
   overrides:
     hydra:
     - hydra.mode=MULTIRUN
-    task: []
+    task:
+    - game.universe=4
+    - game.num_signals=2
+    - game.prior=michael_example_noncontiguous
+    - game.discriminative_need_gamma=10
+    - game.distance=hamming_dist
+    - game.meaning_dist_gamma=10
   job:
-    name: setup
+    name: plot
     chdir: true
-    override_dirname: ''
+    override_dirname: game.prior=michael_example_noncontiguous,game.universe=4
     id: ???
     num: ???
     config_name: config
@@ -131,6 +137,7 @@ hydra:
         - game.num_signals
         - simulation.dynamics.population_size
         - simulation.dynamics.imprecise_imitation_gamma
+        - simulation.dynamics.population_init_gamma
         - game.prior_init_alpha
         - game.distance
         - game.meaning_dist_gamma
@@ -168,12 +175,12 @@ hydra:
       hydra/output: default
   verbose: false
 game:
-  universe: 10
-  prior: -8
-  num_signals: 10
-  distance: squared_dist
-  discriminative_need_gamma: 1.0
-  meaning_dist_gamma: 0
+  universe: 4
+  prior: michael_example_noncontiguous
+  num_signals: 2
+  distance: hamming_dist
+  discriminative_need_gamma: 10
+  meaning_dist_gamma: 10
   ib_bound_function: embo
   overwrite_curves: false
   maxbeta: 5
@@ -184,14 +191,13 @@ simulation:
   dynamics:
     max_its: 200
     threshold: 1.0e-05
-    population_init_minalpha: -8
-    population_init_maxalpha: 2
+    population_init_gamma: -8
     imprecise_imitation_gamma: 0
     population_size: null
     graph: null
     name: two_population_rd
   use_decoder: false
-  num_runs: 8
+  num_runs: 1
   plot_all_encoders: true
   trajectory: true
   variants: false
@@ -201,7 +207,7 @@ simulation:
   approximate_encoders: false
   num_approximation_samples: 20
   inspect_gnid: true
-  inspect_gnid_encoder: 8
+  inspect_gnid_encoder: 1
 seed: 42
 filepaths:
   universe_fn: data/universe/${game.universe}.csv
@@ -234,7 +240,7 @@ filepaths:
   nearest_optimal_faceted_lines_plot_fn: nearest_optimal_faceted_lines.png
   nearest_optimal_faceted_tiles_plot_fn: nearest_optimal_faceted_tiles.png
   curve_subdir: universe=${game.universe}/num_signals=${game.num_signals}/prior=${game.prior}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_gamma}
-  sim_sweep_subdir: ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/ii=${simulation.dynamics.imprecise_imitation_gamma}/population_size=${simulation.dynamics.population_size}/num_runs=${simulation.num_runs}/seed=${seed}
+  sim_sweep_subdir: ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/ii=${simulation.dynamics.imprecise_imitation_gamma}/population_init=${simulation.dynamics.population_init_gamma}/population_size=${simulation.dynamics.population_size}/num_runs=${simulation.num_runs}/seed=${seed}
   simulation_subdir: ${filepaths.sim_sweep_subdir}/discr_need=${game.discriminative_need_gamma}
   leaf_subdir: ${filepaths.simulation_subdir}
   hydra_run_root: outputs
