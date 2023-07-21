@@ -2,6 +2,7 @@ import copy
 
 import torch
 import warnings
+from ........users.nathanielimel.uci.projects.ibsg.src.game.game import Game
 
 from analysis.ib import ib_encoder_to_measurements
 from altk.effcomm.util import rows_zero_to_uniform
@@ -295,6 +296,16 @@ class ReplicatorDynamics(Dynamics):
             x_i' = x_i * ( f_i(x) - sum_j f_j(x_j) )
 
         Changes in agent type (pure strategies) depend only on their frequency and their fitness.
+
+        Note that the only forms (RDD and ICI) of the replicator-dynamics we apply assume both 
+            - (i) evolution of behavioral strategies at the level of choice points (word meanings), instead of evolution of entire contingency plans (i.e., lexicons) and 
+            - (ii) two infinite, well mixed populations of senders and receivers.
+
+        Update steps in the two population replicator dynamics for signaling is given by:
+
+        freq(sender)' = freq(sender) * fitness_relative_to_receiver(sender)
+
+        freq(receiver)' = freq(receiver) * fitness_relative_to_prior_and_sender(receiver)
         """
         raise NotImplementedError
 
@@ -310,16 +321,14 @@ class ReplicatorDynamics(Dynamics):
             warnings.warn("Dynamics yielded a decoder with all zeros.")
 
 
-class TwoPopulationRD(ReplicatorDynamics):
+class ReplicatorDiffusionDynamics(ReplicatorDynamics):
+    """The 'replicator-diffusion dynamic' introduced in Correia (2013). Unlike Franke and Correia (2018), There is no direct connection between agent-level behavior and the imprecision/noise in this dynamic. It is also more mathematically simple, and therefore closer to the replicator-mutator dynamic."""
+
     def __init__(self, game: Game, **kwargs) -> None:
         super().__init__(game, **kwargs)
 
     def evolution_step(self):
-        """Update steps in the two population replicator dynamics for signaling is given by:
-
-        freq(sender)' = freq(sender) * fitness_relative_to_receiver(sender)
-
-        freq(receiver)' = freq(receiver) * fitness_relative_to_prior_and_sender(receiver)
+        """Updates to sender and receiver are given on page 6 of https://github.com/josepedrocorreia/vagueness-games/blob/master/paper/version_01/paper.pdf. The original implementation is found at https://github.com/josepedrocorreia/vagueness-games/blob/master/vagueness-games.py#L285.
         """
         P = self.P  # `[states, signals]`
         Q = self.Q  # `[signals, states]`
@@ -341,8 +350,30 @@ class TwoPopulationRD(ReplicatorDynamics):
         self.warn_if_all_zero()
 
 
+class ImpreciseConditionalImitation(Dynamics):
+    """The dynamics described in Franke and Correia (2018), which has an explicit derivation from the continuous time replicator dynamic in terms of individual agents' imprecise imitation of signaling behavior. In the limiting case where there is no noise/imprecision, the dynamics is equivalent to the replicator diffusion dynamics."""
+
+    def __init__(self, game: Game, **kwargs) -> None:
+        super().__init__(game, **kwargs)
+
+    def evolution_step(self):
+        """Updates to sender and receiver are given on page 11 (Section 3.2, volume page 1047) and derivation is given on page 24 (Section A.1.1, volume page 1060) of https://www.journals.uchicago.edu/doi/full/10.1093/bjps/axx002. The original implementation is found at https://github.com/josepedrocorreia/vagueness-games/blob/master/newCode/vagueness-games.py#L291.
+        """
+        P = self.P  # `[states, signals]`
+        Q = self.Q  # `[signals, states]`
+        U = self.game.utility  # `[states, states]`
+        C = self.confusion  # `[states, states]`, compare self.game.meaning_dists
+        p = self.game.prior  # `[states,]`
+
+        # TODO: implement updates.
+        raise NotImplementedError
+
+
+
 dynamics_map = {
     "moran_process": MoranProcess,
     "nowak_krakauer": NowakKrakauerDynamics,
-    "two_population_rd": TwoPopulationRD,
+    # "two_population_rd": TwoPopulationRD,
+    "replicator_diffusion": ReplicatorDiffusionDynamics,
+    "imprecise_conditional_imitation": ImpreciseConditionalImitation,
 }
