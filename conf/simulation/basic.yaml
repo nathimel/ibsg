@@ -1,6 +1,6 @@
 defaults: 
   - _self_ # the current (e.g., 'dynamics') configs will be overriden by the rest of the list below
-  - dynamics: two_population_rd
+  - dynamics: replicator_diffusion
 
 # some default dynamics parameters to be shared or null
 dynamics:
