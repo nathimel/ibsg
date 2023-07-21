@@ -2,7 +2,6 @@ import copy
 
 import torch
 import warnings
-from ........users.nathanielimel.uci.projects.ibsg.src.game.game import Game
 
 from analysis.ib import ib_encoder_to_measurements
 from altk.effcomm.util import rows_zero_to_uniform
