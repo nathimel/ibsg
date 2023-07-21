@@ -105,6 +105,10 @@ class FinitePopulationDynamics(Dynamics):
         for i in range(self.n):
             for j in range(self.n):
                 # TODO: generalize to stochastic behavior for real-valued edge weights
+                if not isinstance(self.adj_mat[i, j], int):
+                    raise Exception(
+                        f"Stochastic edge weights not yet supported. Edge weight for i={i}, j={j} was {self.adj_mat[i,j]}."
+                    )
                 if not self.adj_mat[i, j]:
                     continue
                 # accumulate payoff for interaction symmetrically
@@ -132,7 +136,6 @@ class FinitePopulationDynamics(Dynamics):
 
         where X is a sender, Y is a receiver, and C is a symmetric confusion matrix, to compare to IB meaning distributions.
         """
-        # BUG: shape error here
         f = lambda X, Y: torch.sum(
             torch.diag(self.game.prior)
             @ self.confusion
@@ -240,8 +243,7 @@ class ReplicatorDynamics(Dynamics):
 
     def __init__(self, game: Game, **kwargs) -> None:
         super().__init__(game, **kwargs)
-        self.init_gamma = 10 ** kwargs["population_init_gamma"]  # TODO: debug
-        # self.init_gamma = 10 ** -8
+        self.init_gamma = 10 ** kwargs["population_init_gamma"]
 
         self.P = random_stochastic_matrix(
             (self.game.num_states, self.game.num_signals), self.init_gamma
@@ -261,20 +263,7 @@ class ReplicatorDynamics(Dynamics):
             P_prev = copy.deepcopy(self.P)
             Q_prev = copy.deepcopy(self.Q)
 
-            # track data
-            # self.game.points.append(self.get_point(normalize_rows(self.P), normalize_rows(self.Q)))
-
-            # self.game.ib_encoders.append(normalize_rows(self.P)) # normalization in evolution step insufficient
-
-            for row in P_prev:
-                # less than 1.0
-                if row.sum() and row.sum() < 1.0:
-                    if torch.isclose(row.sum(), torch.Tensor([1.0]), 1e-4):
-                        continue
-                    breakpoint()
-
             self.game.points.append(self.get_point(P_prev, Q_prev))
-            # self.game.ib_encoders.append(P_prev)
 
             self.game.ib_encoders.append(rows_zero_to_uniform(normalize_rows(P_prev)))
 
@@ -296,8 +285,8 @@ class ReplicatorDynamics(Dynamics):
 
         Changes in agent type (pure strategies) depend only on their frequency and their fitness.
 
-        Note that the only forms (RDD and ICI) of the replicator-dynamics we apply assume both 
-            - (i) evolution of behavioral strategies at the level of choice points (word meanings), instead of evolution of entire contingency plans (i.e., lexicons) and 
+        Note that the only forms (RDD and ICI) of the replicator-dynamics we apply assume both
+            - (i) evolution of behavioral strategies at the level of choice points (word meanings), instead of evolution of entire contingency plans (i.e., lexicons) and
             - (ii) two infinite, well mixed populations of senders and receivers.
 
         Update steps in the two population replicator dynamics for signaling is given by:
@@ -327,8 +316,7 @@ class ReplicatorDiffusionDynamics(ReplicatorDynamics):
         super().__init__(game, **kwargs)
 
     def evolution_step(self):
-        """Updates to sender and receiver are given on page 6 of https://github.com/josepedrocorreia/vagueness-games/blob/master/paper/version_01/paper.pdf. The original implementation is found at https://github.com/josepedrocorreia/vagueness-games/blob/master/vagueness-games.py#L285.
-        """
+        """Updates to sender and receiver are given on page 6 of https://github.com/josepedrocorreia/vagueness-games/blob/master/paper/version_01/paper.pdf. The original implementation is found at https://github.com/josepedrocorreia/vagueness-games/blob/master/vagueness-games.py#L285."""
         P = self.P  # `[states, signals]`
         Q = self.Q  # `[signals, states]`
         U = self.game.utility  # `[states, states]`
@@ -356,8 +344,7 @@ class ImpreciseConditionalImitation(Dynamics):
         super().__init__(game, **kwargs)
 
     def evolution_step(self):
-        """Updates to sender and receiver are given on page 11 (Section 3.2, volume page 1047) and derivation is given on page 24 (Section A.1.1, volume page 1060) of https://www.journals.uchicago.edu/doi/full/10.1093/bjps/axx002. The original implementation is found at https://github.com/josepedrocorreia/vagueness-games/blob/master/newCode/vagueness-games.py#L291.
-        """
+        """Updates to sender and receiver are given on page 11 (Section 3.2, volume page 1047) and derivation is given on page 24 (Section A.1.1, volume page 1060) of https://www.journals.uchicago.edu/doi/full/10.1093/bjps/axx002. The original implementation is found at https://github.com/josepedrocorreia/vagueness-games/blob/master/newCode/vagueness-games.py#L291."""
         P = self.P  # `[states, signals]`
         Q = self.Q  # `[signals, states]`
         U = self.game.utility  # `[states, states]`
@@ -368,11 +355,9 @@ class ImpreciseConditionalImitation(Dynamics):
         raise NotImplementedError
 
 
-
 dynamics_map = {
     "moran_process": MoranProcess,
     "nowak_krakauer": NowakKrakauerDynamics,
-    # "two_population_rd": TwoPopulationRD,
     "replicator_diffusion": ReplicatorDiffusionDynamics,
     "imprecise_conditional_imitation": ImpreciseConditionalImitation,
 }
