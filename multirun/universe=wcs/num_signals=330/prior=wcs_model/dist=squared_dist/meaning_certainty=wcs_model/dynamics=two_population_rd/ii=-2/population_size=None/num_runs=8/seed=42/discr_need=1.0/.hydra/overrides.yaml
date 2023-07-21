@@ -1,6 +1,0 @@
-- game.universe=wcs
-- game.prior=wcs_model
-- game.num_signals=330
-- game.meaning_dist_gamma=wcs_model
-- simulation.dynamics.imprecise_imitation_gamma=-2
-- simulation.multiprocessing=False

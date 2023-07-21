@@ -1,4 +1,0 @@
-name: two_population_rd
-
-# inverse temperature param for confusion matrix controlling imprecision of conditional imitation in replicator dynamics (Franke & Correia, 2018)
-imprecise_imitation_gamma: 0 # overrides default
