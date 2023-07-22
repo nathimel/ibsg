@@ -116,3 +116,15 @@ This will perform four basic steps by running the following scripts (with the ap
     Produce plots of the emergent systems on the information plane and compare the distributions of each emergent encoder to different variants (e.g. its nearest optimal, sample-approximated, and rotated variant encoders).
 
     - Code for the more detailed plots can be found in [notebooks/paper_figures.ipynb](src/notebooks/paper_figures.ipynb).
+
+## References
+
+This codebase represents an extension of the following paper:
+
+> Imel, N. (2023). "The evolution of efficient compression in signaling games." Proceedings of the 45th Annual Meeting of the Cognitive Science Society.
+
+and uses code from the following repositories:
+
+- The above paper's [codebase](https://github.com/nathimel/rdsg/tree/main),
+- Noga Zaslavsky's [ib-color-naming](https://github.com/nogazs/ib-color-naming) model,
+- Michael Franke and Pedro Correia's [vagueness-games](https://github.com/josepedrocorreia/vagueness-games) simulations.
