@@ -2,7 +2,6 @@
 
 This repository contains code for constructing sim-max games, simulating  dynamics, and quantifying the evolved signaling languages' efficiency w.r.t the Information Bottleneck bound.
 
-
 ## Setting up an experiment
 
 This codebase uses [hydra](https://hydra.cc/) to organize configurations and outputs:
@@ -119,9 +118,9 @@ This will perform four basic steps by running the following scripts (with the ap
 
 ## References
 
-This codebase represents an extension of the following paper:
+This codebase represents the efforts of an extension of the following paper:
 
-> Imel, N. (2023). "The evolution of efficient compression in signaling games." Proceedings of the 45th Annual Meeting of the Cognitive Science Society.
+> Imel, N. (2023). "The evolution of efficient compression in signaling games." *Proceedings of the 45th Annual Meeting of the Cognitive Science Society*.
 
 and uses code from the following repositories:
 

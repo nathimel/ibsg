@@ -337,7 +337,7 @@ class ReplicatorDiffusionDynamics(ReplicatorDynamics):
         self.warn_if_all_zero()
 
 
-class ImpreciseConditionalImitation(Dynamics):
+class ImpreciseConditionalImitation(ReplicatorDynamics):
     """The dynamics described in Franke and Correia (2018), which has an explicit derivation from the continuous time replicator dynamic in terms of individual agents' imprecise imitation of signaling behavior. In the limiting case where there is no noise/imprecision, the dynamics is equivalent to the replicator diffusion dynamics."""
 
     def __init__(self, game: Game, **kwargs) -> None:
@@ -345,14 +345,61 @@ class ImpreciseConditionalImitation(Dynamics):
 
     def evolution_step(self):
         """Updates to sender and receiver are given on page 11 (Section 3.2, volume page 1047) and derivation is given on page 24 (Section A.1.1, volume page 1060) of https://www.journals.uchicago.edu/doi/full/10.1093/bjps/axx002. The original implementation is found at https://github.com/josepedrocorreia/vagueness-games/blob/master/newCode/vagueness-games.py#L291."""
-        P = self.P  # `[states, signals]`
-        Q = self.Q  # `[signals, states]`
-        U = self.game.utility  # `[states, states]`
-        C = self.confusion  # `[states, states]`, compare self.game.meaning_dists
-        p = self.game.prior  # `[states,]`
+        sender = self.P  # `[states, signals]`
+        receiver = self.Q  # `[signals, states]`
+        utility = self.game.utility  # `[states, states]`
+        confusion = (
+            self.confusion
+        )  # `[states, states]`, compare self.game.meaning_dists
+        prior = self.game.prior  # `[states,]`
 
-        # TODO: implement updates.
-        raise NotImplementedError
+        # --------- Sender update ---------
+
+        # prob state a obtained (col) given state o was observed (row)
+        # `[states, states]`
+        observation_noise = normalize_rows(prior * confusion)
+
+        # prob signal w (col) given actual state a obtained (row)
+        # `[states, signals]`
+        sigma = confusion @ sender
+
+        # P_o(w|m_o) prob a teacher sends signal w given imitator sees state o
+        # `[states, signals]`
+        observed_sender = observation_noise @ sigma
+
+        # prob receiver chooses state r (column) given signal w (row)
+        # `[signals, states]`
+        rho = receiver @ confusion
+
+        # Expected utility for sender:
+        # sum all observation_noise[m_o, m_a] * rho[m, m_r] * utility[m_a, m_r]
+        sender_eu = torch.einsum("oa,wr,ar->ow", observation_noise, rho, utility)
+
+        # Update sender according to replicator dynamics
+        sender = normalize_rows(observed_sender * sender_eu)
+
+        # --------- Receiver update ---------
+
+        # prob state o was observed (col) given signal w received (row)
+        # `[signals, states]`
+        observed_receiver = rho @ confusion
+
+        # `[signals, states]`
+        sigma_inverse = normalize_rows(prior * sigma.T)
+
+        # Expected utility for receiver:
+        # sum all  sigma_inverse[w,a] * C[i, r] * U[a,r]
+        receiver_eu = torch.einsum("wa,ia,ar->wi", sigma_inverse, confusion, utility)
+
+        # Update receiver according to replicator dynamics
+        receiver = normalize_rows(observed_receiver * receiver_eu)
+
+        # update instance
+
+        self.P = copy.deepcopy(sender)
+        self.Q = copy.deepcopy(receiver)
+
+        self.warn_if_all_zero()
 
 
 dynamics_map = {
