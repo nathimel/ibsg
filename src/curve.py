@@ -3,7 +3,7 @@ import hydra
 import torch
 import os
 
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 from analysis.ib import get_bottleneck, get_rd_curve
 from game.game import Game
 from misc import util
@@ -22,6 +22,7 @@ def main(config: DictConfig):
     mse_curve_fn = util.get_bound_fn(config, "mse")
     encoders_fn = util.get_bound_fn(config, "encoders")
     betas_save_fn = util.get_bound_fn(config, "betas")
+    metadata_fn = util.get_bound_fn(config, "metadata")
 
     ##########################################################################
     # Estimate IB bound
@@ -60,6 +61,21 @@ def main(config: DictConfig):
         )
     else:
         print("data found, skipping mse curve estimation")
+
+
+    ##########################################################################
+    # Save metadata
+    ##########################################################################
+
+    if config.game.overwrite_curves or not os.path.isfile(metadata_fn):
+        print("saving curve metadata...")
+
+        curve_metadata = config.game
+        OmegaConf.save(curve_metadata, metadata_fn)
+
+        print(f"Saved a hydra config as curve metadata to {metadata_fn}")
+    else: 
+        print("data found, skipping curve metadata save.")
 
 
 if __name__ == "__main__":

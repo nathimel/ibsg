@@ -148,10 +148,11 @@ def ensure_monotonic_bound(curve_points: torch.Tensor):
 
 
 def ib_blahut_arimoto(
-    num_words: int,
+    num_W: int,
     beta: float,
     p_M: torch.Tensor,
     p_U_given_M: torch.Tensor,
+    init_q: torch.Tensor = None,
     max_its: int = 100,
     eps: float = 1e-5,
     ignore_converge: bool = False,
@@ -160,13 +161,15 @@ def ib_blahut_arimoto(
     """Compute the optimal IB encoder, using the IB-method.
 
     Args:
-        num_words: size of the target support (vocabulary size)
+        bottleneck_support: size of the target support (vocabulary size)
 
         beta: related to the slope of the IB curve, corresponds to softmax temperature.
 
         p_M: prior probability distribution over source variables, P(m) (i.e. the cognitive source)
 
         p_U_given_M: the Bayes' optimal decoder P(U|M) (i.e. the listener meaning)
+
+        init_q: the encoder for initialization; i.e. the optimal encoder from the previous beta, if the reverse deterministic annealing algorithm.
 
         max_its: the number of iterations to run IB method
 
@@ -178,7 +181,7 @@ def ib_blahut_arimoto(
 
     Returns:
 
-        lnq: the optimal encoder for gamma.
+        the optimal encoder for gamma.
     """
     # convert to logspace for ease
     lnp_M = torch.log(p_M)
@@ -186,15 +189,18 @@ def ib_blahut_arimoto(
 
     # add dummy dimensions to make things easy
     U_dim, M_dim, W_dim = -3, -2, -1
-    lnp_M = lnp_M[None, :, None]  # shape 1M1
-    lnp_U_given_M = lnp_U_given_M[:, :, None]  # shape UM1
+    lnp_M = lnp_M[None, :, None]  # shape `[1, M, 1]`
+    lnp_U_given_M = lnp_U_given_M[:, :, None]  # shape `[U, M, 1]`
 
     # q(w|m) is an M x W matrix
-    lnq = (
-        (1 / init_temperature) * torch.randn(1, lnp_M.shape[M_dim], num_words)
-    ).log_softmax(
-        W_dim
-    )  # shape 1MW
+    if init_q is not None:
+        lnq = torch.log(init_q)[None, :]
+    else:        
+        lnq = (
+            (1 / init_temperature) * torch.randn(1, lnp_M.shape[M_dim], num_W)
+        ).log_softmax(
+            W_dim
+        )  # shape `[1, M, W]`
 
     it = 0
     d = 2 * eps
@@ -207,20 +213,20 @@ def ib_blahut_arimoto(
         lnq_joint = lnp_M + lnq
 
         # get q0(w) = \sum_m q(m, w)
-        lnq0 = lnq_joint.logsumexp(M_dim, keepdim=True)  # shape 11W
+        lnq0 = lnq_joint.logsumexp(M_dim, keepdim=True)  # shape `[1, 1, W]`
 
         # to get the KL divergence,
         # first need p(m | w) =  q(m, w) / q0(w)
-        lnq_inv = lnq_joint - lnq0  # shape 1MW
+        lnq_inv = lnq_joint - lnq0  # shape `[1, M, W]`
 
         # now need q(u|w) = \sum_m p(m | w) p(u | m)
-        lnquw = (lnq_inv + lnp_U_given_M).logsumexp(M_dim, keepdim=True)  # shape U1W
+        lnquw = (lnq_inv + lnp_U_given_M).logsumexp(M_dim, keepdim=True)  # shape `[U,1,W]`
 
         # now need \sum_u p(u|m) ln q(u|w); use torch.xlogy for 0*log0 case
-        d = -(lnp_U_given_M.exp() * lnquw).sum(U_dim, keepdim=True)  # shape 1MW
+        d = -(lnp_U_given_M.exp() * lnquw).sum(U_dim, keepdim=True)  # shape `[1, M, W]`
 
         # finally get the encoder
-        lnq = (lnq0 - beta * d).log_softmax(W_dim)  # shape 1MW
+        lnq = (lnq0 - beta * d).log_softmax(W_dim)  # shape `[1,M,W]`
 
         # convergence check
         if ignore_converge:
@@ -263,6 +269,7 @@ def get_ib_curve_(config: DictConfig):
     # curve can get sparse in the high-interest regions, beta 1.02-1.1
 
     # Multiprocessing
+    # only if not actually reverse deterministic annealing!
     if len(prior) > 100:
         num_processes = cpu_count()
         with Pool(num_processes) as p:
@@ -283,7 +290,13 @@ def get_ib_curve_(config: DictConfig):
 
     else:
         for beta in tqdm(betas):
-            encoder = ib_blahut_arimoto(max_signals, beta, prior, meaning_dists)
+            # TODO: implement reverse deterministic annealing!
+            encoder = ib_blahut_arimoto(
+                num_W=max_signals, 
+                beta=beta, 
+                p_M=prior, 
+                p_U_given_M=meaning_dists,
+            )
             coordinates.append(ib_encoder_to_point(meaning_dists, prior, encoder))
             encoders.append(encoder)
 

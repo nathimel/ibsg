@@ -1,5 +1,5 @@
 ##############################################################################
-# MAIN (ROOT) CONFIG FILE
+# MAIN CONFIG FILE (for running simulations)
 ##############################################################################
 
 defaults:
@@ -25,11 +25,16 @@ filepaths:
   ############################################################################
   # Outputs
   ############################################################################  
+
+  # Game (useful metadata)
+  game_fn: game.pkl # pickle binary
+
   # Curves
   curve_points_save_fn: curve_points.csv # (I[M:W], I[W:U], E[D_KL[M || M']])
   mse_curve_points_save_fn: mse_curve_points.csv # (I[M:W], E[(u - u)^2])
   optimal_encoders_save_fn: optimal_encoders.pt # the encoders P(W|M) from IB method
   betas_save_fn: betas.pt # the actual beta values used in IB method
+  curve_metadata_save_fn: curve_config.yaml # will be a copy of the first hydra config instantiated by the sweep
 
   # Simulation
   # all fns below are for saving results from all runs

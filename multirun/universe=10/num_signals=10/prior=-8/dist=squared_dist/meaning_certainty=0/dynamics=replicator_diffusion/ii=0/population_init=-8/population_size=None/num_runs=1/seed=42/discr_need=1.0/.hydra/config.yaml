@@ -36,10 +36,12 @@ seed: 42
 filepaths:
   universe_fn: data/universe/${game.universe}.csv
   prior_fn: data/prior/${game.prior}.csv
+  game_fn: game.pkl
   curve_points_save_fn: curve_points.csv
   mse_curve_points_save_fn: mse_curve_points.csv
   optimal_encoders_save_fn: optimal_encoders.pt
   betas_save_fn: betas.pt
+  curve_metadata_save_fn: curve_config.yaml
   simulation_points_save_fn: simulation_points.csv
   trajectory_points_save_fn: trajectory_points.csv
   variant_points_save_fn: variant_points.csv

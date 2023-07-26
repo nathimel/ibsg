@@ -1,0 +1,5 @@
+# Idea: use hydra interpolation to run scripts that aggregate the outputs from the sweeps of the simulations / data of the main scripts.
+
+##############################################################################
+# ANALYSIS CONFIG FILE (for analyzing the results from simulation_config.yaml)
+##############################################################################

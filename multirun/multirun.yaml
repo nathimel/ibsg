@@ -112,11 +112,19 @@ hydra:
     hydra:
     - hydra.mode=MULTIRUN
     task:
-    - simulation/dynamics=imprecise_conditional_imitation
+    - game.universe=2ball_300
+    - game.prior=2ball_300_power_2
+    - game.num_signals=300
+    - game.discriminative_need_gamma=0
+    - simulation.num_runs=8
+    - simulation.dynamics.population_init_gamma=range(-3,4)
+    - simulation.dynamics.imprecise_imitation_gamma=range(-3, 4)
+    - simulation/dynamics=replicator_diffusion, nowak_krakauer
   job:
-    name: plot
+    name: setup
     chdir: true
-    override_dirname: simulation/dynamics=imprecise_conditional_imitation
+    override_dirname: game.prior=2ball_300_power_2,game.universe=2ball_300,simulation/dynamics=replicator_diffusion,
+      nowak_krakauer
     id: ???
     num: ???
     config_name: config
@@ -157,7 +165,7 @@ hydra:
     output_dir: ???
     choices:
       simulation: basic
-      simulation/dynamics: imprecise_conditional_imitation
+      simulation/dynamics: replicator_diffusion
       game: basic
       hydra/env: default
       hydra/callbacks: null
@@ -170,11 +178,11 @@ hydra:
       hydra/output: default
   verbose: false
 game:
-  universe: 10
-  prior: -8
-  num_signals: 10
+  universe: 2ball_300
+  prior: 2ball_300_power_2
+  num_signals: 300
   distance: squared_dist
-  discriminative_need_gamma: 1.0
+  discriminative_need_gamma: 0
   meaning_dist_gamma: 0
   ib_bound_function: embo
   overwrite_curves: false
@@ -190,9 +198,9 @@ simulation:
     imprecise_imitation_gamma: 0
     population_size: null
     graph: null
-    name: imprecise_conditional_imitation
+    name: replicator_diffusion
   use_decoder: false
-  num_runs: 1
+  num_runs: 8
   plot_all_encoders: true
   trajectory: true
   variants: false
@@ -207,10 +215,12 @@ seed: 42
 filepaths:
   universe_fn: data/universe/${game.universe}.csv
   prior_fn: data/prior/${game.prior}.csv
+  game_fn: game.pkl
   curve_points_save_fn: curve_points.csv
   mse_curve_points_save_fn: mse_curve_points.csv
   optimal_encoders_save_fn: optimal_encoders.pt
   betas_save_fn: betas.pt
+  curve_metadata_save_fn: curve_config.yaml
   simulation_points_save_fn: simulation_points.csv
   trajectory_points_save_fn: trajectory_points.csv
   variant_points_save_fn: variant_points.csv

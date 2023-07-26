@@ -1,0 +1,4 @@
+- game.universe=c1
+- game.discriminative_need_gamma=3
+- simulation.dynamics.imprecise_imitation_gamma=-1
+- simulation.dynamics.population_init_gamma=0

@@ -1,0 +1,3 @@
+- game.universe=2ball_300
+- game.num_signals=300
+- simulation.dynamics.imprecise_imitation_gamma=3

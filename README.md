@@ -22,9 +22,10 @@ Here is an example command that will execute an experiment, overriding the hydra
 "game.prior=2ball_300_power_2" \
 "game.num_signals=300" \
 "game.discriminative_need_gamma=0" \
-"simulation.num_runs=10" \
+"simulation.num_runs=8" \
+"simulation.dynamics.population_init_gamma=range(-3,4)" \
 "simulation.dynamics.imprecise_imitation_gamma=range(-3, 4)" \
-"simulation/dynamics=two_population_rd, nowak_krakauer"
+"simulation/dynamics=replicator_diffusion, nowak_krakauer"
 ```
 
 Description of command line args, in order of appearance:
@@ -44,24 +45,21 @@ Description of command line args, in order of appearance:
 - `game.discriminative_need_gamma=0`
     - We set the degree of tolerable pragmatic slack / discriminative need in a signaling game to be moderate. This is the one integer parameter for payoff / utility / fitness in the signaling game. It will be the exponent of $10$, i.e., the actual parameter supplied to the utility function is $1$. (see `generate_sim_matrix` at [src/game/perception.py](src/game/perception.py)).
 
-- `simulation.num_runs=10`
-    - We simulate evolution ten different times, varying initial conditions. By default, these runs are executed in parallel using all available CPU cores. The number of processes to run, and whether to multiprocess, can be overriden. See [conf/simulation/basic.yaml](conf/simulation/basic.yaml). We vary the entropy of the initial populations' average behavior. The range of this variation can be specified by `population_init_minalpha` and `population_init_maxalpha`.
+- `simulation.num_runs=8`
+    - We simulate evolution eight different times. Since some evolutionary dynamics are nondeterministic, this can be important. By default, these runs are executed in parallel using all available CPU cores. The number of processes to run, and whether to multiprocess, can be overriden. See [conf/simulation/basic.yaml](conf/simulation/basic.yaml).
 
-- The next two overrides ask hydra to *sweep* over different parameters, holding all other parameters equal. Sweeps are performed locally and serially (but see https://hydra.cc/docs/plugins/joblib_launcher/).
+- The next three overrides ask hydra to *sweep* over different parameters, holding all other parameters equal. Sweeps are performed locally and serially (but see https://hydra.cc/docs/plugins/joblib_launcher/).
+
+- `simulation.dynamics.population_init_gamma=range(-3,4)`
+    - We seep over different initial conditions of the initial population of senders and receivers The integers in this list to sweep  (-3, -2, ..., 3) correspond to an exponent of ten for an energy-based initialization (see [random_stochastic_matrix](src/misc/tools.py)). We have therefore now requested that hydra execute 7 jobs, each of them running 8 (runs) simulations.
 
 - `simulation.dynamics.imprecise_imitation_gamma=range(-3, 4)`
-    - We sweep over different levels (-3, -2, ..., 3) of perceptual/mutation noise in the signaling game dynamics (see [src/game/perception.py](src/game/perception.py)). We have therefore now requested that hydra execute 7 jobs.
+    - We sweep over different levels of perceptual/mutation noise in the signaling game dynamics (see [src/game/perception.py](src/game/perception.py)). We have therefore now requested that hydra execute 49 jobs.
 
-- `simulation/dynamics=two_population_rd, nowak_krakauer`
-    - We sweep over two different dynamics inspired by the replicator equation (see [src/simulation/dynamics.py](src/simulation/dynamics.py)). We now have requested 14 jobs (however, the IB theoretical bound is appropriate for all 14 simulation sweeps, so it is only estimated once).
+- `simulation/dynamics=replicator_diffusion, nowak_krakauer`
+    - We sweep over two different dynamics inspired by the replicator equation (see [src/simulation/dynamics.py](src/simulation/dynamics.py)). We now have requested 98 jobs (however, the IB theoretical bound is appropriate for all 98 simulation sweeps, so it is only estimated once).
 
-For each of the 14 jobs, outputs will be written to folders that are unique to that job, under [multirun](multirun/), but hierarchically organized as appropriate. For example, one job will output results to
-
-- `multirun/universe=2ball_300/num_signals=300/prior=2ball_300_power_2/dist=squared_dist/meaning_certainty=0/dynamics=two_population_rd/ii=-3/population_size=None/num_runs=10/seed=42/discr_need=0/`
-
-while the IB curve and optimal encoders will be written once to
-
-- `multirun/universe=2ball_300/num_signals=300/prior=2ball_300_power_2/dist=squared_dist/meaning_certainty=0/`
+For each of the 98 jobs, unique folders will be generated and outputs will be written to them under [multirun](multirun/). These folders are hierarchically organized by the parameters described above.
 
 Happy exploring!
 

@@ -113,7 +113,7 @@ hydra:
     - hydra.mode=MULTIRUN
     task: []
   job:
-    name: plot
+    name: curve
     chdir: true
     override_dirname: ''
     id: '0'

@@ -1,4 +1,5 @@
 import os
+import pickle
 import torch
 import warnings
 import pandas as pd
@@ -24,6 +25,16 @@ def set_seed(seed: int) -> None:
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Data
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+def write_pickle(fn: str, data):
+    with open(fn, "wb") as f:
+        pickle.dump(data, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+
+def read_pickle(fn: str):
+    with open(fn, "rb") as f:
+        data = pickle.load(f)
+    return data
 
 
 def points_to_df(
@@ -216,10 +227,14 @@ def get_bound_fn(
         fn = os.path.join(curve_dir, config.filepaths.optimal_encoders_save_fn)
     elif bound_type == "betas":
         fn = os.path.join(curve_dir, config.filepaths.betas_save_fn)
+    elif bound_type == "metadata":
+        fn = os.path.join(curve_dir, config.filepaths.curve_metadata_save_fn)
     else:
         raise ValueError()
     return fn
 
+
+# TODO: Look into hydra.utils.get_original_cwd!
 
 def get_root(config: DictConfig, cwd=None) -> str:
     """Get the full path of the root of the repo, relative to hydra interpolations."""
