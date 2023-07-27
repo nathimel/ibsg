@@ -112,7 +112,11 @@ This will perform four basic steps by running the following scripts (with the ap
 
     Produce plots of the emergent systems on the information plane and compare the distributions of each emergent encoder to different variants (e.g. its nearest optimal, sample-approximated, and rotated variant encoders).
 
-    - Code for the more detailed plots can be found in [notebooks/paper_figures.ipynb](src/notebooks/paper_figures.ipynb).
+5. Collect the results of all multisweeps into one dataframe
+
+    `python src/get_all_data.py`
+
+    Search recursively for the results of simulation sweeps and IB curve estimations, collect them into dataframes annotated with their appropriate parameters as columns, and write as one (long) dataframe to [all_data](analysis_data/all_data.csv). This can be used to produce and directly compare plots as in [this notebook](src/notebooks/analyze.ipynb).
 
 ## References
 
