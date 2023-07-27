@@ -1,8 +1,11 @@
+import copy
 import os
 import torch
+import warnings
+
 import numpy as np
 
-from altk.effcomm.util import rows_zero_to_uniform, bayes
+from altk.effcomm.util import rows_zero_to_uniform, bayes, PRECISION
 from altk.effcomm import information
 from altk.effcomm.information import (
     expected_distortion,
@@ -118,7 +121,7 @@ def get_bottleneck(config: DictConfig) -> dict[str, list]:
             maxbeta=g.maxbeta,
             minbeta=g.minbeta,
             numbeta=g.numbeta,
-            processes=g.num_processes,
+            processes=config.game.num_processes if config.game.num_processes is not None else cpu_count(),
         )
 
     elif func == "homebuilt":
@@ -161,7 +164,7 @@ def ib_blahut_arimoto(
     """Compute the optimal IB encoder, using the IB-method.
 
     Args:
-        bottleneck_support: size of the target support (vocabulary size)
+        num_W: size of the target support (vocabulary size)
 
         beta: related to the slope of the IB curve, corresponds to softmax temperature.
 
@@ -226,7 +229,7 @@ def ib_blahut_arimoto(
         d = -(lnp_U_given_M.exp() * lnquw).sum(U_dim, keepdim=True)  # shape `[1, M, W]`
 
         # finally get the encoder
-        lnq = (lnq0 - beta * d).log_softmax(W_dim)  # shape `[1,M,W]`
+        lnq = (lnq0 - beta * d).log_softmax(W_dim)  # shape `[1, M, W]`
 
         # convergence check
         if ignore_converge:
@@ -253,7 +256,6 @@ def get_ib_curve_(config: DictConfig):
 
     """
     # load params
-    breakpoint()
 
     evol_game = Game.from_hydra(config, cwd=os.getcwd())
     prior = evol_game.prior
@@ -269,9 +271,11 @@ def get_ib_curve_(config: DictConfig):
     # curve can get sparse in the high-interest regions, beta 1.02-1.1
 
     # Multiprocessing
-    # only if not actually reverse deterministic annealing!
-    if len(prior) > 100:
-        num_processes = cpu_count()
+    num_processes = config.game.num_processes if config.game.num_processes is not None else cpu_count()
+
+    if num_processes > 1:
+        warnings.warn(f"Multiprocessing with home-built IB method is not recommended. Multiprocessing disables recurrence in the reverse deterministic annealing algorithm, which makes the BA algorithm more likely to converge to sub-optima.")
+
         with Pool(num_processes) as p:
             async_results = [
                 p.apply_async(
@@ -289,16 +293,21 @@ def get_ib_curve_(config: DictConfig):
         ]
 
     else:
+        # prev_q = normalize_rows(torch.eye(len(prior)) + PRECISION)
+        prev_q = None
         for beta in tqdm(betas):
-            # TODO: implement reverse deterministic annealing!
+
             encoder = ib_blahut_arimoto(
                 num_W=max_signals, 
                 beta=beta, 
                 p_M=prior, 
                 p_U_given_M=meaning_dists,
+                init_q=prev_q,
             )
+
             coordinates.append(ib_encoder_to_point(meaning_dists, prior, encoder))
             encoders.append(encoder)
+            # prev_q = copy.deepcopy(encoder) # welp i tried
 
     return {
         "encoders": encoders,

@@ -1,6 +1,6 @@
-universe: 10
+universe: 4
 prior: -8
-num_signals: 10
+num_signals: 4
 distance: squared_dist
 discriminative_need_gamma: 1.0
 meaning_dist_gamma: 0

@@ -9,10 +9,10 @@ from misc import util, vis
 def generate_tradeoff_plots(
     ib_curve_data: pd.DataFrame,
     mse_curve_data: pd.DataFrame,
-    point_data: pd.DataFrame,
     comp_acc_fn: str,
     comp_dist_fn: str,
     comp_mse_fn: str,
+    sim_data: pd.DataFrame = None,    
     trajectory_data: pd.DataFrame = None,
     nearest_opt_data: pd.DataFrame = None,
     variant_data: pd.DataFrame = None,
@@ -21,18 +21,28 @@ def generate_tradeoff_plots(
     # setup
     args = [
         ib_curve_data,
-        point_data,
     ]
     kwargs = {
+        "simulation_data": sim_data,
         "trajectory_data": trajectory_data,
         "variant_data": variant_data,
         "nearest_optimal_encoders_data": nearest_opt_data,
     }
 
     # plot
-    ca_plot = vis.basic_tradeoff_plot(*args, **kwargs, y="accuracy")
-    cd_plot = vis.basic_tradeoff_plot(*args, **kwargs, y="distortion")
-    mse_plot = vis.basic_tradeoff_plot(mse_curve_data, point_data, **kwargs, y="mse")
+
+    if sim_data is not None:
+        # with simulations
+        del kwargs["simulation_data"]
+        args.append(sim_data)
+        ca_plot = vis.basic_tradeoff_plot(*args, **kwargs, y="accuracy")
+        cd_plot = vis.basic_tradeoff_plot(*args, **kwargs, y="distortion")
+        mse_plot = vis.basic_tradeoff_plot(mse_curve_data, sim_data, **kwargs, y="mse")
+    else:
+        # curve only
+        ca_plot = vis.bound_only_plot(ib_curve_data, y="accuracy")
+        cd_plot = vis.bound_only_plot(ib_curve_data, y="distortion")
+        mse_plot = vis.bound_only_plot(mse_curve_data, y="mse")
 
     # save
     util.save_plot(comp_acc_fn, ca_plot)
@@ -88,7 +98,8 @@ def main(config):
     fps = config.filepaths
     fullpath = lambda fn: os.path.join(cwd, fn)
 
-    sim_data = pd.read_csv(fullpath(fps.simulation_points_save_fn))
+    sim_fn = fullpath(fps.simulation_points_save_fn)
+    sim_data = pd.read_csv(sim_fn) if os.path.exists(sim_fn) else None
 
     ##########################################################################
     # Plot
@@ -102,11 +113,11 @@ def main(config):
     # Main simulation tradeoff
     generate_tradeoff_plots(
         *curve_args,
-        sim_data,  # emergent points
         fullpath(fps.complexity_accuracy_plot_fn),
         fullpath(fps.complexity_distortion_plot_fn),
         fullpath(fps.complexity_mse_plot_fn),
         # kwargs
+        sim_data=sim_data, # emergent points        
         # trajectory_data=pd.read_csv(fullpath(fps.trajectory_points_save_fn))
         # if config.simulation.trajectory
         # else None,
@@ -132,36 +143,42 @@ def main(config):
         fullpath(fps.encoder_tile_plots_dir),
     ]
     # Main simulation encoders
-    generate_encoder_plots(
-        util.load_encoders_as_df(fullpath(fps.final_encoders_save_fn)),
-        fullpath(fps.encoders_faceted_lines_plot_fn),
-        fullpath(fps.encoders_faceted_tiles_plot_fn),
-        *encoder_args,
-        "run",
-    )
-    # sample-approxd encoders
-    if config.simulation.approximate_encoders:
+    encoders_fn = fullpath(fps.final_encoders_save_fn)
+    if os.path.exists(encoders_fn):
         generate_encoder_plots(
-            util.load_encoders_as_df(fullpath(fps.approximated_encoders_save_fn)),
+            util.load_encoders_as_df(encoders_fn),
+            fullpath(fps.encoders_faceted_lines_plot_fn),
+            fullpath(fps.encoders_faceted_tiles_plot_fn),
+            *encoder_args,
+            "run",
+        )
+    # sample-approxd encoders
+    approxd_encoders_fn = fullpath(fps.approximated_encoders_save_fn)
+    if config.simulation.approximate_encoders and os.path.exists(approxd_encoders_fn):
+        generate_encoder_plots(
+            util.load_encoders_as_df(approxd_encoders_fn),
             fullpath(fps.approximated_encoders_faceted_lines_plot_fn),
             fullpath(fps.approximated_encoders_faceted_tiles_plot_fn),
             *encoder_args,
             "approxd_run",
         )
     # nearest IB-optimal encoders
-    generate_encoder_plots(
-        util.load_encoders_as_df(fullpath(fps.nearest_optimal_save_fn)),
-        fullpath(fps.nearest_optimal_faceted_lines_plot_fn),
-        fullpath(fps.nearest_optimal_faceted_tiles_plot_fn),
-        *encoder_args,
-        "nearest_opt",
-    )
+    nearopt_encoders_fn = fullpath(fps.nearest_optimal_save_fn)
+    if os.path.exists(nearopt_encoders_fn):
+        generate_encoder_plots(
+            util.load_encoders_as_df(nearopt_encoders_fn),
+            fullpath(fps.nearest_optimal_faceted_lines_plot_fn),
+            fullpath(fps.nearest_optimal_faceted_tiles_plot_fn),
+            *encoder_args,
+            "nearest_opt",
+        )
 
     # Efficiency loss plot
     # TODO: get a histogram of efficiency loss for each emergent system
     # TODO: also check opt efficiency for sanity, and then approx_data
-    efficiency_plot = vis.basic_efficiency_plot(sim_data)
-    util.save_plot(fullpath(fps.efficiency_plot_fn), efficiency_plot)
+    if sim_data is not None:
+        efficiency_plot = vis.basic_efficiency_plot(sim_data)
+        util.save_plot(fullpath(fps.efficiency_plot_fn), efficiency_plot)
 
 
 if __name__ == "__main__":

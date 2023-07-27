@@ -115,7 +115,7 @@ class Game:
             maxbeta=config.game.maxbeta,  # we want about 1.0 - 2.0
             minbeta=10**config.game.minbeta,
             numbeta=config.game.numbeta,
-            num_processes=config.game.num_processes,
+            # num_processes=config.game.num_processes, # this shouldn't be here anyway
         )
 
         return game
