@@ -49,13 +49,15 @@ def ib_encoder_to_measurements(
     prior = np.array(prior)
     dist_mat = np.array(dist_mat)
     confusion = np.array(confusion)
-    # encoder = np.array(encoder)
+
     # NOTE: Here is where we rectify ineffable meanings, by replacing rows of all zeros with uniform distributions.
     encoder = rows_zero_to_uniform(normalize_rows(encoder))
+
     if decoder is not None:
         decoder = np.array(decoder)
     else:
-        decoder = bayes(encoder, prior)
+        decoder = information.deterministic_ib_decoder(encoder, prior, meaning_dists)
+        # decoder = bayes(encoder, prior)
 
     complexity, accuracy, distortion = ib_encoder_to_point(
         meaning_dists,
@@ -304,7 +306,7 @@ def get_ib_curve_(config: DictConfig):
                 p_U_given_M=meaning_dists,
                 init_q=prev_q,
             )
-
+            # BUG: The REASON that points continue to be past the curve may lie here; the points are not as optimal as they could be, because I haven't correctly implemented the bayesian decoder.
             coordinates.append(ib_encoder_to_point(meaning_dists, prior, encoder))
             encoders.append(encoder)
             # prev_q = copy.deepcopy(encoder) # welp i tried

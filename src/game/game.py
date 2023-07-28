@@ -1,3 +1,4 @@
+import hydra
 import os
 import torch
 
@@ -117,5 +118,13 @@ class Game:
             numbeta=config.game.numbeta,
             # num_processes=config.game.num_processes, # this shouldn't be here anyway
         )
+
+        # NOTE: temporary for checking my curve against noga's
+        if config.game.universe == "wcs":
+            print("setting meaning dists manually...")
+            meaning_dists = torch.load(
+                "/Users/nathanielimel/uci/projects/ibsg/data/meaning_dists/wcs_model.pt"
+            )
+            game.meaning_dists = meaning_dists
 
         return game

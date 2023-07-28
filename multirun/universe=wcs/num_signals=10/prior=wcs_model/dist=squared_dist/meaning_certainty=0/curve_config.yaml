@@ -1,5 +1,5 @@
-universe: 10
-prior: -8
+universe: wcs
+prior: wcs_model
 num_signals: 10
 distance: squared_dist
 discriminative_need_gamma: 1.0

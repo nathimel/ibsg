@@ -34,4 +34,4 @@ maxbeta: 5  # will not be exponentiated
 minbeta: -2 # will be exponentiated, i.e. 10 ** minbeta
 numbeta: 1500
 # use multiprocessing to compute bound
-num_processes: 1
+num_processes: 6
