@@ -1,3 +1,3 @@
 - game.universe=wcs
 - game.prior=wcs_model
-- game.overwrite_curves=True
+- simulation.multiprocessing=False

@@ -114,11 +114,11 @@ hydra:
     task:
     - game.universe=wcs
     - game.prior=wcs_model
-    - game.overwrite_curves=True
+    - simulation.multiprocessing=False
   job:
     name: plot
     chdir: true
-    override_dirname: game.overwrite_curves=True,game.prior=wcs_model,game.universe=wcs
+    override_dirname: game.prior=wcs_model,game.universe=wcs,simulation.multiprocessing=False
     id: '0'
     num: 0
     config_name: config

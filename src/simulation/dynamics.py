@@ -276,6 +276,8 @@ class ReplicatorDynamics(Dynamics):
             ) or (its == self.max_its):
                 converged = True
 
+        # breakpoint()
+
         progress_bar.close()
 
     def evolution_step(self):

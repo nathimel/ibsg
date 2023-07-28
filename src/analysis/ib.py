@@ -51,13 +51,15 @@ def ib_encoder_to_measurements(
     confusion = np.array(confusion)
 
     # NOTE: Here is where we rectify ineffable meanings, by replacing rows of all zeros with uniform distributions.
+    # Another option would simple be to drop them.
     encoder = rows_zero_to_uniform(normalize_rows(encoder))
 
+    # NOTE: while ib_encoder_to_point does this step, we still need the decoder for the MSE step.
     if decoder is not None:
         decoder = np.array(decoder)
     else:
-        decoder = information.deterministic_ib_decoder(encoder, prior, meaning_dists)
-        # decoder = bayes(encoder, prior)
+        decoder = information.ib_optimal_decoder(encoder, prior, meaning_dists)
+
 
     complexity, accuracy, distortion = ib_encoder_to_point(
         meaning_dists,
@@ -76,6 +78,7 @@ def ib_encoder_to_measurements(
         if np.isclose(accuracy, 0.0, atol=1e-5):
             accuracy = 0.0
         else:
+            breakpoint()
             raise Exception
 
     if distortion < 0:
@@ -95,8 +98,9 @@ def ib_encoder_to_measurements(
     return (complexity, accuracy, distortion, mse)
 
 
+##############################################################################
 # IB CURVE ESTIMATION
-
+##############################################################################
 
 def get_bottleneck(config: DictConfig) -> dict[str, list]:
     """Compute the `(complexity, accuracy, comm_cost)` values and optimal encoders corresponding to an Information Bottleneck theoretical bound.
@@ -149,6 +153,7 @@ def get_bottleneck(config: DictConfig) -> dict[str, list]:
 def ensure_monotonic_bound(curve_points: torch.Tensor):
     """Fix any randomness in curve leading to nonmonotonicity."""
     # We can fix random noise that tends to occur at the high complexity region by ensuring monotonicity: that as we increase beta, accuracy must increase. If accuracy does not increase, drop these values. I'll implement this if embo ever gives trouble and I want to move to homebuilt.
+    # See https://gitlab.com/nathimel/embo/-/blob/master/embo/utils.py?ref_type=heads#L77
     raise NotImplementedError
 
 
@@ -306,10 +311,12 @@ def get_ib_curve_(config: DictConfig):
                 p_U_given_M=meaning_dists,
                 init_q=prev_q,
             )
-            # BUG: The REASON that points continue to be past the curve may lie here; the points are not as optimal as they could be, because I haven't correctly implemented the bayesian decoder.
             coordinates.append(ib_encoder_to_point(meaning_dists, prior, encoder))
             encoders.append(encoder)
             # prev_q = copy.deepcopy(encoder) # welp i tried
+
+    # NOTE: It's also probably worth either importing embo's compute_upper_bound or copy pasting it so we don't have to import it. Should clean things up, but again, I prefer to use embo anyway. 
+    # https://gitlab.com/nathimel/embo/-/blob/master/embo/utils.py?ref_type=heads#L77
 
     return {
         "encoders": encoders,

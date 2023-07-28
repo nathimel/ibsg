@@ -10,7 +10,7 @@ game:
   maxbeta: 5
   minbeta: -2
   numbeta: 1500
-  num_processes: 1
+  num_processes: 6
 simulation:
   dynamics:
     max_its: 200

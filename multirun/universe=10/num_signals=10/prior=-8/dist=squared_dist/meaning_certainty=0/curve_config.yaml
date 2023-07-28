@@ -9,4 +9,4 @@ overwrite_curves: true
 maxbeta: 5
 minbeta: -2
 numbeta: 1500
-num_processes: 1
+num_processes: 6

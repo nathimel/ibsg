@@ -5,7 +5,7 @@ import torch
 from tqdm import tqdm
 from omegaconf import DictConfig
 from multiprocessing import Pool, cpu_count
-from simulation.dynamics import dynamics_map
+from simulation.dynamics import dynamics_map, Dynamics
 from game.game import Game
 
 
@@ -46,7 +46,7 @@ def run_simulations_multiprocessing(
 
 def run_simulation(config: DictConfig) -> Game:
     """Run one run of a simulation and return the resulting game."""
-    dynamics = dynamics_map[config.simulation.dynamics.name]
+    dynamics: Dynamics = dynamics_map[config.simulation.dynamics.name]
     dynamics = dynamics(
         Game.from_hydra(config),
         **config.simulation.dynamics,

@@ -112,13 +112,11 @@ hydra:
     hydra:
     - hydra.mode=MULTIRUN
     task:
-    - game.universe=wcs
-    - game.prior=wcs_model
     - game.overwrite_curves=True
   job:
     name: plot
     chdir: true
-    override_dirname: game.overwrite_curves=True,game.prior=wcs_model,game.universe=wcs
+    override_dirname: game.overwrite_curves=True
     id: ???
     num: ???
     config_name: config
@@ -172,8 +170,8 @@ hydra:
       hydra/output: default
   verbose: false
 game:
-  universe: wcs
-  prior: wcs_model
+  universe: 10
+  prior: -8
   num_signals: 10
   distance: squared_dist
   discriminative_need_gamma: 1.0
