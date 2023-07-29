@@ -1,0 +1,4 @@
+- game.universe=2ball_300
+- game.num_signals=300
+- game.ib_bound_function=homebuilt
+- game.num_processes=1
