@@ -49,6 +49,7 @@ def ib_encoder_to_measurements(
     prior = np.array(prior)
     dist_mat = np.array(dist_mat)
     confusion = np.array(confusion)
+    encoder = np.array(encoder)
 
     # NOTE: Here is where we rectify ineffable meanings, by replacing rows of all zeros with uniform distributions.
     # Another option would simple be to drop them.

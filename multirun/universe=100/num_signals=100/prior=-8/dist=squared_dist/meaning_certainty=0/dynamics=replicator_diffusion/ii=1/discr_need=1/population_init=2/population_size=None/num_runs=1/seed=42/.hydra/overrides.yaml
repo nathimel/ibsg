@@ -1,0 +1,5 @@
+- game.discriminative_need_gamma=1
+- simulation.dynamics.population_init_gamma=2
+- simulation.dynamics.imprecise_imitation_gamma=1
+- game.universe=100
+- game.num_signals=100

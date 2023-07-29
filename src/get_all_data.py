@@ -4,6 +4,7 @@ import omegaconf
 import pandas as pd
 
 from pathlib import Path
+from tqdm import tqdm
 
 # We don't use the hydra.compose api, since we can't use sweeps with that anyways. Instead, we literally build a giant dataframe of all outputs in multirun.
 
@@ -30,7 +31,9 @@ def main():
 
     # Collect all the results of individual simulations
     simulation_results = []
-    for path in Path(root_dir).rglob(game_fn):
+    print(f"collecting all simulation data from {root_dir}.")
+    game_fns = list(Path(root_dir).rglob(game_fn))
+    for path in tqdm(game_fns):
 
         parent = path.parent.absolute()
 
@@ -68,8 +71,10 @@ def main():
         simulation_results.append(df)
     
     # Collect all curves
+    print(f"collecting all curve data from {root_dir}.")
     curves = []
-    for path in Path(root_dir).rglob(curve_metadata_fn):
+    curve_fns = list(Path(root_dir).rglob(curve_metadata_fn))
+    for path in tqdm(curve_fns):
 
         parent = path.parent.absolute()
 

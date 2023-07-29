@@ -47,7 +47,7 @@ def main(config: DictConfig):
     # Compute matrix of pairwise gNID between emergent and optimal
     gNIDs = torch.tensor(
         [
-            [gNID(em, opt, g.prior) for opt in optimal_encoders]
+            [gNID(em.float(), opt.float(), g.prior.float()) for opt in optimal_encoders]
             for em in emergent_encoders
         ]
     )
