@@ -174,17 +174,17 @@ def ib_blahut_arimoto(
     Args:
         num_W: size of the target support (vocabulary size)
 
-        beta: related to the slope of the IB curve, corresponds to softmax temperature.
+        beta: the Lagrangian multiplier in the IB objective (controls slope in the IB curve)
 
         p_M: prior probability distribution over source variables, P(m) (i.e. the cognitive source)
 
-        p_U_given_M: the Bayes' optimal decoder P(U|M) (i.e. the listener meaning)
+        p_U_given_M: conditional probability of U given M, i.e. the perceptually uncertain meaning distributions
 
         init_q: the encoder for initialization; i.e. the optimal encoder from the previous beta, if the reverse deterministic annealing algorithm.
 
         max_its: the number of iterations to run IB method
 
-        eps: accuracy required by the algorithm: the algorithm stops if there is no change in distortion value of more than 'eps' between consequtive iterations
+        eps: accuracy required by the algorithm: the algorithm stops if there is no change in distortion value of more than 'eps' between consecutive iterations
 
         ignore_converge: whether to run the optimization until `max_it`, ignoring the stopping criterion specified by `eps`.
 
@@ -192,7 +192,7 @@ def ib_blahut_arimoto(
 
     Returns:
 
-        the optimal encoder for gamma.
+        the optimal encoder for beta.
     """
     # convert to logspace for ease
     lnp_M = torch.log(p_M)
