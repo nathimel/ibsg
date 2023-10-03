@@ -114,11 +114,11 @@ hydra:
     task:
     - game.universe=100
     - game.num_signals=100
-    - game.prior=-8
+    - game.meaning_dist_gamma=0
   job:
     name: curve
     chdir: true
-    override_dirname: game.prior=-8,game.universe=100
+    override_dirname: game.universe=100
     id: '0'
     num: 0
     config_name: config

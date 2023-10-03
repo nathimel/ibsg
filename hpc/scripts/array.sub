@@ -8,7 +8,7 @@
 
 ## ---------------------------- ARRAY CONFIGS ----------------------------------
 #SBATCH --job-name=array_curve   ## name of the job.
-#SBATCH --array=1-4          ## number of array tasks
+#SBATCH --array=1-6          ## number of array tasks
 # Slurm automatically sets $SLURM_ARRAY_TASK_ID variable 
 # Can use $SLURM_ARRAY_TASK_ID to specify the file names and other variables.
 ## -----------------------------------------------------------------------------
@@ -39,6 +39,6 @@ echo "I am job SLURM_JOB_ID = $SLURM_JOB_ID"
 echo "I am array job SLURM_ARRAY_JOB_ID = $SLURM_ARRAY_JOB_ID"
 
 # Actual programs
-INPUT=hpc/configs/curve_large.txt
+INPUT=hpc/configs/curve.txt
 Args=$(awk "NR==$SLURM_ARRAY_TASK_ID" $INPUT)
 time ./hpc/scripts/curve.sh $Args
