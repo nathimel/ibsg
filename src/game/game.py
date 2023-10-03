@@ -84,6 +84,10 @@ class Game:
 
         # Initialize Universe, default is a list of integers
         if isinstance(config.game.universe, str):
+            # breakpoint()
+            fn = get_universe_fn(config, *args, **kwargs)
+            if not os.path.exists(fn):
+                breakpoint()
             referents_df = pd.read_csv(get_universe_fn(config, *args, **kwargs))
         elif isinstance(config.game.universe, int):
             referents_df = pd.DataFrame(
