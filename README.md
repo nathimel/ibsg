@@ -116,7 +116,8 @@ This will perform four basic steps by running the following scripts (with the ap
 
     `python src/get_all_data.py`
 
-    Search recursively for the results of simulation sweeps and IB curve estimations, collect them into dataframes annotated with their appropriate parameters as columns, and write as one (long) dataframe to [all_data](analysis_data/all_data.csv). This can be used to produce and directly compare plots as in [this notebook](src/notebooks/analyze.ipynb).
+    Search recursively for the results of simulation sweeps and IB curve estimations, collect them into dataframes annotated with their appropriate parameters as columns, and write as one (long) dataframe to [all_data](analysis_data/all_data.csv) in tidy data format. This can be used to produce and directly compare plots as in [this notebook](src/notebooks/analyze.ipynb).
+    - NOTE: It is important to run this script on the same machine used to run simulations or estimate curves. The reason for this is because this script will look for torch binaries (e.g., `betas.pt` or `optimal_encoders.pt`) generated during those steps. However, **all torch binaries are excluded from git history** via the `.gitignore` due to large file limits. So, if you ran experiments using a remote server, you must run this script on the same server if you want perform data analysis on those experiments.
 
 ## References
 

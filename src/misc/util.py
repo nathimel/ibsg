@@ -239,7 +239,7 @@ def get_bound_fn(
 def get_root(config: DictConfig, cwd=None) -> str:
     """Get the full path of the root of the repo, relative to hydra interpolations."""
     return os.path.abspath(
-        os.path.join(cwd.replace(config.filepaths.leaf_subdir, ""), os.pardir)
+        os.path.join(str(cwd).replace(config.filepaths.leaf_subdir, ""), os.pardir)
     )  # use join, not dirname (which requires path to exist, among other things)
 
 
