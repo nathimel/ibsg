@@ -6,7 +6,7 @@ import warnings
 from analysis.ib import ib_encoder_to_measurements
 from altk.effcomm.util import rows_zero_to_uniform
 from game.game import Game
-from game.perception import generate_sim_matrix
+from game.perception import generate_sim_matrix, generate_confusion_matrix
 from game.graph import generate_adjacency_matrix
 from misc.tools import random_stochastic_matrix, normalize_rows
 
@@ -24,13 +24,9 @@ class Dynamics:
 
         self.max_its = kwargs["max_its"]
         self.threshold = kwargs["threshold"]
-        self.confusion_gamma = 10 ** kwargs["imprecise_imitation_gamma"]
+        self.confusion_gamma = kwargs["imprecise_imitation_gamma"]
 
-        self.confusion = normalize_rows(
-            generate_sim_matrix(
-                self.game.universe, self.confusion_gamma, self.game.dist_mat
-            )
-        )
+        self.confusion = generate_confusion_matrix(self.game.universe, self.confusion_gamma, self.game.dist_mat)
 
         pt_args = [
             self.game.meaning_dists,

@@ -3,6 +3,11 @@ import omegaconf
 
 import pandas as pd
 
+from misc import util
+from game.game import Game
+from game.perception import generate_confusion_matrix
+from altk.effcomm.util import joint, H
+
 from pathlib import Path
 from tqdm import tqdm
 
@@ -65,6 +70,14 @@ def main():
         df["imprecise_imitation_gamma"] = leaf_cfg.simulation.dynamics.imprecise_imitation_gamma
         df["population_init_gamma"] = leaf_cfg.simulation.dynamics.population_init_gamma
         df["seed"] = leaf_cfg.seed
+
+        # NOTE: this is slow.
+        # conditional entropy of confusion distributions (imprecision)
+        # H(Y|X) = H(X,Y) - H(X)
+        confusion = generate_confusion_matrix(leaf_game.universe, leaf_cfg.simulation.dynamics.imprecise_imitation_gamma, leaf_game.dist_mat)
+        pX = leaf_game.prior.numpy()        
+        pXY = joint(confusion, pX)
+        df["noise_cond_ent"] = H(pXY) - H(pX)
 
         df["ib_bound_function"] = None  # dummy value since all simulations are curve agnostic.
 

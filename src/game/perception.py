@@ -2,7 +2,7 @@
 
 import torch
 from altk.language.semantics import Universe, Referent
-
+from misc.tools import normalize_rows
 
 # distance measures
 def hamming_dist(t: torch.Tensor, u: torch.Tensor) -> float:
@@ -28,6 +28,18 @@ distance_measures = {
 def referent_to_tensor(referent: Referent):
     return torch.tensor(referent.point, dtype=float)
 
+
+def generate_confusion_matrix(
+    universe: Universe,
+    gamma: float, 
+    dist_mat: torch.Tensor,
+) -> torch.Tensor:
+    """Given a universe, confusion gamma (NOTE: will be exponentiated by 10), and distance matrix, generate a conditional probability distribution over points in the universe given points in the universe."""
+    return normalize_rows(
+            generate_sim_matrix(
+                universe, 10 ** gamma, dist_mat
+            )
+        )
 
 def generate_dist_matrix(
     universe: Universe,
