@@ -7,6 +7,7 @@ import pandas as pd
 from multiprocessing import cpu_count
 
 from altk.language.semantics import Referent, Universe
+from altk.effcomm.util import PRECISION
 from game.perception import generate_dist_matrix, generate_sim_matrix
 from game.meaning import build_universe
 
@@ -105,6 +106,10 @@ class Game:
         prior = torch.from_numpy(universe.prior_numpy()).float()
         if not torch.isclose(prior.sum(), torch.tensor([1.0])):
             raise Exception(f"Prior does not sum to 1.0. (sum={prior.sum()})")
+
+        # Add precision if necessary to prevent embo errors during curve estimation of Dirac delta distribution
+        if torch.equal(prior, prior.bool()):
+            prior = torch.where(prior > 0, prior, PRECISION)
 
         game = cls(
             universe,

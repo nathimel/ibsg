@@ -1,0 +1,21 @@
+Running job on host hpc3-20-11
+SLURM_NTASKS is 1
+I am task SLURM_ARRAY_TASK_ID = 3
+I am job SLURM_JOB_ID = 23104345
+I am array job SLURM_ARRAY_JOB_ID = 23104342
+no change     /opt/apps/miniconda3/4.8.5/condabin/conda
+no change     /opt/apps/miniconda3/4.8.5/bin/conda
+no change     /opt/apps/miniconda3/4.8.5/bin/conda-env
+no change     /opt/apps/miniconda3/4.8.5/bin/activate
+no change     /opt/apps/miniconda3/4.8.5/bin/deactivate
+no change     /opt/apps/miniconda3/4.8.5/etc/profile.d/conda.sh
+no change     /opt/apps/miniconda3/4.8.5/etc/fish/conf.d/conda.fish
+no change     /opt/apps/miniconda3/4.8.5/shell/condabin/Conda.psm1
+no change     /opt/apps/miniconda3/4.8.5/shell/condabin/conda-hook.ps1
+no change     /opt/apps/miniconda3/4.8.5/lib/python3.8/site-packages/xontrib/conda.xsh
+no change     /opt/apps/miniconda3/4.8.5/etc/profile.d/conda.csh
+no change     /data/homezvol0/nimel/.bashrc
+No action taken.
+python src/setup.py "$@"
+[2023-08-05 14:24:13,568][HYDRA] Launching 1 jobs locally
+[2023-08-05 14:24:13,568][HYDRA] 	#0 : game.universe=10 game.prior=0

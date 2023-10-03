@@ -1,0 +1,3 @@
+- game.universe=1000
+- game.num_signals=1000
+- game.prior=-4

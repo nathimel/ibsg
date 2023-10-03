@@ -1,0 +1,34 @@
+Running job on host hpc3-21-00
+SLURM_NTASKS is 1
+I am task SLURM_ARRAY_TASK_ID = 6
+I am job SLURM_JOB_ID = 23106600
+I am array job SLURM_ARRAY_JOB_ID = 23106594
+no change     /opt/apps/miniconda3/4.12.0/condabin/conda
+no change     /opt/apps/miniconda3/4.12.0/bin/conda
+no change     /opt/apps/miniconda3/4.12.0/bin/conda-env
+no change     /opt/apps/miniconda3/4.12.0/bin/activate
+no change     /opt/apps/miniconda3/4.12.0/bin/deactivate
+no change     /opt/apps/miniconda3/4.12.0/etc/profile.d/conda.sh
+no change     /opt/apps/miniconda3/4.12.0/etc/fish/conf.d/conda.fish
+no change     /opt/apps/miniconda3/4.12.0/shell/condabin/Conda.psm1
+no change     /opt/apps/miniconda3/4.12.0/shell/condabin/conda-hook.ps1
+no change     /opt/apps/miniconda3/4.12.0/lib/python3.9/site-packages/xontrib/conda.xsh
+no change     /opt/apps/miniconda3/4.12.0/etc/profile.d/conda.csh
+no change     /data/homezvol0/nimel/.bashrc
+No action taken.
+
+python src/setup.py "$@"
+[2023-08-06 19:36:27,276][HYDRA] Launching 1 jobs locally
+[2023-08-06 19:36:27,276][HYDRA] 	#0 : game.universe=500 game.num_signals=500 game.prior=-4
+
+python src/curve.py "$@"
+[2023-08-06 19:36:41,060][HYDRA] Launching 1 jobs locally
+[2023-08-06 19:36:41,060][HYDRA] 	#0 : game.universe=500 game.num_signals=500 game.prior=-4
+computing ib curve...
+Saved 1447 language points to /dfs6/pub/nimel/projects/ibsg/multirun/universe=500/num_signals=500/prior=-4/dist=squared_dist/meaning_certainty=0/curve_points.csv
+Saved tensor of torch.Size([1447, 500, 500]) to /dfs6/pub/nimel/projects/ibsg/multirun/universe=500/num_signals=500/prior=-4/dist=squared_dist/meaning_certainty=0/optimal_encoders.pt
+Saved tensor of torch.Size([1447]) to /dfs6/pub/nimel/projects/ibsg/multirun/universe=500/num_signals=500/prior=-4/dist=squared_dist/meaning_certainty=0/betas.pt
+computing mse curve...
+Saved 1000 language points to /dfs6/pub/nimel/projects/ibsg/multirun/universe=500/num_signals=500/prior=-4/dist=squared_dist/meaning_certainty=0/mse_curve_points.csv
+saving curve metadata...
+Saved a hydra config as curve metadata to /dfs6/pub/nimel/projects/ibsg/multirun/universe=500/num_signals=500/prior=-4/dist=squared_dist/meaning_certainty=0/curve_config.yaml

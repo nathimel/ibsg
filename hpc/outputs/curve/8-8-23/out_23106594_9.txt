@@ -1,0 +1,27 @@
+Running job on host hpc3-21-27
+SLURM_NTASKS is 1
+I am task SLURM_ARRAY_TASK_ID = 9
+I am job SLURM_JOB_ID = 23106603
+I am array job SLURM_ARRAY_JOB_ID = 23106594
+no change     /opt/apps/miniconda3/4.12.0/condabin/conda
+no change     /opt/apps/miniconda3/4.12.0/bin/conda
+no change     /opt/apps/miniconda3/4.12.0/bin/conda-env
+no change     /opt/apps/miniconda3/4.12.0/bin/activate
+no change     /opt/apps/miniconda3/4.12.0/bin/deactivate
+no change     /opt/apps/miniconda3/4.12.0/etc/profile.d/conda.sh
+no change     /opt/apps/miniconda3/4.12.0/etc/fish/conf.d/conda.fish
+no change     /opt/apps/miniconda3/4.12.0/shell/condabin/Conda.psm1
+no change     /opt/apps/miniconda3/4.12.0/shell/condabin/conda-hook.ps1
+no change     /opt/apps/miniconda3/4.12.0/lib/python3.9/site-packages/xontrib/conda.xsh
+no change     /opt/apps/miniconda3/4.12.0/etc/profile.d/conda.csh
+no change     /data/homezvol0/nimel/.bashrc
+No action taken.
+
+python src/setup.py "$@"
+[2023-08-06 19:36:27,265][HYDRA] Launching 1 jobs locally
+[2023-08-06 19:36:27,265][HYDRA] 	#0 : game.universe=1000 game.num_signals=1000 game.prior=-8
+
+python src/curve.py "$@"
+[2023-08-06 19:37:09,556][HYDRA] Launching 1 jobs locally
+[2023-08-06 19:37:09,556][HYDRA] 	#0 : game.universe=1000 game.num_signals=1000 game.prior=-8
+computing ib curve...

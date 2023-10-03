@@ -112,15 +112,13 @@ hydra:
     hydra:
     - hydra.mode=MULTIRUN
     task:
-    - game.discriminative_need_gamma=range(-3,4)
-    - simulation.dynamics.population_init_gamma=range(-3, 4)
-    - simulation.dynamics.imprecise_imitation_gamma=range(-3, 4)
-    - game.universe=2ball_300
-    - game.num_signals=300
+    - game.universe=1000
+    - game.num_signals=1000
+    - game.prior=-8
   job:
-    name: measure
+    name: curve
     chdir: true
-    override_dirname: game.universe=2ball_300
+    override_dirname: game.prior=-8,game.universe=1000
     id: ???
     num: ???
     config_name: config
@@ -147,12 +145,12 @@ hydra:
   runtime:
     version: 1.3.2
     version_base: '1.3'
-    cwd: /Users/nathanielimel/uci/projects/ibsg
+    cwd: /dfs6/pub/nimel/projects/ibsg
     config_sources:
     - path: hydra.conf
       schema: pkg
       provider: hydra
-    - path: /Users/nathanielimel/uci/projects/ibsg/conf
+    - path: /dfs6/pub/nimel/projects/ibsg/conf
       schema: file
       provider: main
     - path: ''
@@ -174,9 +172,9 @@ hydra:
       hydra/output: default
   verbose: false
 game:
-  universe: 2ball_300
+  universe: 1000
   prior: -8
-  num_signals: 300
+  num_signals: 1000
   distance: squared_dist
   discriminative_need_gamma: 1.0
   meaning_dist_gamma: 0

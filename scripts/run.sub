@@ -3,7 +3,7 @@
 #SBATCH --job-name=run.sh  ## job name
 #SBATCH -p free              ## use free partition
 #SBATCH --nodes=1            ## use 1 node, don't ask for multiple
-#SBATCH --ntasks=8           ## ask for 1 CPU
+#SBATCH --ntasks=8           ## ask for 8 CPUs
 #SBATCH --mem-per-cpu=1G     ## ask for 1Gb memory per CPU
 #SBATCH --error=scripts/slurm-%J.err ## error file
 #SBATCH --mail-type=fail,end               ## send email when the job ends
@@ -15,7 +15,7 @@ echo "Running job on host $hn"
 
 # Just overwrite output file
 
-# rm -f shellscripts/outputs/err.txt
-rm -f shellscripts/outputs/out.txt
+# rm -f scripts/outputs/err.txt
+rm -f scripts/outputs/out.txt
 
-time ./shellscripts/hpc_run.sh "$@" > shellscripts/outputs/out.txt
+time ./scripts/hpc_run.sh "$@" > scripts/outputs/out.txt
