@@ -308,7 +308,7 @@ class ReplicatorDynamics(Dynamics):
 
 
 class ReplicatorDiffusionDynamics(ReplicatorDynamics):
-    """The 'replicator-diffusion dynamic' introduced in Correia (2013). Unlike Franke and Correia (2018), There is no direct connection between agent-level behavior and the imprecision/noise in this dynamic. It is also more mathematically simple, and therefore closer to the replicator-mutator dynamic."""
+    """The 'replicator-diffusion dynamic' introduced in Correia (2013). Unlike Franke and Correia (2018), There is no direct connection between agent-level behavior and the imprecision/noise in this dynamic. It is also more mathematically simple, and closer to the replicator-mutator dynamic."""
 
     def __init__(self, game: Game, **kwargs) -> None:
         super().__init__(game, **kwargs)
