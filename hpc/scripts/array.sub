@@ -7,7 +7,7 @@
 ## -----------------------------------------------------------------------------
 
 ## ---------------------------- ARRAY CONFIGS ----------------------------------
-#SBATCH --job-name=array_curve   ## name of the job.
+#SBATCH --job-name=array_sim   ## name of the job.
 #SBATCH --array=1-6          ## number of array tasks
 # Slurm automatically sets $SLURM_ARRAY_TASK_ID variable 
 # Can use $SLURM_ARRAY_TASK_ID to specify the file names and other variables.
@@ -22,8 +22,8 @@
 ## -----------------------------------------------------------------------------
 
 ## ----------------------- OUTPUT AND ERROR CONFIGS ----------------------------
-#SBATCH --error=hpc/outputs/curve/error_%A_%a.txt ## error log file name: %A is job id, %a is array task id
-#SBATCH --output=hpc/outputs/curve/out_%A_%a.txt  ## output filename
+#SBATCH --error=hpc/outputs/sim/error_%A_%a.txt ## error log file name: %A is job id, %a is array task id
+#SBATCH --output=hpc/outputs/sim/out_%A_%a.txt  ## output filename
 #SBATCH --mail-type=fail,end    ## send email when the job ends
 #SBATCH --mail-user=nimel@uci.edu  ## use this email address
 ## -----------------------------------------------------------------------------
@@ -39,6 +39,6 @@ echo "I am job SLURM_JOB_ID = $SLURM_JOB_ID"
 echo "I am array job SLURM_ARRAY_JOB_ID = $SLURM_ARRAY_JOB_ID"
 
 # Actual programs
-INPUT=hpc/configs/curve.txt
+INPUT=hpc/configs/sim.txt
 Args=$(awk "NR==$SLURM_ARRAY_TASK_ID" $INPUT)
-time ./hpc/scripts/curve.sh $Args
+time ./hpc/scripts/sim.sh $Args

@@ -117,7 +117,7 @@ hydra:
     - game.discriminative_need_gamma=range(-3,4)
     - simulation.dynamics.imprecise_imitation_gamma=-3
     - game.meaning_dist_gamma=-3
-    - simulation.dynamics.population_init_gamma=-3,0,3
+    - simulation.dynamics.population_init_gamma=range(-3,4)
   job:
     name: plot
     chdir: true
@@ -148,12 +148,12 @@ hydra:
   runtime:
     version: 1.3.2
     version_base: '1.3'
-    cwd: /Users/nathanielimel/uci/projects/ibsg
+    cwd: /dfs6/pub/nimel/projects/ibsg
     config_sources:
     - path: hydra.conf
       schema: pkg
       provider: hydra
-    - path: /Users/nathanielimel/uci/projects/ibsg/conf
+    - path: /dfs6/pub/nimel/projects/ibsg/conf
       schema: file
       provider: main
     - path: ''
