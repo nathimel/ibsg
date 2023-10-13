@@ -115,8 +115,8 @@ hydra:
     - game.universe=100
     - game.num_signals=100
     - game.discriminative_need_gamma=range(-3,4)
-    - simulation.dynamics.imprecise_imitation_gamma=-3
-    - game.meaning_dist_gamma=-3
+    - simulation.dynamics.imprecise_imitation_gamma=-1
+    - game.meaning_dist_gamma=-1
     - simulation.dynamics.population_init_gamma=range(-3,4)
   job:
     name: plot
@@ -180,7 +180,7 @@ game:
   num_signals: 100
   distance: squared_dist
   discriminative_need_gamma: 1.0
-  meaning_dist_gamma: -3
+  meaning_dist_gamma: -1
   ib_bound_function: embo
   overwrite_curves: false
   maxbeta: 5
@@ -192,7 +192,7 @@ simulation:
     max_its: 200
     threshold: 1.0e-05
     population_init_gamma: -8
-    imprecise_imitation_gamma: -3
+    imprecise_imitation_gamma: -1
     population_size: null
     graph: null
     name: replicator_diffusion
