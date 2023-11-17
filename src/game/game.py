@@ -112,7 +112,7 @@ class Game:
             raise Exception(f"Prior does not sum to 1.0. (sum={prior.sum()})")
 
         # Add precision if necessary to prevent embo errors during curve estimation of Dirac delta distribution
-        if torch.equal(prior, prior.bool()):
+        if torch.equal(prior, prior.bool().float()):
             prior = torch.where(prior > 0, prior, PRECISION)
 
         game = cls(

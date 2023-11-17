@@ -81,6 +81,8 @@ class FinitePopulationDynamics(Dynamics):
 
         # define the adjacency matrix for the environment of interacting agents
         self.adj_mat = generate_adjacency_matrix(self.n, kwargs["graph"])
+        # since stochastic edge weights not supported yet just cast to int
+        self.adj_mat = torch.tensor(self.adj_mat, dtype=int)
 
     def population_mean_weights(self) -> tuple[float]:
         """Return the average agent (Sender, Receiver) weights."""
@@ -101,9 +103,9 @@ class FinitePopulationDynamics(Dynamics):
         for i in range(self.n):
             for j in range(self.n):
                 # TODO: generalize to stochastic behavior for real-valued edge weights
-                if not isinstance(self.adj_mat[i, j], int):
+                if i != j and not isinstance(self.adj_mat[i, j].item(), int):
                     raise Exception(
-                        f"Stochastic edge weights not yet supported. Edge weight for i={i}, j={j} was {self.adj_mat[i,j]}."
+                        f"Stochastic edge weights not yet supported. Edge weight for i={i}, j={j} was {self.adj_mat[i,j].item()}."
                     )
                 if not self.adj_mat[i, j]:
                     continue

@@ -119,14 +119,24 @@ def get_bottleneck(config: DictConfig) -> dict[str, list]:
             "betas": a list of the beta values used for IB method.
             }
     """
+    betas = np.concatenate(
+        [
+            np.linspace(start=0, stop=0.29, num=333),
+            np.linspace(start=0.3, stop=0.9, num=333),
+            np.linspace(start=1.0, stop=2**7, num=334),
+        ]
+    )
+
     g = Game.from_hydra(config)
     func = config.game.ib_bound_function
     if func == "embo":
         bottleneck = information.get_bottleneck(
             prior=g.prior,
             meaning_dists=g.meaning_dists,
-            maxbeta=g.maxbeta,
-            minbeta=g.minbeta,
+            # maxbeta=g.maxbeta,
+            maxbeta=betas[-1],
+            # minbeta=g.minbeta,
+            minbeta=betas[0],
             numbeta=g.numbeta,
             processes=config.game.num_processes if config.game.num_processes is not None else cpu_count(),
         )
@@ -273,10 +283,18 @@ def get_ib_curve_(config: DictConfig):
     encoders = []
     coordinates = []
 
-    betas = torch.linspace(
-        config.game.maxbeta, config.game.minbeta, config.game.numbeta
-    )
+    # betas = torch.linspace(
+        # config.game.maxbeta, config.game.minbeta, config.game.numbeta
+    # )
+
     # curve can get sparse in the high-interest regions, beta 1.02-1.1
+    betas = np.concatenate(
+        [
+            np.linspace(start=0, stop=0.29, num=333),
+            np.linspace(start=0.3, stop=0.9, num=333),
+            np.linspace(start=1.0, stop=2**7, num=334),
+        ]
+    )
 
     # Multiprocessing
     num_processes = config.game.num_processes if config.game.num_processes is not None else cpu_count()
@@ -302,6 +320,7 @@ def get_ib_curve_(config: DictConfig):
 
     else:
         # prev_q = normalize_rows(torch.eye(len(prior)) + PRECISION)
+        prev_q = normalize_rows(torch.eye(len(prior)))        
         prev_q = None
         for beta in tqdm(betas):
 
@@ -314,7 +333,7 @@ def get_ib_curve_(config: DictConfig):
             )
             coordinates.append(ib_encoder_to_point(meaning_dists, prior, encoder))
             encoders.append(encoder)
-            # prev_q = copy.deepcopy(encoder) # welp i tried
+            prev_q = copy.deepcopy(encoder) # welp i tried
 
     # NOTE: It's also probably worth either importing embo's compute_upper_bound or copy pasting it so we don't have to import it. Should clean things up, but again, I prefer to use embo anyway. 
     # https://gitlab.com/nathimel/embo/-/blob/master/embo/utils.py?ref_type=heads#L77
