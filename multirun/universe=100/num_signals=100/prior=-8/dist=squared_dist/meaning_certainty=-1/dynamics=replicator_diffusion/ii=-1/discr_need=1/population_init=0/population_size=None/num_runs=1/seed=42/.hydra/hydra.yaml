@@ -118,12 +118,13 @@ hydra:
     - simulation.dynamics.imprecise_imitation_gamma=-1
     - simulation.dynamics.population_init_gamma=0
     - game.meaning_dist_gamma=-1
+    - simulation.multiprocessing=True
   job:
-    name: plot
+    name: run_simulations
     chdir: true
-    override_dirname: game.universe=100
-    id: '31'
-    num: 31
+    override_dirname: game.universe=100,simulation.multiprocessing=True
+    id: '213'
+    num: 213
     config_name: config
     env_set: {}
     env_copy: []

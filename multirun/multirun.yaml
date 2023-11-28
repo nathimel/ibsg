@@ -114,16 +114,15 @@ hydra:
     task:
     - game.universe=100
     - game.num_signals=100
-    - game.discriminative_need_gamma=3
-    - simulation.dynamics.imprecise_imitation_gamma=-1
-    - simulation.dynamics.population_init_gamma=-3
+    - game.discriminative_need_gamma=range(-3,4)
+    - simulation.dynamics.imprecise_imitation_gamma=range(-3,4)
+    - simulation.dynamics.population_init_gamma=range(-3,4)
     - game.meaning_dist_gamma=-1
-    - simulation/dynamics=nowak_krakauer
-    - simulation.multiprocessing=False
+    - simulation.multiprocessing=True
   job:
     name: run_simulations
     chdir: true
-    override_dirname: game.universe=100,simulation.multiprocessing=False,simulation/dynamics=nowak_krakauer
+    override_dirname: game.universe=100,simulation.multiprocessing=True
     id: ???
     num: ???
     config_name: config
@@ -164,7 +163,7 @@ hydra:
     output_dir: ???
     choices:
       simulation: basic
-      simulation/dynamics: nowak_krakauer
+      simulation/dynamics: replicator_diffusion
       game: basic
       hydra/env: default
       hydra/callbacks: null
@@ -181,7 +180,7 @@ game:
   prior: -8
   num_signals: 100
   distance: squared_dist
-  discriminative_need_gamma: 3
+  discriminative_need_gamma: 1.0
   meaning_dist_gamma: -1
   ib_bound_function: embo
   overwrite_curves: false
@@ -193,19 +192,18 @@ simulation:
   dynamics:
     max_its: 200
     threshold: 1.0e-05
-    population_init_gamma: -3
-    imprecise_imitation_gamma: -1
-    population_size: 100
-    graph: complete
-    name: nowak_krakauer
-    num_samples: 10
+    population_init_gamma: -8
+    imprecise_imitation_gamma: 0
+    population_size: null
+    graph: null
+    name: replicator_diffusion
   use_decoder: true
   num_runs: 1
   plot_all_encoders: true
   trajectory: true
   variants: false
   num_variants: 100
-  multiprocessing: false
+  multiprocessing: true
   num_processes: null
   approximate_encoders: false
   num_approximation_samples: 20

@@ -4,3 +4,4 @@
 - simulation.dynamics.imprecise_imitation_gamma=-1
 - simulation.dynamics.population_init_gamma=1
 - game.meaning_dist_gamma=-1
+- simulation.multiprocessing=True

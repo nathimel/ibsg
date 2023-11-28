@@ -6,7 +6,7 @@ game:
   discriminative_need_gamma: 1.0
   meaning_dist_gamma: 0
   ib_bound_function: embo
-  overwrite_curves: false
+  overwrite_curves: true
   maxbeta: 5
   minbeta: -2
   numbeta: 1500
