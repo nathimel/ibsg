@@ -5,9 +5,11 @@ import os
 import torch
 
 import pandas as pd
+from scipy.spatial.distance import cdist
 
 from omegaconf import DictConfig
 from altk.effcomm.util import gNID
+
 
 from analysis import efficiency
 from game.game import Game
@@ -40,8 +42,13 @@ def main(config: DictConfig):
     )  # ordered by beta
     curve_data = pd.read_csv(util.get_bound_fn(config, "ib"))
 
+    # We will analyze, for each point in each trajectory, its dist to curve
+    if config.simulation.trajectory:
+        traj_fn = fullpath(fps.trajectory_points_save_fn)
+        traj_data = pd.read_csv(traj_fn)
+
     ##########################################################################
-    # Measure efficiency
+    # Measure efficiency of emergent encoders
     ##########################################################################
 
     # Compute matrix of pairwise gNID between emergent and optimal
@@ -75,6 +82,17 @@ def main(config: DictConfig):
     )
 
     ##########################################################################
+    # Measure trajectory points' distances to curve
+    ##########################################################################
+
+    # Measure Euclidean dist of each language to any optimal curve point
+    traj_points = traj_data[["complexity", "accuracy"]].values
+    curve_points = curve_data[["complexity", "accuracy"]].values
+    distances = cdist(traj_points, curve_points) # shape `[traj_pts, curve_pts]`
+    # For each traj_point, get the minimum dist to any curve_point
+    min_distances, _ = torch.min(torch.from_numpy(distances), dim=1)
+
+    ##########################################################################
     # Write data
     ##########################################################################
 
@@ -90,6 +108,10 @@ def main(config: DictConfig):
         fullpath(fps.nearest_optimal_points_save_fn),
         opt_data,
     )
+
+    # Add the min_distances column to trajectory points
+    traj_data["min_distance_to_curve"] = min_distances
+    util.save_points_df(traj_fn, traj_data)
 
     # Inspect a single gnid plot
     if config.simulation.inspect_gnid:

@@ -111,7 +111,7 @@ def single_gnid_heatmap_tradeoff_plot(
     data = gnid_curve_data.copy()
     plot = (
         pn.ggplot(data=data, mapping=pn.aes(x="complexity", y="accuracy"))
-        + pn.geom_line(size=3, mapping=pn.aes(color="gNID"))
+        + pn.geom_point(size=3, mapping=pn.aes(color="gNID"))
         + pn.scale_color_continuous("inferno", limits=(0, 1))
         + pn.geom_point(
             data=sim_data,

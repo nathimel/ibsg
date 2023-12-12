@@ -115,14 +115,13 @@ hydra:
     - game.universe=100
     - game.num_signals=100
     - game.discriminative_need_gamma=range(-3,4)
-    - simulation.dynamics.imprecise_imitation_gamma=range(-3,4)
-    - simulation.dynamics.population_init_gamma=range(-3,4)
+    - simulation.dynamics.imprecise_imitation_gamma=-1
     - game.meaning_dist_gamma=-1
-    - simulation.multiprocessing=True
+    - simulation.dynamics.population_init_gamma=range(-3,4)
   job:
-    name: run_simulations
+    name: measure
     chdir: true
-    override_dirname: game.universe=100,simulation.multiprocessing=True
+    override_dirname: game.universe=100
     id: ???
     num: ???
     config_name: config
@@ -193,7 +192,7 @@ simulation:
     max_its: 200
     threshold: 1.0e-05
     population_init_gamma: -8
-    imprecise_imitation_gamma: 0
+    imprecise_imitation_gamma: -1
     population_size: null
     graph: null
     name: replicator_diffusion

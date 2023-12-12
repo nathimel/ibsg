@@ -1,0 +1,105 @@
+---
+title: "trajectory_analysis"
+author: "Nathaniel Imel"
+date: "2023-12-08"
+output: html_document
+---
+
+
+```{r setup}
+library(tidyverse)
+library(lme4)
+library(modelr)
+```
+
+```{r load}
+df <- read_csv("/Users/nathanielimel/uci/projects/ibsg/src/notebooks/trajectory_analysis_data.csv")
+df
+```
+
+```{r aggregate plot}
+
+plot_aggregate = (
+    ggplot(
+        df,
+        aes(
+            x=iteration, 
+            y=min_distance_to_curve, 
+        ),
+    )
+    # using geom_line doesn't connect points in intuitive way
+    + geom_line(
+        aes(color=discriminative_need_gamma),
+        size=1, 
+        alpha=0.8,
+        )
+    + scale_color_continuous(
+        type = "viridis",
+        trans = "log10",
+    )
+    + labs(color=expression(gamma))   
+    + xlab("Evolution step")
+    + ylab("Distance to curve")
+    + theme(
+        # Axis font
+        plot.title = element_text(hjust = 0.5),
+        axis.title=element_text(size=36),
+        axis.text=element_text(size=24),
+        # Legend position
+        legend.position=c(0.7, 0.6),
+        # legend_position='none',
+        legend.direction = "vertical",
+        # Legend box
+        legend.background=element_rect(
+            fill="lightgrey",
+            size=0.5, 
+            linetype="solid", 
+            color="darkblue",
+        ),
+    )
+    + guides(
+        color = guide_colorbar(
+            title.position = "bottom", 
+            # label.position = "bottom",
+            # override.aes = {"alpha":0.8},
+            ),
+    )
+    + ylim(0,0.05)
+)
+print(plot_aggregate)
+ggsave(
+  "distance_plot.png",
+  plot = last_plot(),
+  path = "/Users/nathanielimel/uci/projects/ibsg/src/notebooks/",
+  width=18, 
+  height=6, 
+  dpi=300,
+)  
+
+```
+
+
+```{r plot faceted}
+
+plot_faceted = 
+  (
+    plot_aggregate
+    + facet_grid(". ~ population_init_gamma") 
+    + ggtitle("random initialization")
+    + theme(
+        title=element_text(size=24),
+        axis.text.y=element_text(size=18),
+        axis.text.x=element_text(size=12),
+        legend.position='none',
+    )    
+  )
+print(plot_faceted)
+ggsave(
+  "distances_plot.png",
+  plot = last_plot(),
+  path = "/Users/nathanielimel/uci/projects/ibsg/src/notebooks/",
+  width=18, 
+  height=6, 
+  dpi=300,
+)
+```

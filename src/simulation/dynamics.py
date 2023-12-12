@@ -4,7 +4,7 @@ import torch
 import warnings
 
 from analysis.ib import ib_encoder_to_measurements
-from altk.effcomm.util import rows_zero_to_uniform
+from altk.effcomm.util import rows_zero_to_uniform, bayes
 from game.game import Game
 from game.perception import generate_sim_matrix, generate_confusion_matrix
 from game.graph import generate_adjacency_matrix
@@ -327,7 +327,12 @@ class ReplicatorDiffusionDynamics(ReplicatorDynamics):
         P = C @ P
         P = normalize_rows(P)
 
-        Q *= p * (U @ P).T
+        # The RDD is formulated in Correia (2013) such that the Receiver update is weighted by the _joint_ distribution Sender(word, state). 
+        Q *= p * (U @ P).T        
+
+        # In Franke and Correia, the plain RD (without diffusion/noise) is such that Receiver update is weighted by Sender(state|word), via Bayes rule.
+        # Q *= (U @ bayes(P, p))
+
         Q = Q @ C  # C symmetric, and if C = M, we thus assume m(u) = u(m).
         Q = normalize_rows(Q)
 
@@ -384,8 +389,9 @@ class ImpreciseConditionalImitation(ReplicatorDynamics):
         # `[signals, states]`
         observed_receiver = rho @ confusion
 
+        # The probability of an actual state given random sender produced w
         # `[signals, states]`
-        sigma_inverse = normalize_rows(prior * sigma.T)
+        sigma_inverse = bayes(sender, prior)
 
         # Expected utility for receiver:
         # sum all  sigma_inverse[w,a] * C[i, r] * U[a,r]

@@ -36,10 +36,17 @@ def main(config: DictConfig):
         encoders = bottleneck_result["encoders"]
         betas = bottleneck_result["betas"]
 
+        ib_points = [(tup[0], tup[1], tup[2], beta) for tup, beta in list(zip(ib_points, betas))]
+
         util.save_points_df(
             curve_fn,
             util.points_to_df(
-                ib_points, columns=["complexity", "accuracy", "distortion"]
+                ib_points, columns=[
+                    "complexity", 
+                    "accuracy", 
+                    "distortion", 
+                    "beta",
+                ]
             ),
         )
         util.save_tensor(encoders_fn, torch.stack(encoders))

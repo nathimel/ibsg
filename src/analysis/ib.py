@@ -121,11 +121,20 @@ def get_bottleneck(config: DictConfig) -> dict[str, list]:
     """
     betas = np.concatenate(
         [
-            np.linspace(start=0, stop=0.29, num=333),
+            # these betas were hand selected to try and evenly flesh out the curve for meaning_dist=-1 as much as possible
+            np.linspace(start=0, stop=0.3, num=333),
+            
+            # very sparse region
+            np.linspace(start=0.7, stop=0.77, num=500),
+            np.linspace(start=0.69, stop=0.72, num=500),
+
             np.linspace(start=0.3, stop=0.9, num=333),
-            np.linspace(start=1.0, stop=2**7, num=334),
+            np.linspace(start=0.9, stop=4, num=334),
+            np.linspace(start=4, stop=2**7, num=500),
         ]
     )
+    # unique
+    betas = list(sorted(set(betas.tolist())))
 
     g = Game.from_hydra(config)
     func = config.game.ib_bound_function
@@ -133,11 +142,12 @@ def get_bottleneck(config: DictConfig) -> dict[str, list]:
         bottleneck = information.get_bottleneck(
             prior=g.prior,
             meaning_dists=g.meaning_dists,
-            # maxbeta=g.maxbeta,
-            maxbeta=betas[-1],
-            # minbeta=g.minbeta,
-            minbeta=betas[0],
+            maxbeta=g.maxbeta,
+            # maxbeta=betas[-1],
+            minbeta=g.minbeta,
+            # minbeta=betas[0],
             numbeta=g.numbeta,
+            betas=betas,
             processes=config.game.num_processes if config.game.num_processes is not None else cpu_count(),
         )
 

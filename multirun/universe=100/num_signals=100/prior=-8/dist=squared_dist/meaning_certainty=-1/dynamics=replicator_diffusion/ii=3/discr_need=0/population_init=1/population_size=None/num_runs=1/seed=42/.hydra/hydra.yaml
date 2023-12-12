@@ -120,7 +120,7 @@ hydra:
     - game.meaning_dist_gamma=-1
     - simulation.multiprocessing=True
   job:
-    name: run_simulations
+    name: measure
     chdir: true
     override_dirname: game.universe=100,simulation.multiprocessing=True
     id: '193'
