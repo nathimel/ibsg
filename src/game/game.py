@@ -1,4 +1,3 @@
-import hydra
 import os
 import torch
 
@@ -6,8 +5,7 @@ import pandas as pd
 
 from multiprocessing import cpu_count
 
-from altk.language.semantics import Referent, Universe
-from altk.effcomm.util import PRECISION
+from ultk.language.semantics import Universe
 from game.perception import generate_dist_matrix, generate_sim_matrix
 from game.meaning import build_universe
 
@@ -113,7 +111,7 @@ class Game:
 
         # Add precision if necessary to prevent embo errors during curve estimation of Dirac delta distribution
         if torch.equal(prior, prior.bool().float()):
-            prior = torch.where(prior > 0, prior, PRECISION)
+            prior = torch.where(prior > 0, prior, 1e-16)
 
         game = cls(
             universe,

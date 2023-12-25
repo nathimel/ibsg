@@ -114,14 +114,13 @@ hydra:
     task:
     - game.universe=100
     - game.num_signals=100
-    - game.discriminative_need_gamma=range(-3,4)
-    - simulation.dynamics.imprecise_imitation_gamma=-1
     - game.meaning_dist_gamma=-1
-    - simulation.dynamics.population_init_gamma=range(-3,4)
+    - simulation.dynamics.imprecise_imitation_gamma=-1
+    - game.overwrite_curves=True
   job:
-    name: measure
+    name: plot
     chdir: true
-    override_dirname: game.universe=100
+    override_dirname: game.overwrite_curves=True,game.universe=100
     id: ???
     num: ???
     config_name: config
@@ -181,12 +180,10 @@ game:
   distance: squared_dist
   discriminative_need_gamma: 1.0
   meaning_dist_gamma: -1
-  ib_bound_function: embo
-  overwrite_curves: false
+  overwrite_curves: true
   maxbeta: 5
   minbeta: -2
   numbeta: 1500
-  num_processes: 6
 simulation:
   dynamics:
     max_its: 200

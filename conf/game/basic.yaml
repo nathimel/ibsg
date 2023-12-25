@@ -24,14 +24,13 @@ distance: squared_dist # squared_dist or abs_dist
 discriminative_need_gamma: 1.0 # # will be exponentiated by 10, for utility in the games
 meaning_dist_gamma: 0 # will be exponentiated by 10, for perceptually uncertain meaning dists = imprecise imitation in replicator dynamics (Franke and Correia, 2018).
 
+num_processes: 6 # the number of CPU cores to use when parallelizing simulation runs
 
 
 # IB Curve params
-ib_bound_function: embo # 'embo' or 'homebuilt'
-# equally spaced beta for IB curve sweep
 overwrite_curves: False # whether to skip curve estimation
+# log-spaced beta for IB curve sweep
+# N.B.: the below params are currently ignored (see analysis.ib.betas) in favor of a hard-coded list of values that sufficiently sweep out a curve with few gaps.
 maxbeta: 5  # will not be exponentiated
 minbeta: -2 # will be exponentiated, i.e. 10 ** minbeta
 numbeta: 1500
-# use multiprocessing to compute bound
-num_processes: 6

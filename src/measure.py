@@ -8,8 +8,7 @@ import pandas as pd
 from scipy.spatial.distance import cdist
 
 from omegaconf import DictConfig
-from altk.effcomm.util import gNID
-
+from rdot.information import gNID
 
 from analysis import efficiency
 from game.game import Game

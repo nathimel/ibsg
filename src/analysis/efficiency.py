@@ -5,7 +5,7 @@ import torch
 
 import pandas as pd
 
-from altk.effcomm.information import ib_encoder_to_point
+from ultk.effcomm.rate_distortion import ib_encoder_to_point
 from misc import util
 
 
@@ -21,6 +21,12 @@ def efficiency_loss(emergent, optimal, beta, meaning_dists, prior) -> float:
     i.e., a Lagrangian to minimize complexity and maximize accuracy. See Zaslavsky et. al. 2018, "Near-Optimal Trade-Offs", and SI Section 5, for details.
     """
     # interestingly, optima rows do not always sum to 1
+
+    # Need to convert to numpy for ultk, rdot
+    meaning_dists = meaning_dists.numpy()
+    prior = prior.numpy()
+    emergent = emergent.numpy()
+    optimal = optimal.numpy()
 
     # return is complexity, accuracy, comm_cost
     em_complexity, em_acc, _ = ib_encoder_to_point(meaning_dists, prior, emergent)
@@ -39,6 +45,9 @@ def alt_encoders_to_df(
     encoders: torch.Tensor, meaning_dists: torch.Tensor, prior: torch.Tensor
 ) -> pd.DataFrame:
     """Convert a tensor of alternative encoders (to the original emergent ones) to a dataframe."""
+    encoders = encoders.numpy()
+    meaning_dists = meaning_dists.numpy()
+    prior = prior.numpy()
     return util.points_to_df(
         points=[
             (

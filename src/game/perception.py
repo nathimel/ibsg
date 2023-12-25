@@ -1,7 +1,7 @@
 """Functions for computing similarity distributions and utility functions for signaling games."""
 
 import torch
-from altk.language.semantics import Universe, Referent
+from ultk.language.semantics import Universe, Referent
 from misc.tools import normalize_rows
 
 # distance measures

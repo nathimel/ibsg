@@ -4,9 +4,9 @@ import torch
 import warnings
 
 from analysis.ib import ib_encoder_to_measurements
-from altk.effcomm.util import rows_zero_to_uniform, bayes
+from ultk.effcomm.rate_distortion import rows_zero_to_uniform, bayes
 from game.game import Game
-from game.perception import generate_sim_matrix, generate_confusion_matrix
+from game.perception import generate_confusion_matrix
 from game.graph import generate_adjacency_matrix
 from misc.tools import random_stochastic_matrix, normalize_rows
 

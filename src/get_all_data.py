@@ -2,14 +2,8 @@
 
 import sys
 import omegaconf
-import os
 
 import pandas as pd
-
-from misc import util
-from game.game import Game
-from game.perception import generate_confusion_matrix
-from altk.effcomm.util import joint, H
 
 from pathlib import Path
 from tqdm import tqdm

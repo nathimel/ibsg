@@ -31,17 +31,20 @@ def main(config: DictConfig):
     if config.game.overwrite_curves or not os.path.isfile(curve_fn):
         print("computing ib curve...")
 
-        bottleneck_result = get_bottleneck(config)
-        ib_points = bottleneck_result["coordinates"]
-        encoders = bottleneck_result["encoders"]
-        betas = bottleneck_result["betas"]
+        ib_results = get_bottleneck(config)
 
-        ib_points = [(tup[0], tup[1], tup[2], beta) for tup, beta in list(zip(ib_points, betas))]
+        encoders, ib_points, betas = zip(*[
+            (item.qxhat_x,
+            (item.rate, item.accuracy, item.distortion),
+            item.beta)
+            for item in ib_results
+        ])
 
         util.save_points_df(
             curve_fn,
             util.points_to_df(
-                ib_points, columns=[
+                list(zip(ib_points, betas)),
+                columns=[
                     "complexity", 
                     "accuracy", 
                     "distortion", 
@@ -61,7 +64,7 @@ def main(config: DictConfig):
 
     if config.game.overwrite_curves or not os.path.isfile(mse_curve_fn):
         print("computing mse curve...")
-        mse_points = get_rd_curve(g.prior, g.dist_mat)
+        mse_points = get_rd_curve(config)
 
         util.save_points_df(
             mse_curve_fn, util.points_to_df(mse_points, columns=["complexity", "mse"])

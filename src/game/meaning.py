@@ -1,7 +1,6 @@
 """Minimal module for loading / constructing meaning space and prior. """
-import torch
 import pandas as pd
-from altk.language.semantics import Referent, Universe
+from ultk.language.semantics import Referent, Universe
 
 
 def load_universe(

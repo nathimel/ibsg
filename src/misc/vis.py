@@ -1,10 +1,8 @@
+"""Utility functions for plotting."""
 import plotnine as pn
 import pandas as pd
 
 from misc.util import encoder_columns
-from typing import Callable
-
-# Plotting util functions
 
 
 def numeric_col_to_categorical(df: pd.DataFrame, col: str) -> pd.DataFrame:

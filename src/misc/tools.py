@@ -1,7 +1,5 @@
 import torch
 import numpy as np
-from typing import Union
-
 
 def normalize_rows(mat: torch.Tensor):
     """Normalize each row of 2D array / tensor to sum to 1.0."""
