@@ -8,11 +8,7 @@ dynamics:
   threshold: 1e-5
   # for creating Sender, Receivers in seed 'population'
 
-  # TODO: make this a part of the path, since it should be swept.
   # lower values -> more uniform initialization
-  # set minalpha=maxalpha to not vary initialization
-  # population_init_minalpha: -8 # will be exponentiated by 10
-  # population_init_maxalpha: 2
   population_init_gamma: -8 # will be exponentiated by 10
 
   # specific to only some dynamics, but we nontheless need them here in order to perform hydra's string interpolation for recursive path creation.

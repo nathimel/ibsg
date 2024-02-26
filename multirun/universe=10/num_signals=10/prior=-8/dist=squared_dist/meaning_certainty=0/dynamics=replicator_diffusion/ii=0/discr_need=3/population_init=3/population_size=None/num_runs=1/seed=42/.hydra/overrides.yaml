@@ -1,0 +1,2 @@
+- game.discriminative_need_gamma=3
+- simulation.dynamics.population_init_gamma=3

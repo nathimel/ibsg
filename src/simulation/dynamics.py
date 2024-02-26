@@ -358,53 +358,88 @@ class ImpreciseConditionalImitation(ReplicatorDynamics):
         )  # `[states, states]`, compare self.game.meaning_dists
         prior = self.game.prior  # `[states,]`
 
-        # --------- Sender update ---------
+        # --------- Simulate communicative interaction to be imitated ---------
 
-        # prob state a obtained (col) given state o was observed (row)
-        # `[states, states]`
-        observation_noise = normalize_rows(prior * confusion)
+        # probability that an agent observes state s_o given actual s_a
+        observation_noise = confusion # `[states, states]`
+        interpretation_noise = confusion # `[states, states]`
 
-        # prob signal w (col) given actual state a obtained (row)
-        # `[states, signals]`
-        sigma = confusion @ sender #TODO: ask Michael why not observation_noise @ sender
+        # probability that a random sender sends signal w in actual s_a
+        sigma = observation_noise @ sender # `[states, signals]`
 
-        # P_o(w|m_o) prob a teacher sends signal w given imitator sees state o
-        # `[states, signals]`
-        observed_sender = observation_noise @ sigma #TODO: ask Michael why not consusion @ sigma
+        # probability that s_r is realized by a random receiver in response to signal w
+        rho = receiver @ interpretation_noise # `[signals, states]`
 
-        # prob receiver chooses state r (column) given signal w (row)
-        # `[signals, states]`
-        rho = receiver @ confusion
+        # --------- Simulate observation/imitation by agents ---------
 
-        # Expected utility for sender:
-        # sum all observation_noise[m_o, m_a] * rho[w, m_r] * utility[m_a, m_r]
-        sender_eu = np.einsum("oa,wr,ar->ow", observation_noise, rho, utility)
+        # probability that actual state is s_a if random sender produced w
+        sigma_inverse = bayes(sigma, prior) # `[signals, states]`
 
-        # Update sender according to replicator dynamics
-        sender = normalize_rows(observed_sender * sender_eu)
+        # probability that s_a is actual if s_o is observed by an agent
+        obs_inverse = bayes(confusion, prior) # `[states, states]`
 
-        # --------- Receiver update ---------
+        # probability that a random 'learner' observes s_o and observes a random 'teacher' send signal w
+        # marginalize s_a over shape `[s_o, s_a, w]` to get `[s_o, w]`
+        sender_imitation = np.sum(
+            obs_inverse[:, :, None] * sigma[None, :, :,],
+            axis=1,
+        ) # `[states, signals]`
 
-        # prob state o was observed (col) given signal w received (row)
-        # `[signals, states]`
-        observed_receiver = rho @ confusion
+        # probability that a random learner will observe a random teacher choose interpretation s_o given signal w
+        # marginalize s_r over shape `[w, s_r, s_o]` to get `[w, s_o]`
+        receiver_imitation = np.sum(
+            interpretation_noise[None, :, :,] * rho[:, :, None],
+            axis=1,
+        )
 
-        # The probability of an actual state given random sender produced w
-        # `[signals, states]`
-        sigma_inverse = bayes(sender, prior) # n.b.: bayesian optimal decoder
+        # --------- Expected utilities ---------    
 
-        # Expected utility for receiver:
-        # sum all  sigma_inverse[w,a] * C[i, r] * U[a,r]
-        receiver_eu = np.einsum("wa,ia,ar->wi", sigma_inverse, confusion, utility)
+        # EU for sender: function of w, s_o, and current receiver
 
-        # Update receiver according to replicator dynamics
-        receiver = normalize_rows(observed_receiver * receiver_eu)
+        # first marginalize s_r over `[s_a, w, s_r]`
+        prob_w_given_s_a = np.sum(
+            # `[1, w, s_r]` * `[s_a, 1, s_r]`
+            rho[None, :, :,] * utility[:, None, :,],
+            axis=-1,
+        ) # to get shape `[s_a, w]`
+
+        # then marginalize s_a over resulting `[s_o, s_a, w]`
+        prob_w_given_s_o = np.sum(
+            # `[s_o, s_a, 1]` * `[1, s_a, w]`
+            obs_inverse[:, :, None] * prob_w_given_s_a[None, :, :,],
+            axis=1,
+        ) # to get shape `[s_o, w]`
+
+        eu_sender = prob_w_given_s_o # `[states, signals]`
+
+        # ------------------------------------------
+
+        # EU for receiver: function of s_i, w, and current sender
+
+        # first marginalize s_r over `[s_i, s_a, s_r]`
+        prob_s_a_given_s_i = np.sum(
+            # `[s_i, 1, s_r]` * `[1, s_a, s_r]` # TODO: order of s_i, s_a?
+            interpretation_noise[:, None, :,] * utility[None, :, :,],
+            axis=-1,
+        ) # to get shape `[s_i, s_a]`
+
+        # then marginalize s_a over `[w, s_i, s_a]`
+        prob_w_given_s_i = np.sum(
+            # `[w, 1, s_a]` * `[1, s_i, s_a]`
+            sigma_inverse[:, None, :,] * prob_s_a_given_s_i[None, :, :,],
+            axis=-1,
+        ) # to get shape `[w, s_i]`
+
+        eu_receiver = prob_w_given_s_i # `[signals, states]`
+
+        # --------- Discrete-time replicator dynamics updates ---------
+
+        sender_new = normalize_rows(sender_imitation * eu_sender)
+        receiver_new = normalize_rows(receiver_imitation * eu_receiver)
 
         # update instance
-
-        self.P = copy.deepcopy(sender)
-        self.Q = copy.deepcopy(receiver)
-
+        self.P = copy.deepcopy(sender_new)
+        self.Q = copy.deepcopy(receiver_new)
         self.warn_if_all_zero()
 
 
