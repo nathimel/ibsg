@@ -1,3 +1,0 @@
-- game.discriminative_need_gamma=0
-- simulation.dynamics.population_init_gamma=1
-- simulation.dynamics.imprecise_imitation_gamma=-1

@@ -1,3 +1,0 @@
-complexity,accuracy,distortion,mse,round,run,min_distance_to_curve
-5.7759466,2.6600237,0.8207493,1624.0012,0.0,1.0,"tensor([7.9507e-01, 8.9156e-08], dtype=torch.float64)"
-5.7775416e-08,8.851413e-08,3.480773,1666.4999,1.0,1.0,"tensor([188,   1])"
