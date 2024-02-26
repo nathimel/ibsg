@@ -73,15 +73,6 @@ def main():
         df["population_init_gamma"] = leaf_cfg.simulation.dynamics.population_init_gamma
         df["seed"] = leaf_cfg.seed
 
-        # NOTE: this is slow, and ended up not helping communicate results, so omitting
-        # conditional entropy of confusion distributions (imprecision)
-        # H(Y|X) = H(X,Y) - H(X)
-        # leaf_game = Game.from_hydra(leaf_cfg, cwd=parent)
-        # confusion = generate_confusion_matrix(leaf_game.universe, leaf_cfg.simulation.dynamics.imprecise_imitation_gamma, leaf_game.dist_mat)
-        # pX = leaf_game.prior.numpy()        
-        # pXY = joint(confusion, pX)
-        # df["noise_cond_ent"] = H(pXY) - H(pX)
-
         df["ib_bound_function"] = None  # dummy value since all simulations are curve agnostic.
 
         simulation_results.append(df)

@@ -1,7 +1,7 @@
 """Functions for quantifying the efficiency of emergent systems, and different 'variants' of them, w.r.t IB bounds."""
 
 import random
-import torch
+import numpy as np
 
 import pandas as pd
 
@@ -9,7 +9,13 @@ from ultk.effcomm.rate_distortion import ib_encoder_to_point
 from misc import util
 
 
-def efficiency_loss(emergent, optimal, beta, meaning_dists, prior) -> float:
+def efficiency_loss(
+    emergent: np.ndarray, 
+    optimal: np.ndarray, 
+    beta: float, 
+    meaning_dists: np.ndarray, 
+    prior: np.ndarray,
+    ) -> float:
     """Compute the efficiency loss of a semantic system:
 
         eps = 1/beta * ( F_[q] - F_[q*] )
@@ -19,18 +25,24 @@ def efficiency_loss(emergent, optimal, beta, meaning_dists, prior) -> float:
        F_[q(w|m)] = I[M:W] - I(W;U) (beta is constant for both q, q*)
 
     i.e., a Lagrangian to minimize complexity and maximize accuracy. See Zaslavsky et. al. 2018, "Near-Optimal Trade-Offs", and SI Section 5, for details.
+
+    Args:
+        emergent: the emergent semantic system to measure
+
+        optimal: the nearest optimal semantic system to `emergent`, which is a theoretically optimal encoder
+
+        beta: the value of beta that yields `optimal`
+
+        meaning_dists: the meaning distributions p(y|x) that characterize the domain
+
+        prior: the prior over meanigns p(x) that characterizes the domain
+    
+    Returns:
+        loss: a float representing the efficiency loss of `emergent` with respect to `optimal` and `beta`
     """
-    # interestingly, optima rows do not always sum to 1
-
-    # Need to convert to numpy for ultk, rdot
-    meaning_dists = meaning_dists.numpy()
-    prior = prior.numpy()
-    emergent = emergent.numpy()
-    optimal = optimal.numpy()
-
     # return is complexity, accuracy, comm_cost
-    em_complexity, em_acc, _ = ib_encoder_to_point(meaning_dists, prior, emergent)
-    opt_complexity, opt_acc, _ = ib_encoder_to_point(meaning_dists, prior, optimal)
+    em_complexity, em_acc, _ = ib_encoder_to_point(prior, meaning_dists, emergent)
+    opt_complexity, opt_acc, _ = ib_encoder_to_point(prior, meaning_dists, optimal)
 
     em_value = em_complexity - em_acc
     opt_value = opt_complexity - opt_acc
@@ -42,17 +54,25 @@ def efficiency_loss(emergent, optimal, beta, meaning_dists, prior) -> float:
 
 
 def alt_encoders_to_df(
-    encoders: torch.Tensor, meaning_dists: torch.Tensor, prior: torch.Tensor
+    encoders: np.ndarray, meaning_dists: np.ndarray, prior: np.ndarray
 ) -> pd.DataFrame:
-    """Convert a tensor of alternative encoders (to the original emergent ones) to a dataframe."""
-    encoders = encoders.numpy()
-    meaning_dists = meaning_dists.numpy()
-    prior = prior.numpy()
+    """Convert an array of alternative encoders (to the original emergent ones) to a dataframe.
+    
+    Args:
+        encoders: an array of shape `(num_beta, num_meanings, num_words)`
+
+        meaning_dists: the meaning distributions p(y|x) that characterize the domain
+
+        prior: the prior over meanigns p(x) that characterizes the domain        
+
+    Returns:
+        a pd.DataFrame with columns ["complexity", "accuracy", "distortion", "mse", "run"]
+    """
     return util.points_to_df(
         points=[
             (
                 *ib_encoder_to_point(
-                    meaning_dists, prior, encoders[i]
+                    prior, meaning_dists, encoders[i]
                 ),  # comp, acc, distortion
                 None,  # mse
                 i,  # run
@@ -63,11 +83,11 @@ def alt_encoders_to_df(
     )
 
 
-def finite_sample_encoder(encoder: torch.Tensor, num_samples: int) -> torch.Tensor:
+def finite_sample_encoder(encoder: np.ndarray, num_samples: int) -> np.ndarray:
     """Construct a corrupted version of an emergent encoder via finite sampling.
 
     Args:
-        encoder: the encoder to reconstruct
+        encoder: the encoder to treat as the 'ground truth' from which a new encoder will be constructed via finite samples.
 
         num_samples: the number of samples to use for reconstruction. With enough samples the original encoder is reconstructed.
 
@@ -83,31 +103,11 @@ def finite_sample_encoder(encoder: torch.Tensor, num_samples: int) -> torch.Tens
             k=num_samples,
         )
         # count
-        sampled_row = torch.zeros_like(row)
+        sampled_row = np.zeros_like(row)
         for idx in indices:
             sampled_row[idx] += 1
         # normalize
         sampled_row /= sampled_row.sum()
         sampled_encoder.append(sampled_row)
 
-    return torch.stack(sampled_encoder)
-
-
-def hypothetical_variants(encoders: torch.Tensor, num: int) -> torch.Tensor:
-    """For each emergent system, generate `num` hypothetical variants by permuting the signals that the system assigns to states."""
-    variants_per_system = int(num / len(encoders))
-
-    permuted_encoders = []
-    for encoder in encoders:
-        seen = set()
-        while len(seen) < variants_per_system:
-            # permute columns of speaker weights
-            permuted = encoder[:, torch.randperm(encoder.shape[1])]
-            seen.add(tuple(permuted.flatten()))
-
-        for permuted_weights in seen:
-            permuted_encoders.append(
-                torch.tensor(permuted_weights).reshape(encoder.shape)
-            )
-
-    return torch.stack(permuted_encoders)
+    return np.stack(sampled_encoder)

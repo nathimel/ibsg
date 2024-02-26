@@ -1,11 +1,11 @@
 import os
 import pickle
-import torch
+
+import numpy as np
 import pandas as pd
 from plotnine import ggplot
 from omegaconf import DictConfig
 
-from misc import tools
 
 # To silence 'SettingWithCopyWarning'
 pd.options.mode.chained_assignment = None  # default='warn'
@@ -17,7 +17,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 
 def set_seed(seed: int) -> None:
     """Sets random seeds."""
-    torch.manual_seed(seed)
+    np.random.seed(seed)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,7 +36,7 @@ def read_pickle(fn: str):
 
 
 def points_to_df(
-    points: torch.Tensor, columns=["complexity", "accuracy"]
+    points: np.ndarray, columns=["complexity", "accuracy"]
 ) -> pd.DataFrame:
     """Convert a Tensor of points to a dataframe with rate, distortion as columns.
 
@@ -74,21 +74,20 @@ def save_final_encoders(fn: str, runs: list) -> None:
 
         runs: a list of Game objects
     """
-    torch.save(torch.stack([torch.tensor(g.ib_encoders[-1]) for g in runs]), fn)
+    np.save(fn, np.stack([np.array(g.ib_encoders[-1]) for g in runs]))
     print(f"Saved {len(runs)} encoders to {os.path.join(os.getcwd(), fn)}")
 
 
-def save_tensor(fn: str, tensor: torch.Tensor) -> None:
-    # case to tensor from np.ndarray
-    torch.save(tensor, fn)
+def save_ndarray(fn: str, arr: np.ndarray) -> None:
+    np.save(fn, arr)
     print(
-        f"Saved tensor of {tensor.size() if tensor is not None else None} to {os.path.join(os.getcwd(), fn)}"
+        f"Saved ndarray of shape {arr.shape if arr is not None else None} to {os.path.join(os.getcwd(), fn)}"
     )
 
 
 def load_encoders_as_df(fn: str) -> pd.DataFrame:
     """Load encoders saved in a .pt file, and convert from torch.tensor to pd.DataFrame."""
-    return encoders_to_df(torch.load(fn))
+    return encoders_to_df(np.load(fn))
 
 
 points_columns = [
@@ -132,20 +131,20 @@ def trajectories_df(runs: list) -> pd.DataFrame:
         runs: a list of Game objects
     """
     # build a df for each and concatenate
-    df = pd.concat(
+    return pd.concat(
         [
             pd.DataFrame(
                 # label runs
-                data=torch.hstack(
+                data=np.hstack(
                     (
                         # label rounds
-                        torch.hstack(
+                        np.hstack(
                             (
-                                torch.Tensor(run.points),  # (num_rounds, 4)
-                                torch.arange(len(run.points))[:, None],
+                                np.array(run.points),  # (num_rounds, 4)
+                                np.arange(len(run.points))[:, None],
                             )
                         ),
-                        torch.ones(len(run.points))[:, None] * run_num + 1,
+                        np.ones(len(run.points))[:, None] * run_num + 1,
                     ),
                 ),
                 columns=points_columns + ["round", "run"],
@@ -153,7 +152,6 @@ def trajectories_df(runs: list) -> pd.DataFrame:
             for run_num, run in enumerate(runs)
         ]
     )
-    return df
 
 
 encoder_columns = [
@@ -164,7 +162,7 @@ encoder_columns = [
 ]
 
 
-def encoders_to_df(encoders: torch.Tensor, col: str = "run") -> pd.DataFrame:
+def encoders_to_df(encoders: np.ndarray, col: str = "run") -> pd.DataFrame:
     """Get a dataframe with columns ['meanings', 'words', 'p', 'naming probability \n'].
 
     Args:
@@ -175,13 +173,13 @@ def encoders_to_df(encoders: torch.Tensor, col: str = "run") -> pd.DataFrame:
     """
     num_meanings, num_words = encoders[0].shape
 
-    meanings = torch.tensor([[i] * num_words for i in range(num_meanings)]).flatten()
-    words = torch.tensor(list(range(num_words)) * num_meanings)
-    ones = torch.ones_like(encoders[0]).flatten()
+    meanings = np.array([[i] * num_words for i in range(num_meanings)]).flatten()
+    words = np.array(list(range(num_words)) * num_meanings)
+    ones = np.ones_like(encoders[0]).flatten()
     return pd.concat(
         [
             pd.DataFrame(
-                torch.stack(
+                np.stack(
                     [
                         ones * i,  # run
                         words,

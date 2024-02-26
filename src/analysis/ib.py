@@ -1,4 +1,4 @@
-import torch
+
 
 import numpy as np
 
@@ -6,6 +6,7 @@ from ultk.effcomm.rate_distortion import (
     rows_zero_to_uniform, 
     ib_optimal_decoder, 
     ib_encoder_to_point,
+    get_ib_bound,
 )
 from rdot import ba, probability, distortions
 
@@ -16,12 +17,12 @@ from game.game import Game
 
 
 def ib_encoder_to_measurements(
-    meaning_dists: torch.Tensor,
-    prior: torch.Tensor,
-    dist_mat: torch.Tensor,
-    confusion: torch.Tensor,
-    encoder: torch.Tensor,
-    decoder: torch.Tensor = None,
+    meaning_dists: np.ndarray,
+    prior: np.ndarray,
+    dist_mat: np.ndarray,
+    confusion: np.ndarray,
+    encoder: np.ndarray,
+    decoder: np.ndarray = None,
 ) -> tuple[float]:
     """Return (complexity, accuracy, distortion, mean squared error) point.
 
@@ -38,29 +39,19 @@ def ib_encoder_to_measurements(
 
         decoder: array of shape `(|words|, |meanings|)` representing P(M | W). If is None, and the Bayesian optimal decoder will be inferred.
     """
-    # NOTE: altk requires numpy
-    meaning_dists = np.array(meaning_dists)
-    prior = np.array(prior)
-    dist_mat = np.array(dist_mat)
-    confusion = np.array(confusion)
-    encoder = np.array(encoder)
-
     # NOTE: Here is where we rectify ineffable meanings, by replacing rows of all zeros with uniform distributions.
     # Another option would simple be to drop them.
     encoder = rows_zero_to_uniform(normalize_rows(encoder))
 
     # NOTE: while ib_encoder_to_point does this step, we still need the decoder for the MSE step.
-    if decoder is not None:
-        decoder = np.array(decoder)
-    else:
+    if decoder is None:
         decoder = ib_optimal_decoder(encoder, prior, meaning_dists)
 
-
     complexity, accuracy, distortion = ib_encoder_to_point(
-        meaning_dists,
-        prior,
-        encoder,
-        decoder,
+        prior=prior,
+        meaning_dists=meaning_dists,
+        encoder=encoder,
+        decoder=decoder,
     )
 
     if complexity < 0:
@@ -73,7 +64,6 @@ def ib_encoder_to_measurements(
         if np.isclose(accuracy, 0.0, atol=1e-5):
             accuracy = 0.0
         else:
-            breakpoint()
             raise Exception
 
     if distortion < 0:
@@ -83,7 +73,6 @@ def ib_encoder_to_measurements(
             raise Exception
 
     # NOTE: use meaning dists, not confusions!
-    # system = confusion @ encoder @ decoder @ confusion
     system = meaning_dists @ encoder @ decoder @ meaning_dists
 
     # rectify ineffability again
@@ -126,11 +115,12 @@ def get_bottleneck(config: DictConfig) -> ba.IBResult:
         a list of `ba.IBResult` namedtuples
     """
     g = Game.from_hydra(config)
-    pxy = probability.joint(g.meaning_dists, g.prior)
-    results = ba.IBOptimizer(
-        pxy=pxy,
+    results = get_ib_bound(
+        g.prior,
+        g.meaning_dists,
         betas=betas,
-    ).get_results()
+        ensure_monotonicity=True,
+    )
     return [item for item in results if item is not None]
 
 ##############################################################################
@@ -152,5 +142,6 @@ def get_rd_curve(config: DictConfig) -> list[tuple[float]]:
         g.prior,
         g.dist_mat,
         betas,
+        ensure_monotonicity=True,
     ).get_results()
     return [(item.rate, item.distortion) for item in results if item is not None]

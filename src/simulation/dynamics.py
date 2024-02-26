@@ -1,7 +1,7 @@
 import copy
-
-import torch
 import warnings
+
+import numpy as np
 
 from analysis.ib import ib_encoder_to_measurements
 from ultk.effcomm.rate_distortion import rows_zero_to_uniform, bayes
@@ -82,22 +82,22 @@ class FinitePopulationDynamics(Dynamics):
         # define the adjacency matrix for the environment of interacting agents
         self.adj_mat = generate_adjacency_matrix(self.n, kwargs["graph"])
         # since stochastic edge weights not supported yet just cast to int
-        self.adj_mat = torch.tensor(self.adj_mat, dtype=int)
+        self.adj_mat = np.array(self.adj_mat, dtype=int)
 
     def population_mean_weights(self) -> tuple[float]:
         """Return the average agent (Sender, Receiver) weights."""
         return (
-            normalize_rows(torch.mean(self.Ps, dim=0)),
-            normalize_rows(torch.mean(self.Qs, dim=0)),
+            normalize_rows(np.mean(self.Ps, axis=0)),
+            normalize_rows(np.mean(self.Qs, axis=0)),
         )
 
-    def measure_fitness(self) -> torch.Tensor:
+    def measure_fitness(self) -> np.ndarray:
         """Measure the fitness of communicating individuals in the population.
 
         Returns:
             a 1D array of floats (normalized to [0,1]) of shape `num_agents` such that fitnesses[i] corresponds to the ith individual.
         """
-        payoffs = torch.zeros(self.n)  # 1D, since fitness is symmetric
+        payoffs = np.zeros(self.n)  # 1D, since fitness is symmetric
 
         # iterate over every adjacent pair in the graph
         for i in range(self.n):
@@ -123,10 +123,10 @@ class FinitePopulationDynamics(Dynamics):
 
     def fitness(
         self,
-        p: torch.Tensor,
-        q: torch.Tensor,
-        p_: torch.Tensor,
-        q_: torch.Tensor,
+        p: np.ndarray,
+        q: np.ndarray,
+        p_: np.ndarray,
+        q_: np.ndarray,
     ) -> float:
         """Compute pairwise fitness as F[L, L'] = F[(P, Q'), (P', Q)] = 1/2(f(P,Q')) + 1/2(f(P', Q))
 
@@ -134,8 +134,8 @@ class FinitePopulationDynamics(Dynamics):
 
         where X is a sender, Y is a receiver, and C is a symmetric confusion matrix, to compare to IB meaning distributions.
         """
-        f = lambda X, Y: torch.sum(
-            torch.diag(self.game.prior)
+        f = lambda X, Y: np.sum(
+            np.diag(self.game.prior)
             @ self.confusion
             @ X
             @ Y
@@ -169,8 +169,8 @@ class FinitePopulationDynamics(Dynamics):
 
             # Check for convergence
             if (
-                torch.abs(mean_p - mean_p_prev).sum() < self.threshold
-                and torch.abs(mean_q - mean_q_prev).sum() < self.threshold
+                np.abs(mean_p - mean_p_prev).sum() < self.threshold
+                and np.abs(mean_q - mean_q_prev).sum() < self.threshold
             ) or (i == self.max_its):
                 converged = True
 
@@ -182,14 +182,12 @@ class FinitePopulationDynamics(Dynamics):
 ##############################################################################
 
 
-def mutate(parent_behavior: torch.Tensor, num_samples: int):
-    eye = torch.eye(parent_behavior.shape[-1])
-    sample_indices = torch.stack(
-        [
-            torch.multinomial(sub_p, num_samples, replacement=True)
-            for sub_p in parent_behavior
-        ]
-    )
+def mutate(parent_behavior: np.ndarray, num_samples: int):
+    eye = np.eye(parent_behavior.shape[-1])
+    sample_indices = np.stack([
+        np.random.choice(len(sub_p), size=num_samples, replace=True, p=sub_p)
+        for sub_p in parent_behavior
+    ])
     samples = eye[sample_indices]
     return samples.mean(axis=-2)
 
@@ -204,7 +202,7 @@ class NowakKrakauerDynamics(FinitePopulationDynamics):
 
         fitnesses = self.measure_fitness()
 
-        new_population = torch.multinomial(fitnesses, self.n, replacement=True)
+        new_population = np.random.choice(fitnesses, self.n, replace=True)
         self.Ps = mutate(self.Ps[new_population], self.num_samples)
         self.Qs = mutate(self.Qs[new_population], self.num_samples)
 
@@ -222,8 +220,9 @@ class MoranProcess(FinitePopulationDynamics):
         """Simulate evolution in the finite population by running the frequency dependent Moran process, at each iteration randomly replacing an individual with an (randomly selected proportional to fitness) agent's offspring."""
         fitnesses = self.measure_fitness()
 
-        i = torch.multinomial(fitnesses, 1)  # birth
-        j = torch.multinomial(torch.ones(self.n), 1)  # death
+        # i = np.random.choice(fitnesses, 1)
+        i = np.random.choice(np.ones(self.n), 1, p=fitnesses) # birth
+        j = np.random.choice(np.ones(self.n), 1) # death
 
         # replace the random deceased with fitness-sampled offspring
         self.Ps[j] = self.Ps[i]
@@ -269,8 +268,8 @@ class ReplicatorDynamics(Dynamics):
 
             # Check for convergence
             if (
-                torch.abs(self.P - P_prev).sum() < self.threshold
-                and torch.abs(self.Q - Q_prev).sum() < self.threshold
+                np.abs(self.P - P_prev).sum() < self.threshold
+                and np.abs(self.Q - Q_prev).sum() < self.threshold
             ) or (its == self.max_its):
                 converged = True
 
@@ -302,10 +301,10 @@ class ReplicatorDynamics(Dynamics):
 
         N.B.: This means the entire universe is ineffable. Since this feature of the model appears to reflect a logical (albeit remote) possibility, our analysis proceeds as usual (rather than, e.g., assigning a uniform distribution to every row).
         """
-        if torch.any(self.P.sum() == 0):
+        if np.any(self.P.sum() == 0):
             warnings.warn("Dynamics yielded an encoder with all zeros.")
 
-        if torch.any(self.Q.sum() == 0):
+        if np.any(self.Q.sum() == 0):
             warnings.warn("Dynamics yielded a decoder with all zeros.")
 
 
@@ -350,6 +349,7 @@ class ImpreciseConditionalImitation(ReplicatorDynamics):
 
     def evolution_step(self):
         """Updates to sender and receiver are given on page 11 (Section 3.2, volume page 1047) and derivation is given on page 24 (Section A.1.1, volume page 1060) of https://www.journals.uchicago.edu/doi/full/10.1093/bjps/axx002. The original implementation is found at https://github.com/josepedrocorreia/vagueness-games/blob/master/newCode/vagueness-games.py#L291."""
+
         sender = self.P  # `[states, signals]`
         receiver = self.Q  # `[signals, states]`
         utility = self.game.utility  # `[states, states]`
@@ -366,19 +366,19 @@ class ImpreciseConditionalImitation(ReplicatorDynamics):
 
         # prob signal w (col) given actual state a obtained (row)
         # `[states, signals]`
-        sigma = confusion @ sender
+        sigma = confusion @ sender #TODO: ask Michael why not observation_noise @ sender
 
         # P_o(w|m_o) prob a teacher sends signal w given imitator sees state o
         # `[states, signals]`
-        observed_sender = observation_noise @ sigma
+        observed_sender = observation_noise @ sigma #TODO: ask Michael why not consusion @ sigma
 
         # prob receiver chooses state r (column) given signal w (row)
         # `[signals, states]`
         rho = receiver @ confusion
 
         # Expected utility for sender:
-        # sum all observation_noise[m_o, m_a] * rho[m, m_r] * utility[m_a, m_r]
-        sender_eu = torch.einsum("oa,wr,ar->ow", observation_noise, rho, utility)
+        # sum all observation_noise[m_o, m_a] * rho[w, m_r] * utility[m_a, m_r]
+        sender_eu = np.einsum("oa,wr,ar->ow", observation_noise, rho, utility)
 
         # Update sender according to replicator dynamics
         sender = normalize_rows(observed_sender * sender_eu)
@@ -391,11 +391,11 @@ class ImpreciseConditionalImitation(ReplicatorDynamics):
 
         # The probability of an actual state given random sender produced w
         # `[signals, states]`
-        sigma_inverse = bayes(sender, prior)
+        sigma_inverse = bayes(sender, prior) # n.b.: bayesian optimal decoder
 
         # Expected utility for receiver:
         # sum all  sigma_inverse[w,a] * C[i, r] * U[a,r]
-        receiver_eu = torch.einsum("wa,ia,ar->wi", sigma_inverse, confusion, utility)
+        receiver_eu = np.einsum("wa,ia,ar->wi", sigma_inverse, confusion, utility)
 
         # Update receiver according to replicator dynamics
         receiver = normalize_rows(observed_receiver * receiver_eu)

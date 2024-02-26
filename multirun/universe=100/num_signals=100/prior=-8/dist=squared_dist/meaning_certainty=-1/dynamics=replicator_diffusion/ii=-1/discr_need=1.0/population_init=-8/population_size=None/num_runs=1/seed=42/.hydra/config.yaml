@@ -5,6 +5,7 @@ game:
   distance: squared_dist
   discriminative_need_gamma: 1.0
   meaning_dist_gamma: -1
+  num_processes: 6
   overwrite_curves: true
   maxbeta: 5
   minbeta: -2

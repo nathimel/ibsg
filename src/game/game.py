@@ -1,6 +1,6 @@
 import os
-import torch
 
+import numpy as np
 import pandas as pd
 
 from multiprocessing import cpu_count
@@ -20,7 +20,7 @@ class Game:
         self,
         universe: Universe,
         num_signals: int,
-        prior: torch.Tensor,
+        prior: np.ndarray,
         distance: str,
         discr_need_gamma: float,
         meaning_dist_gamma: float,
@@ -105,13 +105,13 @@ class Game:
             ).tolist()
 
         universe = build_universe(referents_df, prior_df)
-        prior = torch.from_numpy(universe.prior_numpy()).float()
-        if not torch.isclose(prior.sum(), torch.tensor([1.0])):
+        prior = universe.prior_numpy()
+        if not np.isclose(prior.sum(), np.array([1.0])):
             raise Exception(f"Prior does not sum to 1.0. (sum={prior.sum()})")
 
         # Add precision if necessary to prevent embo errors during curve estimation of Dirac delta distribution
-        if torch.equal(prior, prior.bool().float()):
-            prior = torch.where(prior > 0, prior, 1e-16)
+        if np.array_equal(prior, prior.astype(bool).astype(float)):
+            prior = np.where(prior > 0, prior, 1e-16)
 
         game = cls(
             universe,
@@ -125,13 +125,5 @@ class Game:
             numbeta=config.game.numbeta,
             # num_processes=config.game.num_processes, # this shouldn't be here anyway
         )
-
-        # NOTE: temporary for checking my curve against noga's
-        if config.game.universe == "wcs":
-            print("setting meaning dists manually...")
-            meaning_dists = torch.load(
-                "/Users/nathanielimel/uci/projects/ibsg/data/meaning_dists/wcs_model.pt"
-            )
-            game.meaning_dists = meaning_dists
 
         return game

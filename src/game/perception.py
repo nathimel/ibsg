@@ -1,20 +1,20 @@
 """Functions for computing similarity distributions and utility functions for signaling games."""
 
-import torch
+import numpy as np
 from ultk.language.semantics import Universe, Referent
 from misc.tools import normalize_rows
 
 # distance measures
-def hamming_dist(t: torch.Tensor, u: torch.Tensor) -> float:
+def hamming_dist(t: np.ndarray, u: np.ndarray) -> float:
     # indicator
-    return 1 - torch.equal(t, u)
+    return 1 - np.array_equal(t, u)
 
 
-def abs_dist(t: torch.Tensor, u: torch.Tensor) -> float:
-    return torch.linalg.vector_norm(t - u)
+def abs_dist(t: np.ndarray, u: np.ndarray) -> float:
+    return np.linalg.norm(t - u)
 
 
-def squared_dist(t: torch.Tensor, u: torch.Tensor) -> float:
+def squared_dist(t: np.ndarray, u: np.ndarray) -> float:
     return abs_dist(t, u) ** 2
 
 
@@ -26,14 +26,14 @@ distance_measures = {
 
 
 def referent_to_tensor(referent: Referent):
-    return torch.tensor(referent.point, dtype=float)
+    return np.array(referent.point, dtype=float)
 
 
 def generate_confusion_matrix(
     universe: Universe,
     gamma: float, 
-    dist_mat: torch.Tensor,
-) -> torch.Tensor:
+    dist_mat: np.ndarray,
+) -> np.ndarray:
     """Given a universe, confusion gamma (NOTE: will be exponentiated by 10), and distance matrix, generate a conditional probability distribution over points in the universe given points in the universe."""
     return normalize_rows(
             generate_sim_matrix(
@@ -44,7 +44,7 @@ def generate_confusion_matrix(
 def generate_dist_matrix(
     universe: Universe,
     distance: str = "squared_dist",
-) -> torch.Tensor:
+) -> np.ndarray:
     """Given a universe, compute the distance for every pair of points in the universe.
 
     Args:
@@ -56,7 +56,7 @@ def generate_dist_matrix(
 
         an array of shape `(|universe|, |universe|)` representing pairwise distances
     """
-    return torch.Tensor(
+    return np.array(
         [
             [
                 distance_measures[distance](
@@ -71,8 +71,8 @@ def generate_dist_matrix(
 
 
 def generate_sim_matrix(
-    universe: Universe, gamma: float, dist_mat: torch.Tensor
-) -> torch.Tensor:
+    universe: Universe, gamma: float, dist_mat: np.ndarray
+) -> np.ndarray:
     """Given a universe, compute a similarity score for every pair of points in the universe.
 
     NB: this is a wrapper function that generates the similarity matrix using the data contained in each State.
@@ -82,7 +82,7 @@ def generate_sim_matrix(
 
         similarity: a string corresponding to the name of a pairwise similarity function on states
     """
-    return torch.stack(
+    return np.stack(
         [
             exp(
                 target_index=idx,
@@ -105,8 +105,8 @@ def exp(
     target_index: int,
     referents: list[Referent],
     gamma: float,
-    dist_mat: torch.Tensor,
-) -> torch.Tensor:
+    dist_mat: np.ndarray,
+) -> np.ndarray:
     """The (unnormalized) exponential function sim(x,y) = exp(-gamma * d(x,y)).
 
     Args:
@@ -121,12 +121,12 @@ def exp(
     Returns:
         a similarity matrix representing pairwise inverse distance between states
     """
-    return torch.exp(
-        torch.stack(
+    return np.exp(
+        np.stack(
             [-gamma * dist_mat[target_index, idx] for idx in range(len(referents))]
         )
     )
 
 
-def sim_utility(x: int, y: int, sim_mat: torch.Tensor) -> float:
+def sim_utility(x: int, y: int, sim_mat: np.ndarray) -> float:
     return sim_mat[x, y]

@@ -50,6 +50,6 @@ def build_universe(
         )
         for record in referents_df.to_dict("records")
     )
-    prior = dict(zip(prior_df["name"], prior_df["probability"]))
+    prior = prior_df["probability"].values
 
     return Universe(referents, prior)

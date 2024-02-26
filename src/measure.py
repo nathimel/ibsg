@@ -2,8 +2,8 @@
 
 import hydra
 import os
-import torch
 
+import numpy as np
 import pandas as pd
 from scipy.spatial.distance import cdist
 
@@ -34,9 +34,9 @@ def main(config: DictConfig):
     sim_data = pd.read_csv(
         fullpath(fps.simulation_points_save_fn)
     )  # we will update with gNID and eps
-    emergent_encoders = torch.load(fullpath(fps.final_encoders_save_fn))
-    betas = torch.load(util.get_bound_fn(config, "betas"))
-    optimal_encoders = torch.load(
+    emergent_encoders = np.load(fullpath(fps.final_encoders_save_fn))
+    betas = np.load(util.get_bound_fn(config, "betas"))
+    optimal_encoders = np.load(
         util.get_bound_fn(config, "encoders")
     )  # ordered by beta
     curve_data = pd.read_csv(util.get_bound_fn(config, "ib"))
@@ -51,23 +51,24 @@ def main(config: DictConfig):
     ##########################################################################
 
     # Compute matrix of pairwise gNID between emergent and optimal
-    gNIDs = torch.tensor(
+    gNIDs = np.array(
         [
-            [gNID(em.float(), opt.float(), g.prior.float()) for opt in optimal_encoders]
+            [gNID(em, opt, g.prior) for opt in optimal_encoders]
             for em in emergent_encoders
         ]
     )
 
     # Compute, for emergent encoder, the minimum gNID to an IB optima
-    min_gnids, min_gnid_indices = torch.min(gNIDs, dim=1)
+    min_gnid_indices = np.argmin(gNIDs, axis=1)
+    min_gnids = gNIDs[:, min_gnid_indices]
     fitted_betas = betas[min_gnid_indices]
 
     # Save the most similar optimal encoder to each emergent encoder
     similar_encoders = optimal_encoders[min_gnid_indices]
-    util.save_tensor(fullpath(fps.nearest_optimal_save_fn), similar_encoders)
+    util.save_ndarray(fullpath(fps.nearest_optimal_save_fn), similar_encoders)
 
     # Update simulation data to include efficiency measurements
-    losses = torch.Tensor(
+    losses = np.array(
         [  # compute efficiency loss for each emergent encoder
             efficiency.efficiency_loss(
                 emergent_encoder,
@@ -89,7 +90,7 @@ def main(config: DictConfig):
     curve_points = curve_data[["complexity", "accuracy"]].values
     distances = cdist(traj_points, curve_points) # shape `[traj_pts, curve_pts]`
     # For each traj_point, get the minimum dist to any curve_point
-    min_distances, _ = torch.min(torch.from_numpy(distances), dim=1)
+    min_distances = np.min(distances, axis=1)
 
     ##########################################################################
     # Write data
@@ -125,12 +126,15 @@ def main(config: DictConfig):
         plot = vis.single_gnid_heatmap_tradeoff_plot(
             curve_data, single_encoder_data, single_optimal_data
         )
-        util.save_plot(f"gnid_encoder_{idx+1}.png", plot)
+        util.save_plot(
+            fullpath(fps.single_gnid_inspect_plot_fn).replace("idx", str(idx+1)), 
+            plot,
+        )
 
     # Approximate encoders via sampling
     if config.simulation.approximate_encoders:
         # approximate
-        sampled_encoders = torch.stack(
+        sampled_encoders = np.stack(
             [
                 efficiency.finite_sample_encoder(
                     enc, config.simulation.num_approximation_samples

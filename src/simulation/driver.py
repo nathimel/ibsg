@@ -1,6 +1,5 @@
 """Functions for running simulations."""
 
-import torch
 
 from tqdm import tqdm
 from omegaconf import DictConfig

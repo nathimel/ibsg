@@ -1,7 +1,9 @@
 # Large files
 # ran out of lfs
-# torch binaries
+# binaries
 **/*.pt
+**/*.npy
+**/*.npz
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,7 +1,8 @@
 """Script to compute the IB curve."""
 import hydra
-import torch
 import os
+
+import numpy as np
 
 from omegaconf import DictConfig, OmegaConf
 from analysis.ib import get_bottleneck, get_rd_curve
@@ -35,7 +36,7 @@ def main(config: DictConfig):
 
         encoders, ib_points, betas = zip(*[
             (item.qxhat_x,
-            (item.rate, item.accuracy, item.distortion),
+            (item.rate, item.accuracy, item.distortion, item.beta),
             item.beta)
             for item in ib_results
         ])
@@ -43,7 +44,7 @@ def main(config: DictConfig):
         util.save_points_df(
             curve_fn,
             util.points_to_df(
-                list(zip(ib_points, betas)),
+                ib_points,
                 columns=[
                     "complexity", 
                     "accuracy", 
@@ -52,8 +53,10 @@ def main(config: DictConfig):
                 ]
             ),
         )
-        util.save_tensor(encoders_fn, torch.stack(encoders))
-        util.save_tensor(betas_save_fn, torch.tensor(betas))
+        # TODO: this is the first nonsense with numpy/torch. 
+        # Tomorrow, uninstall torch and convert everything to numpy.
+        util.save_ndarray(encoders_fn, np.stack(encoders))
+        util.save_ndarray(betas_save_fn, np.array(betas))
 
     else:
         print("data found, skipping ib curve estimation.")
