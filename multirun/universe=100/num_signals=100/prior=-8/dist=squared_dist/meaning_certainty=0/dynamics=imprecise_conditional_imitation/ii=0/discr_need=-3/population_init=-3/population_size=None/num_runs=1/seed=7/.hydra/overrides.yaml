@@ -1,0 +1,7 @@
+- simulation/dynamics=imprecise_conditional_imitation
+- game.discriminative_need_gamma=-3
+- game.universe=100
+- game.num_signals=100
+- simulation.dynamics.population_init_gamma=-3
+- seed=7
+- simulation.dynamics.max_its=1000

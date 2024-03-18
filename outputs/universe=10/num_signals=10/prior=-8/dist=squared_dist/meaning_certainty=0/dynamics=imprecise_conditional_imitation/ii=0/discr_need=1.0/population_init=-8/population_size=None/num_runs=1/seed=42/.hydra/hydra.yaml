@@ -114,7 +114,7 @@ hydra:
     task:
     - simulation/dynamics=imprecise_conditional_imitation
   job:
-    name: plot
+    name: measure
     chdir: true
     override_dirname: simulation/dynamics=imprecise_conditional_imitation
     id: ???

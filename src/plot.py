@@ -57,6 +57,7 @@ def generate_encoder_plots(
     lines_dir: str,
     tiles_dir: str,
     individual_file_prefix: str,
+    facet_runs: bool = False,
 ):
     """Generates and saves plots of encoder distributions."""
     # ensure tile and line plots directories exist
@@ -64,15 +65,15 @@ def generate_encoder_plots(
     util.ensure_dir(lines_dir)
 
     # Encoders, faceted by run
-    if len(encoders_data["run"].value_counts().to_dict()) - 1:  # > one run
+    if facet_runs and len(encoders_data["run"].value_counts().to_dict()) - 1:  # > one run
         faceted_lines_plot = vis.faceted_encoders(encoders_data, "line")
         faceted_tiles_plot = vis.faceted_encoders(encoders_data, "tile")
         util.save_plot(faceted_lines_fn, faceted_lines_plot)
         util.save_plot(faceted_tiles_fn, faceted_tiles_plot)
 
     # Individual encoders
-    tile_plots = vis.get_n_encoder_plots(encoders_data, "tile")
-    line_plots = vis.get_n_encoder_plots(encoders_data, "line")
+    tile_plots = vis.get_n_encoder_plots(encoders_data, "tile", item_key=individual_file_prefix,)
+    line_plots = vis.get_n_encoder_plots(encoders_data, "line", item_key=individual_file_prefix,)
 
     # Save each
     [

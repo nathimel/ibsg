@@ -1,0 +1,4 @@
+# Some configs for plotting, including not re-generating plots which can be time consuming
+
+generate_movie_plots: False
+generate_movies: False

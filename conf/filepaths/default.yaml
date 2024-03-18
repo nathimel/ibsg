@@ -27,6 +27,7 @@ curve_metadata_save_fn: curve_config.yaml # will be a copy of the first hydra co
 # all fns below are for saving results from all runs
 simulation_points_save_fn: simulation_points.csv # final point
 trajectory_points_save_fn: trajectory_points.csv # all points
+trajectory_encoders_save_fn: trajectory_encoders.npz # encoder, per step per run
 variant_points_save_fn: variant_points.csv
 final_encoders_save_fn: final_encoders.npy # final encoders
 nearest_optimal_points_save_fn: nearest_optimal_points.csv
@@ -52,6 +53,13 @@ approximated_encoders_faceted_lines_plot_fn: approximated_encoders_faceted_lines
 approximated_encoders_faceted_tiles_plot_fn: approximated_encoders_faceted_tiles.png
 nearest_optimal_faceted_lines_plot_fn: nearest_optimal_faceted_lines.png
 nearest_optimal_faceted_tiles_plot_fn: nearest_optimal_faceted_tiles.png
+
+# Movies for trajectories
+trajectory_movies_dir: movies
+# To get the movies, we will also save tile and line plots, to a dir of the same name as above for the final encoders, but under this movies/ dir.
+encoder_tile_movie_fn: tiles.mp4
+encoder_line_movie_fn: lines.mp4
+
 
 ############################################################################
 # Hydra automatic folder naming

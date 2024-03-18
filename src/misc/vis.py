@@ -146,22 +146,25 @@ def basic_efficiency_plot(
 def get_n_encoder_plots(
     df: pd.DataFrame,
     plot_type: str,
-    all_runs: bool = True,
+    all_items: bool = True,
+    item_key: str = "run", # can also pass "round"
     n: int = 8,
 ) -> list[pn.ggplot]:
-    """Return a list of plots, one for each encoder corresponding to each run. If `all_runs` is False, get `n` plots, which is 8 by default.
+    """Return a list of plots, one for each encoder corresponding to each run our round. If `all_items` is False, get `n` plots, which is 8 by default.
 
     Args:
         plot_type: {"tile", "line"}
+
+        item_key: {"run", "round"}
     """
     data = df.copy()
-    data["run"] = data["run"].astype(int) + 1
-    runs = data["run"].unique()
-    if not all_runs:
-        runs = runs[:n]
+    data[item_key] = data[item_key].astype(int) + 1
+    items = data[item_key].unique()
+    if not all_items:
+        items = items[:n]
     return [
-        (plots[plot_type](data[data["run"] == run]) + pn.ggtitle(f"run {run}"))
-        for run in runs
+        (plots[plot_type](data[data[item_key] == item], item_key=item_key) + pn.ggtitle(f"{item_key} {item}"))
+        for item in items
     ]
 
 
@@ -184,9 +187,9 @@ def faceted_encoders(df: pd.DataFrame, plot_type: str) -> pn.ggplot:
 
 
 # Heatmaps
-def basic_encoder_tile(df: pd.DataFrame) -> pn.ggplot:
+def basic_encoder_tile(df: pd.DataFrame, item_key = "run") -> pn.ggplot:
     """Return a single tile (heatmap) plot for an encoder."""
-    df = format_encoder_df(df, ["word", "meaning"])
+    df = format_encoder_df(df, ["word", "meaning"], item_key=item_key)
     return (
         pn.ggplot(df, pn.aes(**dict(zip(["x", "y", "fill"], encoder_columns[:3]))))
         + pn.geom_tile()
@@ -195,9 +198,9 @@ def basic_encoder_tile(df: pd.DataFrame) -> pn.ggplot:
 
 
 # Lines
-def basic_encoder_lineplot(df: pd.DataFrame) -> pn.ggplot:
+def basic_encoder_lineplot(df: pd.DataFrame, **kwargs) -> pn.ggplot:
     "Return a single line plot for an encoder."
-    df = format_encoder_df(df, ["word"])  # meanings must be numeric!
+    df = format_encoder_df(df, ["word"], **kwargs)  # meanings must be numeric!
     return (
         pn.ggplot(df, pn.aes(x="meaning", y="p"))
         + pn.geom_line(
@@ -211,11 +214,12 @@ def basic_encoder_lineplot(df: pd.DataFrame) -> pn.ggplot:
 
 
 def format_encoder_df(
-    df: pd.DataFrame, numeric_to_categorical: list[str]
+    df: pd.DataFrame, numeric_to_categorical: list[str],
+    item_key: str = "run",
 ) -> pd.DataFrame:
     # create new dataframe labeled by 1-indexed runs
     data = df.copy()
-    data["run"] = data["run"].astype(int)
+    data[item_key] = data[item_key].astype(int)
     for col in numeric_to_categorical:
         data = numeric_col_to_categorical(data, col)
     return data

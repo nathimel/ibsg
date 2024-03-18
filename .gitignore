@@ -5,6 +5,10 @@
 **/*.npy
 **/*.npz
 
+# Movies
+**/*.mp4
+**/*round_*.png
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

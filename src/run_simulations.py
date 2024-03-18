@@ -27,6 +27,8 @@ def main(config):
             fn=config.filepaths.trajectory_points_save_fn,
             df=trajs_df,
         )
+        util.save_all_encoders(config.filepaths.trajectory_encoders_save_fn, runs)
+
 
 
 if __name__ == "__main__":

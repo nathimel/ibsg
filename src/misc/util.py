@@ -77,6 +77,32 @@ def save_final_encoders(fn: str, runs: list) -> None:
     np.save(fn, np.stack([np.array(g.ib_encoders[-1]) for g in runs]))
     print(f"Saved {len(runs)} encoders to {os.path.join(os.getcwd(), fn)}")
 
+def save_all_encoders(fn: str, runs: list) -> None:
+    """Save the encoders from all rounds of each game to a file (npz compressed).
+
+    Args:
+        fn: the file to save the encoders to
+
+        runs: a list of Game objects    
+    """
+    # N.B.: the below may be ragged!
+    # We should either use a fill value, which is inefficient, 
+    # or save differently.
+    kwargs = {f"run_{i}": g.ib_encoders for i, g in enumerate(runs)}
+    np.savez_compressed(fn, **kwargs)
+    print(f"Saved all encoders across rounds and runs to {os.path.join(os.getcwd(), fn)}")
+
+def load_all_encoders(fn: str) -> list[np.ndarray]:
+    """Load all the encoders from all rounds of each game from npz file.
+    
+    Args:
+        fn: the file to load all encoders from.
+
+    Returns:
+        a list of length `num_runs` of ndarrays of shape `(num_rounds, num_meanings, num_words)`. Note that `num_rounds` may vary across runs, hence the list may be ragged.
+    """
+    return list(np.load(fn).values())
+
 
 def save_ndarray(fn: str, arr: np.ndarray) -> None:
     np.save(fn, arr)
@@ -129,6 +155,10 @@ def trajectories_df(runs: list) -> pd.DataFrame:
 
     Args:
         runs: a list of Game objects
+
+    Returns:
+        a dataframe with the columns `["complexity", "accuracy", "distortion", "mse", "round", "run"]`, which is the result of concatenating `len(runs)` number of dataframes, each with max_round = `len(run.points)` number of observations; N.B.: this value may vary from one run to the next.
+
     """
     # build a df for each and concatenate
     return pd.concat(
@@ -167,7 +197,7 @@ def encoders_to_df(encoders: np.ndarray, col: str = "run") -> pd.DataFrame:
 
     Args:
 
-        encoders: tensor of shape `(runs, meanings, words)`
+        encoders: array of shape `(runs, meanings, words)`
 
         col: {"run", "round"} whether `encoders` is a list of final encoders across runs, or intermediate encoders across game rounds.
     """
@@ -181,7 +211,7 @@ def encoders_to_df(encoders: np.ndarray, col: str = "run") -> pd.DataFrame:
             pd.DataFrame(
                 np.stack(
                     [
-                        ones * i,  # run
+                        ones * i,  # run/round
                         words,
                         meanings,
                         encoder.flatten(),  # 'naming probability \n' is alias for 'p'

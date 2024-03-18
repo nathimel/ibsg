@@ -56,7 +56,7 @@ def main():
         df_traj = pd.read_csv(parent / cfg.filepaths.trajectory_points_save_fn) # may need to check if exists
         df_traj["point_type"] = "trajectory"
 
-        df_nearopt = pd.read_csv(parent / cfg.filepaths.nearest_optimal_points_save_fn)
+        df_nearopt = pd.read_csv(parent / cfg.filepaths.nearest_optimal_points_save_fn) # this will include all relevant data, e.g. comp, acc, min_distance_to_curve, etc.
         df_nearopt["point_type"] = "nearest_optimal"
 
         # Concat

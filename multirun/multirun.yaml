@@ -112,11 +112,18 @@ hydra:
     hydra:
     - hydra.mode=MULTIRUN
     task:
-    - seed=3,4,5,6,7,8,9,10
+    - simulation/dynamics=imprecise_conditional_imitation
+    - game.discriminative_need_gamma=3
+    - game.universe=100
+    - game.num_signals=100
+    - simulation.dynamics.population_init_gamma=0
+    - seed=0
+    - plotting.generate_movie_plots=True
+    - plotting.generate_movies=True
   job:
-    name: plot
+    name: movies
     chdir: true
-    override_dirname: ''
+    override_dirname: game.universe=100,plotting.generate_movie_plots=True,plotting.generate_movies=True,simulation/dynamics=imprecise_conditional_imitation
     id: ???
     num: ???
     config_name: config
@@ -156,9 +163,10 @@ hydra:
       provider: schema
     output_dir: ???
     choices:
+      plotting: default
       filepaths: default
       simulation: basic
-      simulation/dynamics: replicator_diffusion
+      simulation/dynamics: imprecise_conditional_imitation
       game: basic
       hydra/env: default
       hydra/callbacks: null
@@ -171,11 +179,11 @@ hydra:
       hydra/output: default
   verbose: false
 game:
-  universe: 10
+  universe: 100
   prior: -8
-  num_signals: 10
+  num_signals: 100
   distance: squared_dist
-  discriminative_need_gamma: 1.0
+  discriminative_need_gamma: 3
   meaning_dist_gamma: 0
   num_processes: 6
   overwrite_curves: false
@@ -186,11 +194,11 @@ simulation:
   dynamics:
     max_its: 200
     threshold: 1.0e-05
-    population_init_gamma: -8
+    population_init_gamma: 0
     imprecise_imitation_gamma: 0
     population_size: null
     graph: null
-    name: replicator_diffusion
+    name: imprecise_conditional_imitation
   use_decoder: true
   num_runs: 1
   plot_all_encoders: true
@@ -214,6 +222,7 @@ filepaths:
   curve_metadata_save_fn: curve_config.yaml
   simulation_points_save_fn: simulation_points.csv
   trajectory_points_save_fn: trajectory_points.csv
+  trajectory_encoders_save_fn: trajectory_encoders.npz
   variant_points_save_fn: variant_points.csv
   final_encoders_save_fn: final_encoders.npy
   nearest_optimal_points_save_fn: nearest_optimal_points.csv
@@ -236,9 +245,15 @@ filepaths:
   approximated_encoders_faceted_tiles_plot_fn: approximated_encoders_faceted_tiles.png
   nearest_optimal_faceted_lines_plot_fn: nearest_optimal_faceted_lines.png
   nearest_optimal_faceted_tiles_plot_fn: nearest_optimal_faceted_tiles.png
+  trajectory_movies_dir: movies
+  encoder_tile_movie_fn: tiles.mp4
+  encoder_line_movie_fn: lines.mp4
   curve_subdir: universe=${game.universe}/num_signals=${game.num_signals}/prior=${game.prior}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_gamma}
   simulation_subdir: ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/ii=${simulation.dynamics.imprecise_imitation_gamma}/discr_need=${game.discriminative_need_gamma}/population_init=${simulation.dynamics.population_init_gamma}/population_size=${simulation.dynamics.population_size}/num_runs=${simulation.num_runs}/seed=${seed}
   leaf_subdir: ${filepaths.simulation_subdir}
   hydra_run_root: outputs
   hydra_sweep_root: multirun
-seed: 42
+plotting:
+  generate_movie_plots: true
+  generate_movies: true
+seed: 0
