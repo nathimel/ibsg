@@ -1,6 +1,7 @@
 """Utility functions for plotting."""
 import plotnine as pn
 import pandas as pd
+import numpy as np
 
 from misc.util import encoder_columns
 
@@ -170,6 +171,21 @@ def get_n_encoder_plots(
 # TODO: create a plot similar to plot_type="line", but 
 # - the color corresponds to the centroid.??
 # - and the cmap is for ordinal/continuous data
+def get_n_centroid_plots(
+    encoders: np.ndarray,
+    prior: np.ndarray,
+    all_items: bool = True,
+    item_key: str = "run", 
+    n: int = 8,
+) -> list:
+    """Return a list of plots, one for each encoder corresponding to each run our round. If `all_items` is False, get `n` plots, which is 8 by default.
+
+        Args:
+            plot_type: {"tile", "line"}
+
+            item_key: {"run", "round"}
+    """
+    return [get_centroid_lineplot(enc, prior, title=f"{item_key}={idx}") for idx, enc in enumerate(encoders)]
 
 
 def faceted_encoders(df: pd.DataFrame, plot_type: str) -> pn.ggplot:
@@ -217,8 +233,57 @@ def basic_encoder_lineplot(df: pd.DataFrame, **kwargs) -> pn.ggplot:
     )
 
 # Better version of above with lines colored by centroid.
-def basic_encoder_line(df: pd.DataFrame, **kwargs) -> pn.ggplot:
-    """Return a single plot for an encoder, with lines colored by the modal meaning for the word."""
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+def get_centroid_lineplot(qW_M: np.ndarray, pM: np.ndarray, title: str = "") -> Figure:
+    """Return a single plot for an encoder, with lines colored by the centroid meaning for the word."""
+    # Choose your colormap
+    colormap = plt.get_cmap('copper')
+
+    # Generate 100 equally spaced values between 0 and 1
+    values = np.linspace(0, 1, 100)
+
+    # Get the corresponding colors from the colormap
+    colors = colormap(values)
+
+    # Get bayesian q(m|w)
+    qWM = qW_M * pM[:, None]
+    qW = qW_M.T @ pM
+    qM_W = np.where(qW > 1e-16, qWM / qW, 1 / qWM.shape[0]).T
+
+    # try just argmax color first
+    # TODO: consult noga for true weighted average centroid color!
+    word_colors = [
+        colors[np.argmax(qM_W[word_idx])] for word_idx in range(len(qM_W))
+    ]
+
+    x = list(range(100))
+    # Plot each line with its corresponding color
+    fig, ax = plt.subplots()
+    for word_idx in range(len(qW_M.T)):
+        ax.plot(
+            x,
+            qW_M.T[word_idx],
+            color=word_colors[word_idx], 
+            linewidth=1,
+        )
+
+    if title: 
+        ax.set_title(label=title)
+    ax.set_ylim(0,1)
+
+    ax.set_yticks(
+        ticks=[0,1],
+    )
+    ax.set_xticks(
+        ticks=[0,50,100],
+    )
+    ax.set_xlabel("meaning")
+    ax.set_ylabel("naming probability")
+    sm = plt.cm.ScalarMappable(cmap=colormap, norm=plt.Normalize(0, 100))
+    sm.set_array([])
+    fig.colorbar(sm, label='centroid $m$ for $w$', ticks=[0,50,100])
+    return fig
 
 
 def format_encoder_df(

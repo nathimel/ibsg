@@ -6,7 +6,7 @@ game:
   discriminative_need_gamma: 0
   meaning_dist_gamma: 0
   num_processes: 6
-  overwrite_curves: true
+  overwrite_curves: false
   maxbeta: 5
   minbeta: -2
   numbeta: 1500
@@ -74,6 +74,6 @@ filepaths:
   hydra_run_root: outputs
   hydra_sweep_root: multirun
 plotting:
-  generate_movie_plots: false
-  generate_movies: false
+  generate_movie_plots: true
+  generate_movies: true
 seed: 0

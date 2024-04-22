@@ -3,7 +3,9 @@
 import os
 import hydra
 import pandas as pd
+import numpy as np
 from misc import util, vis
+from game.game import Game
 
 
 def generate_tradeoff_plots(
@@ -51,7 +53,8 @@ def generate_tradeoff_plots(
 
 
 def generate_encoder_plots(
-    encoders_data: pd.DataFrame,
+    encoders: np.ndarray,
+    prior: np.ndarray,
     faceted_lines_fn: str,
     faceted_tiles_fn: str,
     lines_dir: str,
@@ -64,6 +67,8 @@ def generate_encoder_plots(
     util.ensure_dir(tiles_dir)
     util.ensure_dir(lines_dir)
 
+    encoders_data = util.encoders_to_df(encoders, col=individual_file_prefix)
+
     # Encoders, faceted by run
     if facet_runs and len(encoders_data["run"].value_counts().to_dict()) - 1:  # > one run
         faceted_lines_plot = vis.faceted_encoders(encoders_data, "line")
@@ -73,7 +78,11 @@ def generate_encoder_plots(
 
     # Individual encoders
     tile_plots = vis.get_n_encoder_plots(encoders_data, "tile", item_key=individual_file_prefix,)
-    line_plots = vis.get_n_encoder_plots(encoders_data, "line", item_key=individual_file_prefix,)
+    # line_plots = vis.get_n_encoder_plots(encoders_data, "line", item_key=individual_file_prefix,) #REPLACED WITH BELOW
+
+    # Centroid lineplot
+    line_figs = vis.get_n_centroid_plots(encoders, prior,item_key=individual_file_prefix,)
+
 
     # Save each
     [
@@ -83,10 +92,10 @@ def generate_encoder_plots(
         for i, plot in enumerate(tile_plots)
     ]
     [
-        util.save_plot(
-            os.path.join(lines_dir, f"{individual_file_prefix}_{i+1}.png"), plot
+        util.save_fig(
+            os.path.join(lines_dir, f"{individual_file_prefix}_{i+1}.png"), fig
         )
-        for i, plot in enumerate(line_plots)
+        for i, fig in enumerate(line_figs)
     ]
 
 
@@ -101,6 +110,8 @@ def main(config):
 
     sim_fn = fullpath(fps.simulation_points_save_fn)
     sim_data = pd.read_csv(sim_fn) if os.path.exists(sim_fn) else None
+
+    g = Game.from_hydra(config)
 
     ##########################################################################
     # Plot
@@ -147,7 +158,8 @@ def main(config):
     encoders_fn = fullpath(fps.final_encoders_save_fn)
     if os.path.exists(encoders_fn):
         generate_encoder_plots(
-            util.load_encoders_as_df(encoders_fn),
+            np.load(encoders_fn),
+            g.prior,
             fullpath(fps.encoders_faceted_lines_plot_fn),
             fullpath(fps.encoders_faceted_tiles_plot_fn),
             *encoder_args,
@@ -157,7 +169,8 @@ def main(config):
     approxd_encoders_fn = fullpath(fps.approximated_encoders_save_fn)
     if config.simulation.approximate_encoders and os.path.exists(approxd_encoders_fn):
         generate_encoder_plots(
-            util.load_encoders_as_df(approxd_encoders_fn),
+            np.load(approxd_encoders_fn),
+            g.prior,
             fullpath(fps.approximated_encoders_faceted_lines_plot_fn),
             fullpath(fps.approximated_encoders_faceted_tiles_plot_fn),
             *encoder_args,
@@ -166,13 +179,16 @@ def main(config):
     # nearest IB-optimal encoders
     nearopt_encoders_fn = fullpath(fps.nearest_optimal_save_fn)
     if os.path.exists(nearopt_encoders_fn):
-        generate_encoder_plots(
-            util.load_encoders_as_df(nearopt_encoders_fn),
-            fullpath(fps.nearest_optimal_faceted_lines_plot_fn),
-            fullpath(fps.nearest_optimal_faceted_tiles_plot_fn),
-            *encoder_args,
-            "nearest_opt",
-        )
+        pass
+        # Can't work on the below until we sort out the epsilon fit
+        # generate_encoder_plots(
+        #     np.load(nearopt_encoders_fn),
+        #     g.prior,
+        #     fullpath(fps.nearest_optimal_faceted_lines_plot_fn),
+        #     fullpath(fps.nearest_optimal_faceted_tiles_plot_fn),
+        #     *encoder_args,
+        #     "nearest_opt",
+        # )
 
     # Efficiency loss plot
     # TODO: get a histogram of efficiency loss for each emergent system

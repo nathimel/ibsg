@@ -5,6 +5,7 @@ import hydra
 import pandas as pd
 import numpy as np
 from misc import util, vis
+from game.game import Game
 from plot import generate_encoder_plots
 
 @hydra.main(version_base=None, config_path="../conf", config_name="config")
@@ -15,6 +16,8 @@ def main(config):
     cwd = os.getcwd()
     fps = config.filepaths
     fullpath = lambda fn: os.path.join(cwd, fn)
+
+    g = Game.from_hydra(config)
 
     moviepath = lambda run, fn: os.path.join(cwd, fps.trajectory_movies_dir, f"run_{run}", fn)
 
@@ -27,12 +30,13 @@ def main(config):
         run = run_num + 1 # to be consistent with other indexing
         
         # some hacky cleanup with this since assumes over runs
-        encoders_data_run = util.encoders_to_df(encoders, col="round")
+        # encoders_data_run = util.encoders_to_df(encoders, col="round")
         
         # Generate all pngs (both tiles and lines) for movie
         if config.plotting.generate_movie_plots:
             generate_encoder_plots(
-                encoders_data_run,
+                encoders,
+                g.prior,
                 faceted_lines_fn=None,
                 faceted_tiles_fn=None,
                 lines_dir=moviepath(run, fps.encoder_line_plots_dir),

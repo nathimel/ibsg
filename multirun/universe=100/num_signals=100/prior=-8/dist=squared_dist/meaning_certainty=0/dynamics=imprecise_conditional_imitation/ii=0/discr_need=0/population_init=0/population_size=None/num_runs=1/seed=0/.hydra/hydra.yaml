@@ -118,11 +118,12 @@ hydra:
     - game.num_signals=100
     - simulation.dynamics.population_init_gamma=0
     - seed=0
-    - game.overwrite_curves=True
+    - plotting.generate_movie_plots=True
+    - plotting.generate_movies=True
   job:
-    name: curve
+    name: movies
     chdir: true
-    override_dirname: game.overwrite_curves=True,game.universe=100,simulation/dynamics=imprecise_conditional_imitation
+    override_dirname: game.universe=100,plotting.generate_movie_plots=True,plotting.generate_movies=True,simulation/dynamics=imprecise_conditional_imitation
     id: '0'
     num: 0
     config_name: config
