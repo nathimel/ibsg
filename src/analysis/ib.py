@@ -119,7 +119,7 @@ def get_bottleneck(config: DictConfig) -> ba.IBResult:
         g.prior,
         g.meaning_dists,
         betas=betas,
-        ensure_monotonicity=True,
+        ensure_monotonicity=False,
     )
     return [item for item in results if item is not None]
 

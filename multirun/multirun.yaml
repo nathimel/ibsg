@@ -113,17 +113,16 @@ hydra:
     - hydra.mode=MULTIRUN
     task:
     - simulation/dynamics=imprecise_conditional_imitation
-    - game.discriminative_need_gamma=3
+    - game.discriminative_need_gamma=0
     - game.universe=100
     - game.num_signals=100
     - simulation.dynamics.population_init_gamma=0
     - seed=0
-    - plotting.generate_movie_plots=True
-    - plotting.generate_movies=True
+    - game.overwrite_curves=True
   job:
-    name: movies
+    name: curve
     chdir: true
-    override_dirname: game.universe=100,plotting.generate_movie_plots=True,plotting.generate_movies=True,simulation/dynamics=imprecise_conditional_imitation
+    override_dirname: game.overwrite_curves=True,game.universe=100,simulation/dynamics=imprecise_conditional_imitation
     id: ???
     num: ???
     config_name: config
@@ -183,10 +182,10 @@ game:
   prior: -8
   num_signals: 100
   distance: squared_dist
-  discriminative_need_gamma: 3
+  discriminative_need_gamma: 0
   meaning_dist_gamma: 0
   num_processes: 6
-  overwrite_curves: false
+  overwrite_curves: true
   maxbeta: 5
   minbeta: -2
   numbeta: 1500
@@ -254,6 +253,6 @@ filepaths:
   hydra_run_root: outputs
   hydra_sweep_root: multirun
 plotting:
-  generate_movie_plots: true
-  generate_movies: true
+  generate_movie_plots: false
+  generate_movies: false
 seed: 0

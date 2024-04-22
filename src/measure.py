@@ -91,6 +91,9 @@ def main(config: DictConfig):
         fitted_encoders.append(fitted_opt)
         fitted_gnid.append(gnid)
 
+        if epsilon_em < 0:
+            breakpoint()
+
 
     # Save the fitted optimal encoder to each emergent encoder
     util.save_ndarray(fullpath(fps.nearest_optimal_save_fn), np.array(fitted_encoders))
@@ -117,7 +120,6 @@ def main(config: DictConfig):
         min_beta.append(beta_traj)
     # Now we write this min_eps to the correct rows in our traj_df
     # breakpoint() # why always negative epsilon?
-
 
     ##########################################################################
     # Write data

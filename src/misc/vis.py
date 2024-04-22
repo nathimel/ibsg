@@ -167,6 +167,10 @@ def get_n_encoder_plots(
         for item in items
     ]
 
+# TODO: create a plot similar to plot_type="line", but 
+# - the color corresponds to the centroid.??
+# - and the cmap is for ordinal/continuous data
+
 
 def faceted_encoders(df: pd.DataFrame, plot_type: str) -> pn.ggplot:
     """Return a plot of different encoder subplots, faceted by run.
@@ -211,6 +215,10 @@ def basic_encoder_lineplot(df: pd.DataFrame, **kwargs) -> pn.ggplot:
         )
         + pn.ylim([0, 1])
     )
+
+# Better version of above with lines colored by centroid.
+def basic_encoder_line(df: pd.DataFrame, **kwargs) -> pn.ggplot:
+    """Return a single plot for an encoder, with lines colored by the modal meaning for the word."""
 
 
 def format_encoder_df(

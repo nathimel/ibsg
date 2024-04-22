@@ -9,10 +9,15 @@
 **/*.mp4
 **/*round_*.png
 
+# Consider excluding all_data.csv, since that is auto-reproduced by sweeping over repo anyway
+# analysis_data/all_data.csv 
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
+**/*.DS_Store
 
 # C extensions
 *.so
