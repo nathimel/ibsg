@@ -22,18 +22,30 @@ def main(config):
     moviepath = lambda run, fn: os.path.join(cwd, fps.trajectory_movies_dir, f"run_{run}", fn)
 
     trajectory_encoders: dict[str, np.ndarray] = np.load(fps.trajectory_encoders_save_fn)
+    steps_recorded: dict[str, np.ndarray] = np.load(fps.steps_recorded_save_fn)
 
-    encoders_data_run = ...
-
+    # Maybe i should just completely refactor the saving logic :/
     for run_num, (run_key, encoders) in enumerate(trajectory_encoders.items()):
-        assert run_key == f"run_{run_num}"        
+        assert run_key == f"run_{run_num}"
         run = run_num + 1 # to be consistent with other indexing
+
+        # key into steps recorded
+        steps_recorded_run = steps_recorded[run_key]  # pass this into plots
         
         # some hacky cleanup with this since assumes over runs
         # encoders_data_run = util.encoders_to_df(encoders, col="round")
         
         # Generate all pngs (both tiles and lines) for movie
+        movie_dir = f"movies/run_{run}"
+
         if config.plotting.generate_movie_plots:
+            # Clear out previously generated images
+
+            if os.listdir(movie_dir):
+                print(f"Removing all .pngs at {os.path.join(os.getcwd(), movie_dir)}.")
+
+                os.system(f"rm -rf {movie_dir}/*")
+
             generate_encoder_plots(
                 encoders,
                 g.prior,
@@ -42,12 +54,12 @@ def main(config):
                 lines_dir=moviepath(run, fps.encoder_line_plots_dir),
                 tiles_dir=moviepath(run, fps.encoder_tile_plots_dir),
                 individual_file_prefix="round",
+                title_nums=steps_recorded_run,
             )
         else:
             print("Skipping movie plot generation.")
 
         if config.plotting.generate_movies:
-            movie_dir = f"movies/run_{run}"
 
             tiles_mp4_fn = os.path.join(movie_dir, "tiles.mp4")
             # Generate movies with ffmpeg

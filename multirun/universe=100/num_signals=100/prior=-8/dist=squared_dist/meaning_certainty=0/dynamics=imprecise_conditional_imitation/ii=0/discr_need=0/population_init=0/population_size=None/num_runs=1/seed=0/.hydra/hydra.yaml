@@ -120,10 +120,12 @@ hydra:
     - seed=0
     - plotting.generate_movie_plots=True
     - plotting.generate_movies=True
+    - simulation.dynamics.max_its=300
+    - simulation.dynamics.threshold=0.0001
   job:
     name: movies
     chdir: true
-    override_dirname: game.universe=100,plotting.generate_movie_plots=True,plotting.generate_movies=True,simulation/dynamics=imprecise_conditional_imitation
+    override_dirname: game.universe=100,plotting.generate_movie_plots=True,plotting.generate_movies=True,simulation.dynamics.max_its=300,simulation.dynamics.threshold=0.0001,simulation/dynamics=imprecise_conditional_imitation
     id: '0'
     num: 0
     config_name: config

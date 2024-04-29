@@ -6,3 +6,5 @@
 - seed=0
 - plotting.generate_movie_plots=True
 - plotting.generate_movies=True
+- simulation.dynamics.max_its=300
+- simulation.dynamics.threshold=0.0001

@@ -60,6 +60,7 @@ def generate_encoder_plots(
     lines_dir: str,
     tiles_dir: str,
     individual_file_prefix: str,
+    title_nums: np.ndarray,
     facet_runs: bool = False,
 ):
     """Generates and saves plots of encoder distributions."""
@@ -67,7 +68,7 @@ def generate_encoder_plots(
     util.ensure_dir(tiles_dir)
     util.ensure_dir(lines_dir)
 
-    encoders_data = util.encoders_to_df(encoders, col=individual_file_prefix)
+    encoders_data = util.encoders_to_df(encoders, labels=title_nums, col=individual_file_prefix)
 
     # Encoders, faceted by run
     if facet_runs and len(encoders_data["run"].value_counts().to_dict()) - 1:  # > one run
@@ -81,7 +82,12 @@ def generate_encoder_plots(
     # line_plots = vis.get_n_encoder_plots(encoders_data, "line", item_key=individual_file_prefix,) #REPLACED WITH BELOW
 
     # Centroid lineplot
-    line_figs = vis.get_n_centroid_plots(encoders, prior,item_key=individual_file_prefix,)
+    line_figs = vis.get_n_centroid_plots(
+        encoders, 
+        prior,
+        item_key=individual_file_prefix,
+        title_nums=title_nums,
+    )
 
 
     # Save each

@@ -120,10 +120,12 @@ hydra:
     - seed=0
     - plotting.generate_movie_plots=True
     - plotting.generate_movies=True
+    - simulation.dynamics.max_its=300
+    - simulation.dynamics.threshold=1e-4
   job:
     name: movies
     chdir: true
-    override_dirname: game.universe=100,plotting.generate_movie_plots=True,plotting.generate_movies=True,simulation/dynamics=imprecise_conditional_imitation
+    override_dirname: game.universe=100,plotting.generate_movie_plots=True,plotting.generate_movies=True,simulation.dynamics.max_its=300,simulation.dynamics.threshold=1e-4,simulation/dynamics=imprecise_conditional_imitation
     id: ???
     num: ???
     config_name: config
@@ -192,8 +194,8 @@ game:
   numbeta: 1500
 simulation:
   dynamics:
-    max_its: 200
-    threshold: 1.0e-05
+    max_its: 300
+    threshold: 0.0001
     population_init_gamma: 0
     imprecise_imitation_gamma: 0
     population_size: null
@@ -223,6 +225,7 @@ filepaths:
   simulation_points_save_fn: simulation_points.csv
   trajectory_points_save_fn: trajectory_points.csv
   trajectory_encoders_save_fn: trajectory_encoders.npz
+  steps_recorded_save_fn: steps_recorded.npz
   variant_points_save_fn: variant_points.csv
   final_encoders_save_fn: final_encoders.npy
   nearest_optimal_points_save_fn: nearest_optimal_points.csv

@@ -8,7 +8,7 @@ from ultk.effcomm.rate_distortion import (
     ib_encoder_to_point,
     get_ib_bound,
 )
-from rdot import ba, probability, distortions
+from rdot import optimizers, probability, distortions
 
 from misc.tools import normalize_rows
 
@@ -105,7 +105,7 @@ betas = np.concatenate(
 betas = list(sorted(set(betas.tolist())))
 
 
-def get_bottleneck(config: DictConfig) -> ba.IBResult:
+def get_bottleneck(config: DictConfig) -> optimizers.IBResult:
     """Compute the `(complexity, accuracy, comm_cost)` values and optimal encoders corresponding to an Information Bottleneck theoretical bound.
 
     Args:
@@ -138,7 +138,7 @@ def get_rd_curve(config: DictConfig) -> list[tuple[float]]:
 
     """
     g = Game.from_hydra(config)
-    results = ba.RateDistortionOptimizer(
+    results = optimizers.RateDistortionOptimizer(
         g.prior,
         g.dist_mat,
         betas,

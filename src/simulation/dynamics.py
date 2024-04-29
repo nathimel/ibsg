@@ -249,6 +249,9 @@ class ReplicatorDynamics(Dynamics):
             (self.game.num_signals, self.game.num_states), self.init_gamma
         )  # Receiver 'population frequencies'
 
+        # Record first 100 and logspaced values to max_its
+        self.steps_to_record = list(range(100)) + [int(x) for x in np.logspace(start=np.log10(100), stop=np.log10(self.max_its), num=99, endpoint=False)] + [self.max_its-1]
+
     def run(self):
         its = 0
         converged = False
@@ -260,9 +263,9 @@ class ReplicatorDynamics(Dynamics):
             P_prev = copy.deepcopy(self.P)
             Q_prev = copy.deepcopy(self.Q)
 
-            self.game.points.append(self.get_point(P_prev, Q_prev))
+            point = self.get_point(P_prev, Q_prev)
 
-            self.game.ib_encoders.append(rows_zero_to_uniform(normalize_rows(P_prev)))
+            # self.game.points.append(self.get_point(P_prev, Q_prev))
 
             self.evolution_step()  # N.B.: fitness requires population update
 
@@ -273,7 +276,21 @@ class ReplicatorDynamics(Dynamics):
             ) or (its == self.max_its):
                 converged = True
 
-        # breakpoint()
+            # start recording the convergence info
+            P_delta = np.abs(self.P - P_prev).sum()
+            Q_delta = np.abs(self.Q - Q_prev).sum()
+            point = point + (P_delta, Q_delta)
+
+            # We record the first 200 steps and then 100 evenly spaced steps between the current and 20k
+            # if (its < 200) or (its % 2000 == 0) or converged:
+            # logspaced
+            if its in self.steps_to_record or converged:
+                # Record data from before evolution step + convergence check
+                self.game.ib_encoders.append(rows_zero_to_uniform(normalize_rows(P_prev)))
+                self.game.points.append(point)
+                self.game.steps_recorded.append(its)
+
+                # won't this lose info about the iteration number? How to work around this without causing index errors?
 
         progress_bar.close()
 

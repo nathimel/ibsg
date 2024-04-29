@@ -65,6 +65,7 @@ class Game:
         # updated by dynamics
         self.points = []  # list of (complexity, accuracy, comm_cost, MSE) points
         self.ib_encoders = []
+        self.steps_recorded = [] # for bookkeeping above
 
         self.__dict__.update(**kwargs)
 

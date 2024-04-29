@@ -74,6 +74,7 @@ def save_final_encoders(fn: str, runs: list) -> None:
 
         runs: a list of Game objects
     """
+    # Unclear we need to know the actual final step recorded
     np.save(fn, np.stack([np.array(g.ib_encoders[-1]) for g in runs]))
     print(f"Saved {len(runs)} encoders to {os.path.join(os.getcwd(), fn)}")
 
@@ -88,9 +89,19 @@ def save_all_encoders(fn: str, runs: list) -> None:
     # N.B.: the below may be ragged!
     # We should either use a fill value, which is inefficient, 
     # or save differently.
-    kwargs = {f"run_{i}": g.ib_encoders for i, g in enumerate(runs)}
+    kwargs = {
+        f"run_{run_i}": np.stack(g.ib_encoders) for run_i, g in enumerate(runs)
+    }
     np.savez_compressed(fn, **kwargs)
     print(f"Saved all encoders across rounds and runs to {os.path.join(os.getcwd(), fn)}")
+
+    kwargs_sr = {
+        f"run_{run_i}": np.stack(g.steps_recorded) for run_i, g in enumerate(runs)
+    }    
+    # TODO: use the config yaml file, not hard coded fn
+    fn_sr = "steps_recorded.npz"
+    np.savez_compressed(fn_sr, **kwargs_sr)
+    print(f"Saved list of indices for steps recorded across rounds and runs to {os.path.join(os.getcwd(), fn_sr)}")
 
 def load_all_encoders(fn: str) -> list[np.ndarray]:
     """Load all the encoders from all rounds of each game from npz file.
@@ -121,6 +132,8 @@ points_columns = [
     "accuracy",
     "distortion",
     "mse",
+    "sender_delta",
+    "receiver_delta",
 ]
 efficiency_columns = [
     "gNID",
@@ -170,8 +183,8 @@ def trajectories_df(runs: list) -> pd.DataFrame:
                         # label rounds
                         np.hstack(
                             (
-                                np.array(run.points),  # (num_rounds, 4)
-                                np.arange(len(run.points))[:, None],
+                                np.array(run.points),  # (num_rounds, 6)
+                                np.array(run.steps_recorded)[:, None],
                             )
                         ),
                         np.ones(len(run.points))[:, None] * run_num + 1,
@@ -192,7 +205,7 @@ encoder_columns = [
 ]
 
 
-def encoders_to_df(encoders: np.ndarray, col: str = "run") -> pd.DataFrame:
+def encoders_to_df(encoders: np.ndarray, labels: np.ndarray, col: str = "run") -> pd.DataFrame:
     """Get a dataframe with columns ['meanings', 'words', 'p', 'naming probability \n'].
 
     Args:
@@ -206,12 +219,13 @@ def encoders_to_df(encoders: np.ndarray, col: str = "run") -> pd.DataFrame:
     meanings = np.array([[i] * num_words for i in range(num_meanings)]).flatten()
     words = np.array(list(range(num_words)) * num_meanings)
     ones = np.ones_like(encoders[0]).flatten()
+
     return pd.concat(
         [
             pd.DataFrame(
                 np.stack(
                     [
-                        ones * i,  # run/round
+                        ones * labels[i],  # run/round
                         words,
                         meanings,
                         encoder.flatten(),  # 'naming probability \n' is alias for 'p'

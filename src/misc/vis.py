@@ -176,6 +176,7 @@ def get_n_centroid_plots(
     prior: np.ndarray,
     all_items: bool = True,
     item_key: str = "run", 
+    title_nums: np.ndarray = None,
     n: int = 8,
 ) -> list:
     """Return a list of plots, one for each encoder corresponding to each run our round. If `all_items` is False, get `n` plots, which is 8 by default.
@@ -185,7 +186,10 @@ def get_n_centroid_plots(
 
             item_key: {"run", "round"}
     """
-    return [get_centroid_lineplot(enc, prior, title=f"{item_key}={idx}") for idx, enc in enumerate(encoders)]
+    if title_nums is None:
+        title_nums = np.arange(len(encoders))
+    # TODO: replace enumerate with title_nums, an arg
+    return [get_centroid_lineplot(enc, prior, title=f"{item_key}={idx}") for idx, enc in zip(title_nums, encoders)]
 
 
 def faceted_encoders(df: pd.DataFrame, plot_type: str) -> pn.ggplot:
