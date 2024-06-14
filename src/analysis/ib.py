@@ -104,6 +104,14 @@ betas = np.concatenate(
 # unique
 betas = list(sorted(set(betas.tolist())))
 
+# dev
+betas = list(sorted(set(
+    np.concatenate([
+        np.logspace(-1, 0.25, 1000),
+        np.logspace(0.25, 1, 100,)
+    ])
+)))
+
 
 def get_bottleneck(config: DictConfig) -> optimizers.IBResult:
     """Compute the `(complexity, accuracy, comm_cost)` values and optimal encoders corresponding to an Information Bottleneck theoretical bound.

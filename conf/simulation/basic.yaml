@@ -43,5 +43,9 @@ approximate_encoders: False
 num_approximation_samples: 20
 
 # inspect one gnid result
-inspect_gnid: True
-inspect_gnid_encoder: 1 # 1-indexing, must be <= num_runs
+# inspect_gnid: True
+# inspect_gnid_encoder: 1 # 1-indexing, must be <= num_runs
+
+# inspect one eps result
+inspect_eps: True
+inspect_eps_encoder: 1 # 1-indexing, must be <= num_runs

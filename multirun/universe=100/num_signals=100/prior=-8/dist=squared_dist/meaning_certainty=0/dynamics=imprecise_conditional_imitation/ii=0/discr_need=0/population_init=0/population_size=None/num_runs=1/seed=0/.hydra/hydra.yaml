@@ -120,14 +120,14 @@ hydra:
     - seed=0
     - plotting.generate_movie_plots=True
     - plotting.generate_movies=True
-    - simulation.dynamics.max_its=300
-    - simulation.dynamics.threshold=0.0001
+    - simulation.dynamics.max_its=200
+    - simulation.dynamics.threshold=1e-05
   job:
-    name: movies
+    name: measure
     chdir: true
-    override_dirname: game.universe=100,plotting.generate_movie_plots=True,plotting.generate_movies=True,simulation.dynamics.max_its=300,simulation.dynamics.threshold=0.0001,simulation/dynamics=imprecise_conditional_imitation
-    id: '0'
-    num: 0
+    override_dirname: game.universe=100,plotting.generate_movie_plots=True,plotting.generate_movies=True,simulation.dynamics.max_its=200,simulation.dynamics.threshold=1e-05,simulation/dynamics=imprecise_conditional_imitation
+    id: '24'
+    num: 24
     config_name: config
     env_set: {}
     env_copy: []

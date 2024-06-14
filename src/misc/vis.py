@@ -101,16 +101,16 @@ def bound_only_plot(
     return plot
 
 
-def single_gnid_heatmap_tradeoff_plot(
-    gnid_curve_data: pd.DataFrame,
+def single_eps_heatmap_tradeoff_plot(
+    eps_curve_data: pd.DataFrame,
     sim_data: pd.DataFrame,  # a single point
     opt_data: pd.DataFrame,  # same
 ) -> pn.ggplot:
-    data = gnid_curve_data.copy()
+    data = eps_curve_data.copy()
     plot = (
         pn.ggplot(data=data, mapping=pn.aes(x="complexity", y="accuracy"))
-        + pn.geom_point(size=3, mapping=pn.aes(color="gNID"))
-        + pn.scale_color_continuous("inferno", limits=(0, 1))
+        + pn.geom_point(size=3, mapping=pn.aes(color="eps"))
+        + pn.scale_color_continuous("inferno", trans = "log10")
         + pn.geom_point(
             data=sim_data,
             fill="red",
@@ -133,8 +133,8 @@ def basic_efficiency_plot(
     data = simulation_data.copy()
     plot = (
         pn.ggplot(data=data, mapping=pn.aes(x="eps"))
-        # + pn.geom_histogram()
-        + pn.geom_density()
+        + pn.geom_histogram()
+        # + pn.geom_density()
         + pn.xlab("Efficiency loss")
         + pn.ylab("count")
     )
@@ -149,6 +149,7 @@ def get_n_encoder_plots(
     plot_type: str,
     all_items: bool = True,
     item_key: str = "run", # can also pass "round"
+    title_var: str = None,
     n: int = 8,
 ) -> list[pn.ggplot]:
     """Return a list of plots, one for each encoder corresponding to each run our round. If `all_items` is False, get `n` plots, which is 8 by default.
@@ -157,14 +158,24 @@ def get_n_encoder_plots(
         plot_type: {"tile", "line"}
 
         item_key: {"run", "round"}
+
+        title_var: defaults to `item_key`
     """
     data = df.copy()
     data[item_key] = data[item_key].astype(int) + 1
     items = data[item_key].unique()
     if not all_items:
         items = items[:n]
+    if title_var is None:
+        title_var = item_key
+
+    # TODO: label title $S^{t}(w|x_o)$
     return [
-        (plots[plot_type](data[data[item_key] == item], item_key=item_key) + pn.ggtitle(f"{item_key} {item}"))
+        (
+            plots[plot_type](data[data[item_key] == item], item_key=item_key) 
+            + pn.ggtitle(f"{title_var} {item}")
+            # + pn.ggtitle(f"$S^{{{title_var}={item}}}(w | x_o)$")
+        )
         for item in items
     ]
 
@@ -175,8 +186,9 @@ def get_n_centroid_plots(
     encoders: np.ndarray,
     prior: np.ndarray,
     all_items: bool = True,
-    item_key: str = "run", 
+    item_key: str = "run",     
     title_nums: np.ndarray = None,
+    title_var: str = None,
     n: int = 8,
 ) -> list:
     """Return a list of plots, one for each encoder corresponding to each run our round. If `all_items` is False, get `n` plots, which is 8 by default.
@@ -185,11 +197,15 @@ def get_n_centroid_plots(
             plot_type: {"tile", "line"}
 
             item_key: {"run", "round"}
+
+            title_var: defaults to `item_key`
     """
     if title_nums is None:
         title_nums = np.arange(len(encoders))
-    # TODO: replace enumerate with title_nums, an arg
-    return [get_centroid_lineplot(enc, prior, title=f"{item_key}={idx}") for idx, enc in zip(title_nums, encoders)]
+    if title_var is None:
+        title_var = item_key        
+    # TODO: replace enumerate with title_nums, an arg    
+    return [get_centroid_lineplot(enc, prior, title=f"{title_var}={idx}") for idx, enc in zip(title_nums, encoders)]
 
 
 def faceted_encoders(df: pd.DataFrame, plot_type: str) -> pn.ggplot:
@@ -272,8 +288,9 @@ def get_centroid_lineplot(qW_M: np.ndarray, pM: np.ndarray, title: str = "") -> 
             linewidth=1,
         )
 
-    if title: 
-        ax.set_title(label=title)
+    # if title: 
+    #     ax.set_title(label=title)
+    
     ax.set_ylim(0,1)
 
     ax.set_yticks(
@@ -282,11 +299,24 @@ def get_centroid_lineplot(qW_M: np.ndarray, pM: np.ndarray, title: str = "") -> 
     ax.set_xticks(
         ticks=[0,50,100],
     )
-    ax.set_xlabel("meaning")
-    ax.set_ylabel("naming probability")
+    ax.set_xlabel(r"$X_o$")
+    # ax.set_xlabel("meaning")
+    # ax.set_ylabel(r"$S^{t}(w | x_o)$")
+    # ax.set_ylabel(r"$S_{\beta}(w | x_o)$")
+    ax.set_ylabel(r"$S(w | m_o)$")
+
+    # ax.set_ylabel("naming probability")
     sm = plt.cm.ScalarMappable(cmap=colormap, norm=plt.Normalize(0, 100))
     sm.set_array([])
-    fig.colorbar(sm, label='centroid $m$ for $w$', ticks=[0,50,100])
+
+    # fig.colorbar(
+    #     sm, 
+    #     # label='centroid $m$ for $w$', 
+    #     label='color coding for $w$',
+    #     ticks=[0,50,100],
+    #     location='bottom',
+    # )
+
     return fig
 
 

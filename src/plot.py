@@ -77,8 +77,12 @@ def generate_encoder_plots(
         util.save_plot(faceted_lines_fn, faceted_lines_plot)
         util.save_plot(faceted_tiles_fn, faceted_tiles_plot)
 
+
+    # NOTE: I'm commenting out encoder plots for now because I never need them and its slow to generate them
     # Individual encoders
-    tile_plots = vis.get_n_encoder_plots(encoders_data, "tile", item_key=individual_file_prefix,)
+    # tile_plots = vis.get_n_encoder_plots(encoders_data, "tile", 
+    # item_key=individual_file_prefix, title_var="t",)
+
     # line_plots = vis.get_n_encoder_plots(encoders_data, "line", item_key=individual_file_prefix,) #REPLACED WITH BELOW
 
     # Centroid lineplot
@@ -87,16 +91,17 @@ def generate_encoder_plots(
         prior,
         item_key=individual_file_prefix,
         title_nums=title_nums,
+        title_var="t",
     )
 
 
     # Save each
-    [
-        util.save_plot(
-            os.path.join(tiles_dir, f"{individual_file_prefix}_{i+1}.png"), plot
-        )
-        for i, plot in enumerate(tile_plots)
-    ]
+    # [
+    #     util.save_plot(
+    #         os.path.join(tiles_dir, f"{individual_file_prefix}_{i+1}.png"), plot
+    #     )
+    #     for i, plot in enumerate(tile_plots)
+    # ]
     [
         util.save_fig(
             os.path.join(lines_dir, f"{individual_file_prefix}_{i+1}.png"), fig
@@ -162,6 +167,7 @@ def main(config):
     ]
     # Main simulation encoders
     encoders_fn = fullpath(fps.final_encoders_save_fn)
+    title_nums = range(config.simulation.num_runs)
     if os.path.exists(encoders_fn):
         generate_encoder_plots(
             np.load(encoders_fn),
@@ -170,6 +176,7 @@ def main(config):
             fullpath(fps.encoders_faceted_tiles_plot_fn),
             *encoder_args,
             "run",
+            title_nums,
         )
     # sample-approxd encoders
     approxd_encoders_fn = fullpath(fps.approximated_encoders_save_fn)
@@ -185,23 +192,17 @@ def main(config):
     # nearest IB-optimal encoders
     nearopt_encoders_fn = fullpath(fps.nearest_optimal_save_fn)
     if os.path.exists(nearopt_encoders_fn):
-        pass
+        # pass
         # Can't work on the below until we sort out the epsilon fit
-        # generate_encoder_plots(
-        #     np.load(nearopt_encoders_fn),
-        #     g.prior,
-        #     fullpath(fps.nearest_optimal_faceted_lines_plot_fn),
-        #     fullpath(fps.nearest_optimal_faceted_tiles_plot_fn),
-        #     *encoder_args,
-        #     "nearest_opt",
-        # )
-
-    # Efficiency loss plot
-    # TODO: get a histogram of efficiency loss for each emergent system
-    # TODO: also check opt efficiency for sanity, and then approx_data
-    if sim_data is not None:
-        efficiency_plot = vis.basic_efficiency_plot(sim_data)
-        util.save_plot(fullpath(fps.efficiency_plot_fn), efficiency_plot)
+        generate_encoder_plots(
+            np.load(nearopt_encoders_fn),
+            g.prior,
+            fullpath(fps.nearest_optimal_faceted_lines_plot_fn),
+            fullpath(fps.nearest_optimal_faceted_tiles_plot_fn),
+            *encoder_args,
+            "nearest_opt",
+            title_nums,
+        )
 
 
 if __name__ == "__main__":

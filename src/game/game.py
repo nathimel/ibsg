@@ -63,8 +63,8 @@ class Game:
         self.meaning_dists = meaning_dists
 
         # updated by dynamics
-        self.points = []  # list of (complexity, accuracy, comm_cost, MSE) points
-        self.ib_encoders = []
+        self.points: list[tuple[float]] = []  # list of (complexity, accuracy, comm_cost, MSE) points
+        self.ib_encoders: list[np.ndarray] = []
         self.steps_recorded = [] # for bookkeeping above
 
         self.__dict__.update(**kwargs)

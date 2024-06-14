@@ -6,6 +6,9 @@ import pandas as pd
 from plotnine import ggplot
 from omegaconf import DictConfig
 
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+
 
 # To silence 'SettingWithCopyWarning'
 pd.options.mode.chained_assignment = None  # default='warn'
@@ -136,9 +139,8 @@ points_columns = [
     "receiver_delta",
 ]
 efficiency_columns = [
-    "gNID",
-    "eps",
-    "beta",
+    "min_epsilon",
+    "min_beta",
 ]
 
 
@@ -152,9 +154,8 @@ def final_points_df(runs: list) -> pd.DataFrame:
         [
             (
                 *g.points[-1],  # comp, acc, dist, mse,
-                None,  # gNID computed later
-                None,  # eps (efficiency loss)
-                None,  # beta
+                None,  # min_epsilon (efficiency loss)
+                None,  # min_beta
                 i,  # run number
             )
             for i, g in enumerate(runs)
@@ -211,6 +212,8 @@ def encoders_to_df(encoders: np.ndarray, labels: np.ndarray, col: str = "run") -
     Args:
 
         encoders: array of shape `(runs, meanings, words)`
+
+        labels: the label of the encoder, e.g. the run or round index.
 
         col: {"run", "round"} whether `encoders` is a list of final encoders across runs, or intermediate encoders across game rounds.
     """
@@ -313,8 +316,6 @@ def save_plot(fn: str, plot: ggplot, width=10, height=10, dpi=300) -> None:
     plot.save(fn, width=width, height=height, dpi=dpi, verbose=False)
     print(f"Saved a plot to {fn}")
 
-from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
 def save_fig(fn: str, fig: Figure, dpi=300) -> None:
     fig.savefig(fn, dpi=dpi)
     plt.close(fig)

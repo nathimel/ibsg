@@ -41,7 +41,7 @@ def main(config):
         if config.plotting.generate_movie_plots:
             # Clear out previously generated images
 
-            if os.listdir(movie_dir):
+            if os.path.exists(movie_dir) and os.listdir(movie_dir):
                 print(f"Removing all .pngs at {os.path.join(os.getcwd(), movie_dir)}.")
 
                 os.system(f"rm -rf {movie_dir}/*")
@@ -61,14 +61,14 @@ def main(config):
 
         if config.plotting.generate_movies:
 
-            tiles_mp4_fn = os.path.join(movie_dir, "tiles.mp4")
+            # tiles_mp4_fn = os.path.join(movie_dir, "tiles.mp4")
             # Generate movies with ffmpeg
-            os.system(f"ffmpeg -f image2 -framerate 10 -i movies/run_{run}/encoder_tile_plots/round_%d.png -vcodec mpeg4 -y {tiles_mp4_fn}")
+            # os.system(f"ffmpeg -f image2 -framerate 10 -i movies/run_{run}/encoder_tile_plots/round_%d.png -vcodec mpeg4 -y {tiles_mp4_fn}")
 
             lines_mp4_fn = os.path.join(movie_dir, "lines.mp4")
             os.system(f"ffmpeg -f image2 -framerate 10 -i movies/run_{run}/encoder_line_plots/round_%d.png -vcodec mpeg4 -y {lines_mp4_fn}")
 
-            print(f"Generated movie at {os.path.join(os.getcwd(), tiles_mp4_fn)}.")
+            # print(f"Generated movie at {os.path.join(os.getcwd(), tiles_mp4_fn)}.")
             print(f"Generated movie at {os.path.join(os.getcwd(), lines_mp4_fn)}.")
         else:
             print("Skipping movie generation.")

@@ -118,11 +118,14 @@ hydra:
     - game.num_signals=100
     - simulation.dynamics.population_init_gamma=0
     - seed=9
-    - simulation.dynamics.max_its=1000
+    - plotting.generate_movie_plots=True
+    - plotting.generate_movies=True
+    - simulation.dynamics.max_its=200
+    - simulation.dynamics.threshold=1e-05
   job:
     name: measure
     chdir: true
-    override_dirname: game.universe=100,simulation.dynamics.max_its=1000,simulation/dynamics=imprecise_conditional_imitation
+    override_dirname: game.universe=100,plotting.generate_movie_plots=True,plotting.generate_movies=True,simulation.dynamics.max_its=200,simulation.dynamics.threshold=1e-05,simulation/dynamics=imprecise_conditional_imitation
     id: '39'
     num: 39
     config_name: config
@@ -162,6 +165,7 @@ hydra:
       provider: schema
     output_dir: /Users/nathanielimel/uci/projects/ibsg/multirun/universe=100/num_signals=100/prior=-8/dist=squared_dist/meaning_certainty=0/dynamics=imprecise_conditional_imitation/ii=0/discr_need=-3/population_init=0/population_size=None/num_runs=1/seed=9
     choices:
+      plotting: default
       filepaths: default
       simulation: basic
       simulation/dynamics: imprecise_conditional_imitation

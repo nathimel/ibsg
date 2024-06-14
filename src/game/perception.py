@@ -25,7 +25,7 @@ distance_measures = {
 }
 
 
-def referent_to_tensor(referent: Referent):
+def referent_to_ndarray(referent: Referent):
     return np.array(referent.point, dtype=float)
 
 
@@ -60,8 +60,8 @@ def generate_dist_matrix(
         [
             [
                 distance_measures[distance](
-                    referent_to_tensor(t),
-                    referent_to_tensor(u),
+                    referent_to_ndarray(t),
+                    referent_to_ndarray(u),
                 )
                 for u in universe.referents
             ]

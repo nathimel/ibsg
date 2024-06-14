@@ -8,7 +8,6 @@ import pandas as pd
 from scipy.spatial.distance import cdist
 
 from omegaconf import DictConfig
-from rdot.information import gNID
 from ultk.effcomm.rate_distortion import ib_encoder_to_point
 
 from analysis import helpers
@@ -55,7 +54,7 @@ def main(config: DictConfig):
     # Measure Euclidean dist of each language to any optimal curve point
     traj_points = traj_data[["complexity", "accuracy"]].values
     curve_points = curve_data[["complexity", "accuracy"]].values
-    distances = cdist(traj_points, curve_points) # shape `[traj_pts, curve_pts]`
+    distances = cdist(traj_points, curve_points) # shape `(traj_pts, curve_pts)`
     # For each traj_point, get the minimum dist to any curve_point
     min_distances = np.min(distances, axis=1)        
 
@@ -72,27 +71,24 @@ def main(config: DictConfig):
     fitted_betas = []
     fitted_epsilon = []    
     fitted_encoders = []
-    fitted_gnid = []
     for em in tqdm(emergent_encoders, desc="fitting final encoders"):
         comp, acc, _ = ib_encoder_to_point(g.prior, g.meaning_dists, em)
         F_em = comp - betas * acc
 
         # Do we have F_[q] >= F_[q*] for all q?
-        F_em_deviation = F_em - F_opt
+        F_em_deviation = (F_em - F_opt) / betas
         min_ind = np.argmin(F_em_deviation)
 
         beta_em = betas[min_ind]
-        epsilon_em = np.min(F_em_deviation) / beta_em
+        epsilon_em = np.min(F_em_deviation)
         fitted_opt = optimal_encoders[min_ind]
-        gnid = gNID(em, fitted_opt, g.prior)
 
         fitted_betas.append(beta_em)
         fitted_epsilon.append(epsilon_em)
         fitted_encoders.append(fitted_opt)
-        fitted_gnid.append(gnid)
 
         if epsilon_em < 0:
-            breakpoint()
+            raise Exception
 
 
     # Save the fitted optimal encoder to each emergent encoder
@@ -110,11 +106,12 @@ def main(config: DictConfig):
         desc="finding minimum efficiency loss per trajectory point",
     ):
         F_traj = traj_complexity - betas * traj_accuracy
-        F_traj_deviation = F_traj - F_opt
+        F_traj_deviation = (F_traj - F_opt) / betas
 
         min_ind = np.argmin(F_traj_deviation)
+
         beta_traj = betas[min_ind]
-        epsilon_traj = np.min(F_traj_deviation) / beta_traj
+        epsilon_traj = np.min(F_traj_deviation)
 
         min_eps.append(epsilon_traj)
         min_beta.append(beta_traj)
@@ -126,8 +123,8 @@ def main(config: DictConfig):
     ##########################################################################
 
     # Overwrite simulation data
-    sim_data["gNID"] = fitted_gnid
-    sim_data["beta"] = fitted_betas
+    sim_data["min_beta"] = fitted_betas
+    sim_data["min_epsilon"] = fitted_epsilon
     util.save_points_df(sim_fn, sim_data)
 
     # Write nearest optimal data for plotting later
@@ -144,21 +141,21 @@ def main(config: DictConfig):
     traj_data["min_beta"] = min_beta
     util.save_points_df(traj_fn, traj_data)
 
-    # Inspect a single gnid plot
-    if config.simulation.inspect_gnid:
+    # Inspect a single epsilon-fitted plot
+    if config.simulation.inspect_eps:
         # select (just one for now) emergent encoder
-        idx = config.simulation.inspect_gnid_encoder - 1
-        assert idx >= 0, "Use 1-indexing for gnid encoder inspection."
+        idx = config.simulation.inspect_eps_encoder - 1
+        assert idx >= 0, "Use 1-indexing for fitted epsilon encoder inspection."
         assert idx <= config.simulation.num_runs, "Inspection index must be less than num_runs"
-        last_encoder_gnids = fitted_gnid[idx]
-        curve_data["gNID"] = last_encoder_gnids.tolist()
+        # last_encoder_eps = fitted_epsilon[idx]
+        curve_data["eps"] = F_em_deviation
         single_encoder_data = sim_data.iloc[[idx]]
         single_optimal_data = opt_data.iloc[[idx]]
-        plot = vis.single_gnid_heatmap_tradeoff_plot(
+        plot = vis.single_eps_heatmap_tradeoff_plot(
             curve_data, single_encoder_data, single_optimal_data
         )
         util.save_plot(
-            fullpath(fps.single_gnid_inspect_plot_fn).replace("idx", str(idx+1)), 
+            fullpath(fps.single_eps_inspect_plot_fn).replace("idx", str(idx+1)), 
             plot,
         )
 

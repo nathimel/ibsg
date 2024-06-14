@@ -4,4 +4,7 @@
 - game.num_signals=100
 - simulation.dynamics.population_init_gamma=-1
 - seed=8
-- simulation.dynamics.max_its=1000
+- plotting.generate_movie_plots=True
+- plotting.generate_movies=True
+- simulation.dynamics.max_its=200
+- simulation.dynamics.threshold=1e-05
