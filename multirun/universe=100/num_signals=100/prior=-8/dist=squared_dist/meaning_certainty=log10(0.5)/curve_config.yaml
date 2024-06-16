@@ -1,0 +1,11 @@
+universe: 100
+prior: -8
+num_signals: 100
+distance: squared_dist
+discriminative_need_gamma: log10(0.5)
+meaning_dist_gamma: log10(0.5)
+num_processes: 6
+overwrite_curves: true
+maxbeta: 5
+minbeta: -2
+numbeta: 1500

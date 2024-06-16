@@ -11,6 +11,8 @@ from tqdm import tqdm
 
 # We don't use the hydra.compose api, since we can't use sweeps with that anyways. Instead, we literally build a giant dataframe of all outputs in multirun.
 
+# N.B.: If this script is not finding the results you've run, make sure you've run setup.py, which stores the game.pkl file in the leaf directory!
+
 def main():
 
     if len(sys.argv) != 2:

@@ -86,32 +86,8 @@ def ib_encoder_to_measurements(
 # IB CURVE ESTIMATION
 ##############################################################################
 
-# We hard code the list of betas because through trial and error this set of values best sweeps out the curve we're interested in.
-betas = np.concatenate(
-    [
-        # these betas were hand selected to try and evenly flesh out the curve for meaning_dist=-1 as much as possible
-        np.linspace(start=0, stop=0.3, num=333),
-        
-        # very sparse region
-        np.linspace(start=0.7, stop=0.77, num=500),
-        np.linspace(start=0.69, stop=0.72, num=500),
 
-        np.linspace(start=0.3, stop=0.9, num=333),
-        np.linspace(start=0.9, stop=4, num=334),
-        np.linspace(start=4, stop=2**7, num=500),
-    ]
-)
-# unique
-betas = list(sorted(set(betas.tolist())))
-
-# dev
-betas = list(sorted(set(
-    np.concatenate([
-        np.logspace(-1, 0.25, 1000),
-        np.logspace(0.25, 1, 100,)
-    ])
-)))
-
+from .betas import betas # this is hard-codey
 
 def get_bottleneck(config: DictConfig) -> optimizers.IBResult:
     """Compute the `(complexity, accuracy, comm_cost)` values and optimal encoders corresponding to an Information Bottleneck theoretical bound.

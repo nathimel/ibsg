@@ -34,19 +34,6 @@ def main(config: DictConfig):
 
         ib_results = get_bottleneck(config)
 
-        # from rdot.probability import joint
-        # import embo
-        # from embo import InformationBottleneck
-        # from rdot.information import MI
-        # pxy = joint(g.meaning_dists, g.prior)
-        # comps, accs, _, betas, encoders = InformationBottleneck(
-        #     pxy=pxy,
-        # ).get_bottleneck()
-        # print(f"Embo done.")
-        # dists = MI(pxy) - accs
-
-        # ib_points = list(zip(comps, accs, dists, betas))
-
         encoders, ib_points, betas = zip(*[
             (item.qxhat_x,
             (item.rate, item.accuracy, item.distortion, item.beta),

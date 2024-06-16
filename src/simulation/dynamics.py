@@ -24,7 +24,10 @@ class Dynamics:
 
         self.max_its = kwargs["max_its"]
         self.threshold = kwargs["threshold"]
-        self.confusion_gamma = kwargs["imprecise_imitation_gamma"]
+        confusion_gamma = kwargs["imprecise_imitation_gamma"]
+        if confusion_gamma == "log10(0.5)":
+            confusion_gamma = np.log10(0.5)
+        self.confusion_gamma = confusion_gamma
 
         self.confusion = generate_confusion_matrix(self.game.universe, self.confusion_gamma, self.game.dist_mat)
 
@@ -67,7 +70,11 @@ class FinitePopulationDynamics(Dynamics):
         """
         super().__init__(game, **kwargs)
         self.n = kwargs["population_size"]
-        self.population_init_gamma = kwargs["population_init_gamma"]
+
+        population_init_gamma = kwargs["population_init_gamma"]
+        if population_init_gamma == "log10(0.5)":
+            population_init_gamma = np.log10(0.5)
+        self.population_init_gamma = population_init_gamma
 
         # create a population of n many (P,Q) agents
         self.Ps = random_stochastic_matrix(

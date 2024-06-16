@@ -1,6 +1,6 @@
 """Functions for running simulations."""
 
-
+import numpy as np
 from tqdm import tqdm
 from omegaconf import DictConfig
 from multiprocessing import Pool, cpu_count
@@ -11,7 +11,6 @@ from game.game import Game
 ##############################################################################
 # Helper functions for running experiments
 ##############################################################################
-
 
 def run_simulations(config: DictConfig) -> list[Game]:
     """Run a simulation for multiple runs."""

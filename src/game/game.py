@@ -114,13 +114,28 @@ class Game:
         if np.array_equal(prior, prior.astype(bool).astype(float)):
             prior = np.where(prior > 0, prior, 1e-16)
 
+
+        meaning_dist_gamma = None
+        discriminative_need_gamma = None
+
+        # Preprocess meaning dist gamma and discriminative need if necessary
+        if config.game.meaning_dist_gamma == "log10(0.5)":
+            meaning_dist_gamma = 0.5
+        else:
+            meaning_dist_gamma = 10 ** config.game.meaning_dist_gamma
+
+        if config.game.discriminative_need_gamma == "log10(0.5)":
+            discriminative_need_gamma = 0.5
+        else:
+            discriminative_need_gamma = 10 ** config.game.discriminative_need_gamma
+
         game = cls(
             universe,
             config.game.num_signals,
             prior,
             config.game.distance,
-            10**config.game.discriminative_need_gamma,  # input to softmax
-            10**config.game.meaning_dist_gamma,  # input to softmax
+            discriminative_need_gamma,  # input to softmax
+            meaning_dist_gamma,  # input to softmax
             maxbeta=config.game.maxbeta,  # we want about 1.0 - 2.0
             minbeta=10**config.game.minbeta,
             numbeta=config.game.numbeta,

@@ -8,3 +8,4 @@
 - plotting.generate_movies=True
 - simulation.dynamics.max_its=200
 - simulation.dynamics.threshold=1e-05
+- simulation.multiprocessing=False
