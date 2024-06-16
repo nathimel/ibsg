@@ -115,20 +115,20 @@ hydra:
     - game.meaning_dist_gamma='log10(0.5)'
     - simulation/dynamics=imprecise_conditional_imitation
     - simulation.dynamics.imprecise_imitation_gamma='log10(0.5)'
-    - game.discriminative_need_gamma='log10(0.5)'
+    - game.discriminative_need_gamma=range(-3,4)
     - game.universe=100
     - game.num_signals=100
     - simulation.dynamics.population_init_gamma=range(-3,4)
     - seed=0
     - plotting.generate_movie_plots=True
     - plotting.generate_movies=True
-    - simulation.dynamics.max_its=200
+    - simulation.dynamics.max_its=1e5
     - simulation.dynamics.threshold=1e-4
     - game.overwrite_curves=True
   job:
-    name: measure
+    name: setup
     chdir: true
-    override_dirname: game.overwrite_curves=True,game.universe=100,plotting.generate_movie_plots=True,plotting.generate_movies=True,simulation.dynamics.max_its=200,simulation.dynamics.threshold=1e-4,simulation/dynamics=imprecise_conditional_imitation
+    override_dirname: game.overwrite_curves=True,game.universe=100,plotting.generate_movie_plots=True,plotting.generate_movies=True,simulation.dynamics.max_its=1e5,simulation.dynamics.threshold=1e-4,simulation/dynamics=imprecise_conditional_imitation
     id: ???
     num: ???
     config_name: config
@@ -188,7 +188,7 @@ game:
   prior: -8
   num_signals: 100
   distance: squared_dist
-  discriminative_need_gamma: log10(0.5)
+  discriminative_need_gamma: 1.0
   meaning_dist_gamma: log10(0.5)
   num_processes: 6
   overwrite_curves: true
@@ -197,7 +197,7 @@ game:
   numbeta: 1500
 simulation:
   dynamics:
-    max_its: 200
+    max_its: 100000.0
     threshold: 0.0001
     population_init_gamma: -8
     imprecise_imitation_gamma: log10(0.5)

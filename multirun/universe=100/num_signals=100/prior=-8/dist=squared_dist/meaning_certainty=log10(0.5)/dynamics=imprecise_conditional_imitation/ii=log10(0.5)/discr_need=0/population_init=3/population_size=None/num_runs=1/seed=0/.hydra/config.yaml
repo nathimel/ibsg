@@ -12,7 +12,7 @@ game:
   numbeta: 1500
 simulation:
   dynamics:
-    max_its: 200
+    max_its: 100000.0
     threshold: 0.0001
     population_init_gamma: 3
     imprecise_imitation_gamma: log10(0.5)

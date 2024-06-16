@@ -122,13 +122,13 @@ hydra:
     - seed=0
     - plotting.generate_movie_plots=True
     - plotting.generate_movies=True
-    - simulation.dynamics.max_its=200
+    - simulation.dynamics.max_its=100000.0
     - simulation.dynamics.threshold=0.0001
     - game.overwrite_curves=True
   job:
-    name: measure
+    name: setup
     chdir: true
-    override_dirname: game.overwrite_curves=True,game.universe=100,plotting.generate_movie_plots=True,plotting.generate_movies=True,simulation.dynamics.max_its=200,simulation.dynamics.threshold=0.0001,simulation/dynamics=imprecise_conditional_imitation
+    override_dirname: game.overwrite_curves=True,game.universe=100,plotting.generate_movie_plots=True,plotting.generate_movies=True,simulation.dynamics.max_its=100000.0,simulation.dynamics.threshold=0.0001,simulation/dynamics=imprecise_conditional_imitation
     id: '4'
     num: 4
     config_name: config

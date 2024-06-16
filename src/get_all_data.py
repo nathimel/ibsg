@@ -76,6 +76,7 @@ def main():
         df["imprecise_imitation_gamma"] = leaf_cfg.simulation.dynamics.imprecise_imitation_gamma
         df["population_init_gamma"] = leaf_cfg.simulation.dynamics.population_init_gamma
         df["seed"] = leaf_cfg.seed
+        df["max_its"] = leaf_cfg.simulation.dynamics.max_its
 
         simulation_results.append(df)
     
