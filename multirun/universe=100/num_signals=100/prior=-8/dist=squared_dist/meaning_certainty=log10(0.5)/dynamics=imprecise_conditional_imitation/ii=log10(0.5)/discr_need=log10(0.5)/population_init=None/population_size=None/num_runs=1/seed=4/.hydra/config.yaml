@@ -25,8 +25,8 @@ simulation:
   trajectory: true
   variants: false
   num_variants: 100
-  multiprocessing: true
-  num_processes: 6
+  multiprocessing: false
+  num_processes: null
   approximate_encoders: false
   num_approximation_samples: 20
   inspect_eps: true

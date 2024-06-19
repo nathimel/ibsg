@@ -135,6 +135,9 @@ points_columns = [
     "accuracy",
     "distortion",
     "mse",
+    "eu_gamma",
+    "kl_eb",
+    "min_gnid",
     "sender_delta",
     "receiver_delta",
 ]
@@ -153,7 +156,7 @@ def final_points_df(runs: list) -> pd.DataFrame:
     return points_to_df(
         [
             (
-                *g.points[-1],  # comp, acc, dist, mse,
+                *g.points[-1],  # comp, acc, dist, mse, eu_gamma, kl_eb, min_gnid,
                 None,  # min_epsilon (efficiency loss)
                 None,  # min_beta
                 i,  # run number
@@ -184,7 +187,7 @@ def trajectories_df(runs: list) -> pd.DataFrame:
                         # label rounds
                         np.hstack(
                             (
-                                np.array(run.points),  # (num_rounds, 6)
+                                np.array(run.points),  # (num_rounds, len(points_columns))
                                 np.array(run.steps_recorded)[:, None],
                             )
                         ),

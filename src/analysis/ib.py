@@ -8,7 +8,7 @@ from ultk.effcomm.rate_distortion import (
     ib_encoder_to_point,
     get_ib_bound,
 )
-from rdot import optimizers, probability, distortions
+from rdot import optimizers, probability, distortions, information
 
 from misc.tools import normalize_rows
 
@@ -20,11 +20,12 @@ def ib_encoder_to_measurements(
     meaning_dists: np.ndarray,
     prior: np.ndarray,
     dist_mat: np.ndarray,
+    util_mat: np.ndarray,
     confusion: np.ndarray,
     encoder: np.ndarray,
-    decoder: np.ndarray = None,
+    decoder: np.ndarray,
 ) -> tuple[float]:
-    """Return (complexity, accuracy, distortion, mean squared error) point.
+    """Return (complexity, accuracy, distortion, mse, eu_gamma, kl_eb, min_gnid) point.
 
     Args:
         meaning_dists: array of shape `(|meanings|, |meanings|)` representing the distribution over world states given meanings.
@@ -33,25 +34,25 @@ def ib_encoder_to_measurements(
 
         dist_mat: array of shape `(|meanings|, |meanings|)` representing pairwise distance/error for computing MSE.
 
+        util_mat: array of shape `dist_mat.shape` representing the pairwise payoff matrix for each actual and finally reconstructed state. This utility is an exponential function of dist_mat, paramterized by `discriminative_need_gamma` in the game.
+
         confusion: array of shape `(|meanings|, |meanings|)` representing the distribution over world states given meanings.
 
         encoder: array of shape `(|meanings|, |words|)` representing P(W | M)
 
-        decoder: array of shape `(|words|, |meanings|)` representing P(M | W). If is None, and the Bayesian optimal decoder will be inferred.
+        decoder: array of shape `(|words|, |meanings|)` representing P(M | W). We will always infer the Bayesian optimal decoder for IB Accuracy measurements.
     """
     # NOTE: Here is where we rectify ineffable meanings, by replacing rows of all zeros with uniform distributions.
     # Another option would simple be to drop them.
-    encoder = rows_zero_to_uniform(normalize_rows(encoder))
+    # encoder = rows_zero_to_uniform(normalize_rows(encoder))
 
-    # NOTE: while ib_encoder_to_point does this step, we still need the decoder for the MSE step.
-    if decoder is None:
-        decoder = ib_optimal_decoder(encoder, prior, meaning_dists)
+    bayesian_decoder = ib_optimal_decoder(encoder, prior, meaning_dists)
 
     complexity, accuracy, distortion = ib_encoder_to_point(
         prior=prior,
         meaning_dists=meaning_dists,
         encoder=encoder,
-        decoder=decoder,
+        decoder=bayesian_decoder,
     )
 
     if complexity < 0:
@@ -72,14 +73,41 @@ def ib_encoder_to_measurements(
         else:
             raise Exception
 
-    # NOTE: use meaning dists, not confusions!
+    # NOTE: the analysis doesn't make sense unless confusion probabilities equal meaning distributions.
     system = meaning_dists @ encoder @ decoder @ meaning_dists
 
     # rectify ineffability again
     system = rows_zero_to_uniform(normalize_rows(system))
     mse = distortions.expected_distortion(prior, system, dist_mat)
 
-    return (complexity, accuracy, distortion, mse)
+    # Expected Utility, relative to discriminative_need
+    eu_gamma = np.sum(prior * (system * util_mat))
+
+    # Expected KL between emergent receiver and the Bayesian optimal inverse of the Sender.
+    # D[ R(\hat{x}_o | w) || S_bayes(\hat{x}_o | w) ]
+    kl_vec = information.kl_divergence(
+        p=decoder, # shape `(words, meanings)`
+        q=bayesian_decoder, # `(words, meanings)`
+        axis=1, # take entropy of meanings, i.e. sum over 2nd axis
+        base=2,
+    )
+
+    # Take expectation over p(w)
+    pw = probability.marginalize(encoder, meaning_dists @ prior)
+    kl_eb = np.sum(pw * kl_vec)
+
+    # TODO: find the min gnid distance to the curve
+    min_gnid = ...
+
+    return (
+        complexity, 
+        accuracy, 
+        distortion, 
+        mse,
+        eu_gamma,
+        kl_eb,
+        min_gnid,
+    )
 
 
 ##############################################################################

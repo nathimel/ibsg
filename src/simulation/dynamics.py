@@ -35,20 +35,15 @@ class Dynamics:
             self.game.meaning_dists,
             self.game.prior,
             self.game.dist_mat,
+            self.game.utility,
             self.confusion,
         ]
 
-        self.get_point = lambda encoder, _: ib_encoder_to_measurements(
+        self.get_point = lambda encoder, decoder: ib_encoder_to_measurements(
             *pt_args,
             encoder=encoder,
+            decoder=decoder,
         )
-
-        if kwargs["use_decoder"]:
-            self.get_point = lambda encoder, decoder: ib_encoder_to_measurements(
-                *pt_args,
-                encoder=encoder,
-                decoder=decoder,
-            )
 
     def run(self):
         raise NotImplementedError

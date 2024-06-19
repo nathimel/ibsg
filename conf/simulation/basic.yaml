@@ -18,7 +18,8 @@ dynamics:
 
 # Below are default configs that will be actually used by each simulation
 
-use_decoder: True # whether to use the emergent decoder when computing IB coordinate
+# We'll always NOT use it for IB Acc, but we'll always analyze it.
+# use_decoder: True # whether to use the emergent decoder when computing IB coordinate
 
 # simulation parameters
 num_runs: 1 

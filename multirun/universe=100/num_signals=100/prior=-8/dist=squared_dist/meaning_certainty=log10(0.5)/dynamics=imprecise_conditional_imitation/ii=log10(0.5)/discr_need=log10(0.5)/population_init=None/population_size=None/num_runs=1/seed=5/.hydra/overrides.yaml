@@ -11,4 +11,4 @@
 - simulation.dynamics.max_its=100000.0
 - simulation.dynamics.threshold=0.0001
 - game.overwrite_curves=True
-- simulation.num_processes=6
+- simulation.multiprocessing=False

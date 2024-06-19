@@ -48,7 +48,6 @@ def run_simulation(config: DictConfig) -> Game:
     dynamics = dynamics(
         Game.from_hydra(config),
         **config.simulation.dynamics,
-        use_decoder=config.simulation.use_decoder,
     )
     dynamics.run()
     return dynamics.game

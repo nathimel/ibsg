@@ -127,11 +127,11 @@ hydra:
     - game.overwrite_curves=True
     - simulation.multiprocessing=False
   job:
-    name: run_simulations
+    name: setup
     chdir: true
     override_dirname: game.overwrite_curves=True,game.universe=100,plotting.generate_movie_plots=True,plotting.generate_movies=True,simulation.dynamics.max_its=100000.0,simulation.dynamics.threshold=0.0001,simulation.multiprocessing=False,simulation/dynamics=imprecise_conditional_imitation
-    id: '0'
-    num: 0
+    id: '6'
+    num: 6
     config_name: config
     env_set: {}
     env_copy: []
