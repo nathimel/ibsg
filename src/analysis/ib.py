@@ -22,6 +22,8 @@ def ib_encoder_to_measurements(
     dist_mat: np.ndarray,
     util_mat: np.ndarray,
     confusion: np.ndarray,
+    ib_optimal_encoders: np.ndarray,
+    ib_optimal_betas: np.ndarray,
     encoder: np.ndarray,
     decoder: np.ndarray,
 ) -> tuple[float]:
@@ -37,6 +39,8 @@ def ib_encoder_to_measurements(
         util_mat: array of shape `dist_mat.shape` representing the pairwise payoff matrix for each actual and finally reconstructed state. This utility is an exponential function of dist_mat, paramterized by `discriminative_need_gamma` in the game.
 
         confusion: array of shape `(|meanings|, |meanings|)` representing the distribution over world states given meanings.
+
+        ib_optimal_encoders: array of shape `(num_curve_points, |meanings|, |words|)` representing the IB optima that sweep out the curve
 
         encoder: array of shape `(|meanings|, |words|)` representing P(W | M)
 
@@ -97,7 +101,12 @@ def ib_encoder_to_measurements(
     kl_eb = np.sum(pw * kl_vec)
 
     # TODO: find the min gnid distance to the curve
-    min_gnid = ...
+    # Need to load up the entire curve sigh
+    # TODO: I think I should just refactor everything, and measure after simulations instead of during
+    gnids_to_curve = [information.gNID(encoder, opt_enc, prior) for opt_enc in ib_optimal_encoders]
+    min_index = np.argmin(gnids_to_curve)
+    min_gnid = gnids_to_curve[min_index]
+    gnid_beta = ib_optimal_betas[min_index]
 
     return (
         complexity, 
@@ -107,6 +116,7 @@ def ib_encoder_to_measurements(
         eu_gamma,
         kl_eb,
         min_gnid,
+        gnid_beta,
     )
 
 

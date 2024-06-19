@@ -29,6 +29,9 @@ class Dynamics:
             confusion_gamma = np.log10(0.5)
         self.confusion_gamma = confusion_gamma
 
+        self.ib_optimal_encoders = kwargs["ib_optimal_encoders"]
+        self.ib_optimal_betas = kwargs["ib_optimal_betas"]
+
         self.confusion = generate_confusion_matrix(self.game.universe, self.confusion_gamma, self.game.dist_mat)
 
         pt_args = [
@@ -37,6 +40,8 @@ class Dynamics:
             self.game.dist_mat,
             self.game.utility,
             self.confusion,
+            self.ib_optimal_encoders,
+            self.ib_optimal_betas,
         ]
 
         self.get_point = lambda encoder, decoder: ib_encoder_to_measurements(

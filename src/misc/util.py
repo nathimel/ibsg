@@ -138,6 +138,7 @@ points_columns = [
     "eu_gamma",
     "kl_eb",
     "min_gnid",
+    "gnid_beta",
     "sender_delta",
     "receiver_delta",
 ]
@@ -156,7 +157,7 @@ def final_points_df(runs: list) -> pd.DataFrame:
     return points_to_df(
         [
             (
-                *g.points[-1],  # comp, acc, dist, mse, eu_gamma, kl_eb, min_gnid,
+                *g.points[-1],  # comp, acc, dist, mse, eu_gamma, kl_eb, min_gnid, gnid_beta
                 None,  # min_epsilon (efficiency loss)
                 None,  # min_beta
                 i,  # run number
@@ -174,7 +175,7 @@ def trajectories_df(runs: list) -> pd.DataFrame:
         runs: a list of Game objects
 
     Returns:
-        a dataframe with the columns `["complexity", "accuracy", "distortion", "mse", "round", "run"]`, which is the result of concatenating `len(runs)` number of dataframes, each with max_round = `len(run.points)` number of observations; N.B.: this value may vary from one run to the next.
+        a dataframe with the columns `["complexity", "accuracy", "distortion", "mse", "round", "run", ... ]`, which is the result of concatenating `len(runs)` number of dataframes, each with max_round = `len(run.points)` number of observations; N.B.: this value may vary from one run to the next.
 
     """
     # build a df for each and concatenate

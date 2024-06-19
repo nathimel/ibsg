@@ -6,6 +6,7 @@ from omegaconf import DictConfig
 from multiprocessing import Pool, cpu_count
 from simulation.dynamics import dynamics_map, Dynamics
 from game.game import Game
+from misc import util
 
 
 ##############################################################################
@@ -44,10 +45,19 @@ def run_simulations_multiprocessing(
 
 def run_simulation(config: DictConfig) -> Game:
     """Run one run of a simulation and return the resulting game."""
+
+    # Load up the IB optimal encoders and betas
+    betas = np.load(util.get_bound_fn(config, "betas"))
+    optimal_encoders = np.load(
+        util.get_bound_fn(config, "encoders")
+    )  # ordered by beta
+
     dynamics: Dynamics = dynamics_map[config.simulation.dynamics.name]
     dynamics = dynamics(
         Game.from_hydra(config),
         **config.simulation.dynamics,
+        ib_optimal_encoders=optimal_encoders,
+        ib_optimal_betas=betas,
     )
     dynamics.run()
     return dynamics.game
