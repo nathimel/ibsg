@@ -247,7 +247,9 @@ class ReplicatorDynamics(Dynamics):
 
     def __init__(self, game: Game, **kwargs) -> None:
         super().__init__(game, **kwargs)
-        self.init_gamma = 10 ** kwargs["population_init_gamma"]
+        self.init_gamma = None
+        if kwargs["population_init_gamma"] is not None:
+            self.init_gamma = 10 ** kwargs["population_init_gamma"]
 
         self.P = random_stochastic_matrix(
             (self.game.num_states, self.game.num_signals), self.init_gamma

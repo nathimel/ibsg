@@ -9,5 +9,12 @@ def normalize_rows(mat: np.ndarray):
 
 def random_stochastic_matrix(shape: tuple[int], beta: float = 1e-2):
     """Generate a random stochastic matrix using energy-based initialization, where lower `beta` -> more uniform initialization."""
-    energies = beta * np.random.randn(*shape)
-    return softmax(energies, axis=-1)
+    if beta is not None:
+        energies = beta * np.random.randn(*shape)
+        return softmax(energies, axis=-1)
+    return random_uniform_stochastic_matrix(shape)
+
+
+def random_uniform_stochastic_matrix(shape: tuple[int]):
+    """Generate a stochastic matrix by randomly sampling uniformly from [0,1] and renormalizing."""
+    return normalize_rows(np.random.uniform(low=0, high=1, size=shape))
