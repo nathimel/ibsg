@@ -16,6 +16,8 @@ This codebase uses [hydra](https://hydra.cc/) to organize configurations and out
 
 Here is an example command that will execute an experiment, overriding the hydra config defaults.
 
+TODO: update to reflect the corrected parameterization, where gamma is now the raw value instead of exponent, and meaning_dist_gamma is now meaning_dist_variance, and population_init is now temp, but is typically null, and imprecise_imitation_gamma should be alpha, and there should be a warning or error thrown when it does not equal meaning_dist_variance.
+
 ```    
 ./scripts/run.sh -m \
 "game.universe=2ball_300" \
