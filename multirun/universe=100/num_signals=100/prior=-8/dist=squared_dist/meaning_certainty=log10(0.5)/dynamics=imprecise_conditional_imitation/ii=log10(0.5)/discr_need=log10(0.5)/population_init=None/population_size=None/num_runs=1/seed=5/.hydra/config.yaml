@@ -12,14 +12,13 @@ game:
   numbeta: 1500
 simulation:
   dynamics:
-    max_its: 100000.0
+    max_its: 200
     threshold: 0.0001
     population_init_gamma: null
     imprecise_imitation_gamma: log10(0.5)
     population_size: null
     graph: null
     name: imprecise_conditional_imitation
-  use_decoder: true
   num_runs: 1
   plot_all_encoders: true
   trajectory: true
