@@ -8,7 +8,7 @@ import pandas as pd
 from scipy.spatial.distance import cdist
 
 from omegaconf import DictConfig
-from ultk.effcomm.rate_distortion import ib_encoder_to_point
+from ultk.effcomm.rate_distortion import ib_encoder_to_point, ib_optimal_decoder
 
 from analysis import helpers
 from game.game import Game
@@ -40,12 +40,32 @@ def main(config: DictConfig):
     optimal_encoders = np.load(
         util.get_bound_fn(config, "encoders")
     )  # ordered by beta
-    curve_data = pd.read_csv(util.get_bound_fn(config, "ib"))
+    curve_fn = util.get_bound_fn(config, "ib")
+    curve_data = pd.read_csv(curve_fn)
 
     # We will analyze, for each point in each trajectory, its dist to curve
     if config.simulation.trajectory:
         traj_fn = fullpath(fps.trajectory_points_save_fn)
         traj_data = pd.read_csv(traj_fn)
+
+    ##########################################################################
+    # Record expected utility of ib optimal encoders w.r.t the specific game
+    ##########################################################################
+
+    optima_eus = []
+    for encoder in tqdm(optimal_encoders, desc="computing eu of optima"):
+        bayesian_decoder = ib_optimal_decoder(encoder, g.prior, g.meaning_dists)
+        optimal_team = g.meaning_dists @ encoder @ bayesian_decoder @ g.meaning_dists
+        # Expected Utility, relative to discriminative_need
+        eu_gamma = np.sum(g.prior * (optimal_team * g.utility))
+        optima_eus.append(eu_gamma)
+    
+    # Write data to a csv in the leaf dir
+    gamma = config.game.discriminative_need_gamma
+    curve_data[f"eu_gamma={gamma}"] = optima_eus
+    print("overwriting curve data with optima's expected utility for gamma")
+    util.save_points_df(curve_fn, curve_data)
+
 
     ##########################################################################
     # Measure trajectory points' Euclidean distances to curve
@@ -115,8 +135,9 @@ def main(config: DictConfig):
 
         min_eps.append(epsilon_traj)
         min_beta.append(beta_traj)
-    # Now we write this min_eps to the correct rows in our traj_df
-    # breakpoint() # why always negative epsilon?
+
+        if epsilon_traj < 0:
+            raise Exception
 
     ##########################################################################
     # Write data

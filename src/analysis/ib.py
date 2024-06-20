@@ -77,7 +77,8 @@ def ib_encoder_to_measurements(
         else:
             raise Exception
 
-    # NOTE: the analysis doesn't make sense unless confusion probabilities equal meaning distributions.
+    # the analysis doesn't make sense unless confusion probabilities equal meaning distributions.
+    # NOTE: should we use the bayesian decoder for both MSE and EU?
     system = meaning_dists @ encoder @ decoder @ meaning_dists
 
     # rectify ineffability again
