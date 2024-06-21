@@ -126,7 +126,7 @@ def ib_encoder_to_measurements(
 ##############################################################################
 
 
-from .betas import betas # this is hard-codey
+from .betas import dev_betas, default_betas # this is hard-codey
 
 def get_bottleneck(config: DictConfig) -> optimizers.IBResult:
     """Compute the `(complexity, accuracy, comm_cost)` values and optimal encoders corresponding to an Information Bottleneck theoretical bound.
@@ -138,6 +138,7 @@ def get_bottleneck(config: DictConfig) -> optimizers.IBResult:
         a list of `ba.IBResult` namedtuples
     """
     g = Game.from_hydra(config)
+    betas = dev_betas if config.game.dev_betas else default_betas
     results = get_ib_bound(
         g.prior,
         g.meaning_dists,
@@ -161,6 +162,9 @@ def get_rd_curve(config: DictConfig) -> list[tuple[float]]:
 
     """
     g = Game.from_hydra(config)
+
+    betas = dev_betas if config.game.dev_betas else default_betas
+
     results = optimizers.RateDistortionOptimizer(
         g.prior,
         g.dist_mat,

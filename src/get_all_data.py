@@ -70,11 +70,11 @@ def main():
         df["num_signals"] = leaf_cfg.game.num_signals
         df["distance"] = leaf_cfg.game.distance
         df["discriminative_need_gamma"] = leaf_cfg.game.discriminative_need_gamma
-        df["meaning_dist_gamma"] = leaf_cfg.game.meaning_dist_gamma
+        df["meaning_dist_pi"] = leaf_cfg.game.meaning_dist_pi
 
         df["dynamics"] = leaf_cfg.simulation.dynamics.name
-        df["imprecise_imitation_gamma"] = leaf_cfg.simulation.dynamics.imprecise_imitation_gamma
-        df["population_init_gamma"] = leaf_cfg.simulation.dynamics.population_init_gamma
+        df["imprecise_imitation_alpha"] = leaf_cfg.simulation.dynamics.imprecise_imitation_alpha
+        df["population_init_tau"] = leaf_cfg.simulation.dynamics.population_init_tau
         df["seed"] = leaf_cfg.seed
         df["max_its"] = leaf_cfg.simulation.dynamics.max_its
 
@@ -103,7 +103,7 @@ def main():
         df["prior"] = curve_metadata.prior
         df["num_signals"] = curve_metadata.num_signals # this is a bit spurious
         df["distance"] = curve_metadata.distance
-        df["meaning_dist_gamma"] = curve_metadata.meaning_dist_gamma
+        df["meaning_dist_pi"] = curve_metadata.meaning_dist_pi
 
         # note that we aren't checking for seed, because we don't save diff curves based on random seed. maybe we should, but not for now.
 

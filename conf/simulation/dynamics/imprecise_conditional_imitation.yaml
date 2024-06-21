@@ -1,4 +1,6 @@
 name: imprecise_conditional_imitation
 
 # inverse temperature param for confusion matrix controlling imprecision of conditional imitation in replicator dynamics (Franke & Correia, 2018)
-imprecise_imitation_gamma: 0 # overrides default
+
+# the imprecision parameter of noise in Franke and Correia, 2018, which should be identified with the variance of the Gaussian-like perceptually uncertain meaning distributions
+imprecise_imitation_alpha: 1.0 # overrides default

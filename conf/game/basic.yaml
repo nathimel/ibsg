@@ -6,8 +6,8 @@ universe: 10
 # if string, specify the name of a file located at data/universe at the root of this repository.
 
 # Prior / communicative need distribution over states
-prior: -8  
-# if int, represents a temperature parameter (exponentiated by 10) for an energy-based initialization. int or filename.  #(N.B., dirac deltas causes nans)
+prior: 1e-8
+# if float, represents an inverse temperature parameter (exponentiated by 10) for an energy-based initialization.  #(N.B., dirac deltas causes nans)
 # if string, specify the name of a file located at data/prior at the root of this repository.
 
 num_signals: 10
@@ -20,9 +20,11 @@ distance: squared_dist # squared_dist or abs_dist
 
 # NOTE: these parameters constrain each other; if they are not both low, only high complexity+accuracy langs will emerge.
 
-# sim-based distribution, sim(x,y) = exp(-gamma * d(x,y)), and 0 => uniform.
-discriminative_need_gamma: 1.0 # # will be exponentiated by 10, for utility in the games
-meaning_dist_gamma: 0 # will be exponentiated by 10, for perceptually uncertain meaning dists = imprecise imitation in replicator dynamics (Franke and Correia, 2018).
+# sim-based distribution, sim(x,y) = exp(-gamma * d(x,y)), and => uniform.
+discriminative_need_gamma: 0.5 # for utility in the games, see below
+
+meaning_dist_pi: 0.5 # the multiplier on the Gaussian-likee perceptually uncertain meaning distributions, which should be identified with the imprecision parameter of noise in Franke and Correia, 2018.:
+# p(y|x) \propto \exp(-pi * d(x,y))
 
 num_processes: 6 # the number of CPU cores to use when parallelizing simulation runs
 
@@ -30,7 +32,5 @@ num_processes: 6 # the number of CPU cores to use when parallelizing simulation 
 # IB Curve params
 overwrite_curves: False # whether to skip curve estimation
 # log-spaced beta for IB curve sweep
-# N.B.: the below params are currently ignored (see analysis.ib.betas) in favor of a hard-coded list of values that sufficiently sweep out a curve with few gaps.
-maxbeta: 5  # will not be exponentiated
-minbeta: -2 # will be exponentiated, i.e. 10 ** minbeta
-numbeta: 1500
+# N.B.: By default, the below params are currently ignored (see analysis.ib.betas) in favor of a hard-coded list of values that sufficiently sweep out a curve with few gaps.
+dev_betas: False

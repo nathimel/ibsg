@@ -1,18 +1,18 @@
 defaults: 
   - _self_ # the current (e.g., 'dynamics') configs will be overriden by the rest of the list below
-  - dynamics: replicator_diffusion
+  - dynamics: imprecise_conditional_imitation
 
 # some default dynamics parameters to be shared or null
 dynamics:
-  max_its: 200
+  max_its: 20
   threshold: 1e-5
   # for creating Sender, Receivers in seed 'population'
 
-  # lower values -> more uniform initialization
-  population_init_gamma: -8 # will be exponentiated by 10
+  # Inverse temperature param. But we decided that the most principled initialization is random sampling from Unif(0,1), so the default value is null.
+  population_init_tau: null # lower values -> more uniform initialization
 
   # specific to only some dynamics, but we nontheless need them here in order to perform hydra's string interpolation for recursive path creation.
-  imprecise_imitation_gamma: 0 # will be exponentiated by 10, replicator dynamics, possibly finite pop
+  imprecise_imitation_alpha: 1.0
   population_size: null # finite population dynamics
   graph: null # same  
 
@@ -42,10 +42,6 @@ num_processes: null # null defaults to cpu_count
 # for approximating encoders via finite sampling
 approximate_encoders: False
 num_approximation_samples: 20
-
-# inspect one gnid result
-# inspect_gnid: True
-# inspect_gnid_encoder: 1 # 1-indexing, must be <= num_runs
 
 # inspect one eps result
 inspect_eps: True

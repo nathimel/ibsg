@@ -1,3 +1,5 @@
+# NOTE: this script is outdated. All the important analysis happens in notebooks now.
+
 """Collect all explored points, including those from simulation and the IB curve and get simple plot."""
 
 import os

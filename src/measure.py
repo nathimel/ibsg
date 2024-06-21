@@ -1,4 +1,4 @@
-"""Measure the efficiency of emergent systems w.r.t. the optimal IB encoders via gNID."""
+"""Measure the efficiency of emergent systems w.r.t. the optimal IB encoders."""
 
 import hydra
 import os
@@ -59,13 +59,6 @@ def main(config: DictConfig):
         # Expected Utility, relative to discriminative_need
         eu_gamma = np.sum(g.prior * (optimal_team * g.utility))
         optima_eus.append(eu_gamma)
-    
-    # Write data to a csv in the leaf dir
-    gamma = config.game.discriminative_need_gamma
-    curve_data[f"eu_gamma={gamma}"] = optima_eus
-    print("overwriting curve data with optima's expected utility for gamma")
-    util.save_points_df(curve_fn, curve_data)
-
 
     ##########################################################################
     # Measure trajectory points' Euclidean distances to curve
@@ -76,7 +69,7 @@ def main(config: DictConfig):
     curve_points = curve_data[["complexity", "accuracy"]].values
     distances = cdist(traj_points, curve_points) # shape `(traj_pts, curve_pts)`
     # For each traj_point, get the minimum dist to any curve_point
-    min_distances = np.min(distances, axis=1)        
+    min_distances = np.min(distances, axis=1)
 
     ##########################################################################
     # Measure efficiency of emergent encoders
@@ -108,7 +101,8 @@ def main(config: DictConfig):
         fitted_encoders.append(fitted_opt)
 
         if epsilon_em < 0:
-            raise Exception
+            breakpoint()
+            raise Exception(f"A final encoder has negative efficiency loss: epsilon={epsilon_em}.")
 
 
     # Save the fitted optimal encoder to each emergent encoder
@@ -137,11 +131,17 @@ def main(config: DictConfig):
         min_beta.append(beta_traj)
 
         if epsilon_traj < 0:
-            raise Exception
+            raise Exception(f"A trajectory encoder has negative efficiency loss: epsilon={epsilon_traj}.")
 
     ##########################################################################
     # Write data
     ##########################################################################
+
+    # Overwrite curve data with EU measurements
+    gamma = config.game.discriminative_need_gamma
+    curve_data[f"eu_gamma={gamma}"] = optima_eus
+    print("overwriting curve data with optima's expected utility for gamma")
+    util.save_points_df(curve_fn, curve_data)
 
     # Overwrite simulation data
     sim_data["min_beta"] = fitted_betas

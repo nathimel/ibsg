@@ -31,13 +31,13 @@ def referent_to_ndarray(referent: Referent):
 
 def generate_confusion_matrix(
     universe: Universe,
-    gamma: float, 
+    alpha: float, 
     dist_mat: np.ndarray,
 ) -> np.ndarray:
-    """Given a universe, confusion gamma (NOTE: will be exponentiated by 10), and distance matrix, generate a conditional probability distribution over points in the universe given points in the universe."""
+    """Given a universe, confusion alpha, and distance matrix, generate a conditional probability distribution over points in the universe given points in the universe."""
     return normalize_rows(
             generate_sim_matrix(
-                universe, 10 ** gamma, dist_mat
+                universe, alpha, dist_mat
             )
         )
 

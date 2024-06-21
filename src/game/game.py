@@ -1,4 +1,5 @@
 import os
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -22,8 +23,8 @@ class Game:
         num_signals: int,
         prior: np.ndarray,
         distance: str,
+        meaning_dist_pi: float,        
         discr_need_gamma: float,
-        meaning_dist_gamma: float,
         **kwargs,
     ) -> None:
         """Construct an evolutionary game.
@@ -37,9 +38,9 @@ class Game:
 
             distance: the kind of distance measure to use as input to the similarity-based utility and meaning distributions.
 
-            discr_need_gamma: a float controlling the uniform-ness of the payoff / utility / fitness function, representing discriminative need. Higher discr -> all or nothing reward.
+            meaning_dist_pi: a float controlling the uniform-ness of the meaning distributions P(U|M), which represent perceptual uncertainty. higher pi -> full certainty.            
 
-            meaning_dist_gamm: a float controlling the uniform-ness of the meaning distributions P(U|M), which represent perceptual uncertainty. higher temp -> full certainty.
+            discr_need_gamma: a float controlling the uniform-ness of the payoff / utility / fitness function, representing discriminative need. Higher discr -> all or nothing reward.
         """
         # specify distance matrix
         dist_mat = generate_dist_matrix(universe, distance)
@@ -48,9 +49,9 @@ class Game:
         utility = generate_sim_matrix(universe, discr_need_gamma, dist_mat)
 
         # construct perceptually uncertain meaning distributions
-        # TODO: maybe create an ib_model object?
+        # TODO: maybe create a separate ib_model object?
         meaning_dists = normalize_rows(
-            generate_sim_matrix(universe, meaning_dist_gamma, dist_mat)
+            generate_sim_matrix(universe, meaning_dist_pi, dist_mat)
         )
 
         # Constant
@@ -73,9 +74,12 @@ class Game:
     def from_hydra(cls, config, *args, **kwargs):
         """Automatically construct a sim-max game from a hydra config."""
 
-        # default to local number of cpus for multiprocessing of simulations
-        if config.game.num_processes is None:
-            config.game.num_processes = cpu_count()
+        # Warn the user against inappropriate comparisons
+        if config.game.meaning_dist_pi != config.simulation.dynamics.imprecise_imitation_alpha:
+            warnings.warn(
+                "The values of {config.game.meaning_dist_width, config.simulation.dynamics.imprecise_imitation_alpha} should be equal. It is unlikely that you want to run analyses where they vary."
+            )
+
 
         # Load prior and universe
         universe = None
@@ -102,7 +106,7 @@ class Game:
         else:
             prior_df = referents_df.copy()[["name"]]
             prior_df["probability"] = random_stochastic_matrix(
-                (len(referents_df),), beta=10**config.game.prior
+                (len(referents_df),), beta=config.game.prior
             ).tolist()
 
         universe = build_universe(referents_df, prior_df)
@@ -110,36 +114,14 @@ class Game:
         if not np.isclose(prior.sum(), np.array([1.0])):
             raise Exception(f"Prior does not sum to 1.0. (sum={prior.sum()})")
 
-        # Add precision if necessary to prevent embo errors during curve estimation of Dirac delta distribution
-        if np.array_equal(prior, prior.astype(bool).astype(float)):
-            prior = np.where(prior > 0, prior, 1e-16)
-
-
-        meaning_dist_gamma = None
-        discriminative_need_gamma = None
-
-        # Preprocess meaning dist gamma and discriminative need if necessary
-        if config.game.meaning_dist_gamma == "log10(0.5)":
-            meaning_dist_gamma = 0.5
-        else:
-            meaning_dist_gamma = 10 ** config.game.meaning_dist_gamma
-
-        if config.game.discriminative_need_gamma == "log10(0.5)":
-            discriminative_need_gamma = 0.5
-        else:
-            discriminative_need_gamma = 10 ** config.game.discriminative_need_gamma
-
         game = cls(
             universe,
             config.game.num_signals,
             prior,
             config.game.distance,
-            discriminative_need_gamma,  # input to softmax
-            meaning_dist_gamma,  # input to softmax
-            maxbeta=config.game.maxbeta,  # we want about 1.0 - 2.0
-            minbeta=10**config.game.minbeta,
-            numbeta=config.game.numbeta,
-            # num_processes=config.game.num_processes, # this shouldn't be here anyway
+            config.game.meaning_dist_pi,  # input to softmax
+            config.game.discriminative_need_gamma,  # input to softmax
+            dev_betas=config.game.dev_betas,
         )
 
         return game

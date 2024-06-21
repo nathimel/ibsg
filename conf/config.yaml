@@ -28,11 +28,10 @@ hydra:
           - game.num_states
           - game.num_signals
           - simulation.dynamics.population_size
-          - simulation.dynamics.imprecise_imitation_gamma
-          - simulation.dynamics.population_init_gamma
-          - game.prior_init_alpha
+          - simulation.dynamics.imprecise_imitation_alpha
+          - simulation.dynamics.population_init_tau
           - game.distance
-          - game.meaning_dist_gamma
+          - game.meaning_dist_pi
           - game.discriminative_need_gamma
           - simulation.dynamics.name
           - simulation.num_runs

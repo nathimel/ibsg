@@ -1,5 +1,6 @@
 import numpy as np
 
+dev_betas = np.logspace(-5, 3, 30)
 
 # We hard code the list of betas because through trial and error this set of values best sweeps out the meaning_certainty=0 curve.
 meaning_dist_0_betas = np.concatenate(
@@ -37,6 +38,6 @@ meaning_dist_gaussian = np.concatenate([
 
 
 
-betas = meaning_dist_gaussian
+default_betas = meaning_dist_gaussian
 # unique
-betas = list(sorted(set(betas.tolist())))
+default_betas = list(sorted(set(default_betas.tolist())))

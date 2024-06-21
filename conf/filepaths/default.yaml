@@ -67,10 +67,10 @@ encoder_line_movie_fn: lines.mp4
 ############################################################################
 
 # holds curve points
-curve_subdir: universe=${game.universe}/num_signals=${game.num_signals}/prior=${game.prior}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_gamma}
+curve_subdir: universe=${game.universe}/num_signals=${game.num_signals}/prior=${game.prior}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_pi}
 
 # for plots etc. that summarize simulation sweeps
-simulation_subdir:  ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/ii=${simulation.dynamics.imprecise_imitation_gamma}/discr_need=${game.discriminative_need_gamma}/population_init=${simulation.dynamics.population_init_gamma}/population_size=${simulation.dynamics.population_size}/num_runs=${simulation.num_runs}/seed=${seed} # note that population size is null in RD
+simulation_subdir:  ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/ii=${simulation.dynamics.imprecise_imitation_alpha}/discr_need=${game.discriminative_need_gamma}/population_init=${simulation.dynamics.population_init_tau}/population_size=${simulation.dynamics.population_size}/max_its=${simulation.dynamics.max_its}/num_runs=${simulation.num_runs}/seed=${seed} # note that population size is null in RD, and deterministic dynamics mean num_runs is pointless
 
 # where the points corresponding to a single simulation will be saved
 # simulation_subdir: ${filepaths.sim_sweep_subdir}

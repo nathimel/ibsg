@@ -24,16 +24,14 @@ class Dynamics:
 
         self.max_its = kwargs["max_its"]
         self.threshold = kwargs["threshold"]
-        confusion_gamma = kwargs["imprecise_imitation_gamma"]
-        if confusion_gamma == "log10(0.5)":
-            confusion_gamma = np.log10(0.5)
-        self.confusion_gamma = confusion_gamma
+        self.confusion_alpha = kwargs["imprecise_imitation_alpha"]
 
         self.ib_optimal_encoders = kwargs["ib_optimal_encoders"]
         self.ib_optimal_betas = kwargs["ib_optimal_betas"]
 
-        self.confusion = generate_confusion_matrix(self.game.universe, self.confusion_gamma, self.game.dist_mat)
+        self.confusion = generate_confusion_matrix(self.game.universe, self.confusion_alpha, self.game.dist_mat)
 
+        # TODO: move all measurement to measure.py, and only do model checkpointing.
         pt_args = [
             self.game.meaning_dists,
             self.game.prior,
@@ -60,30 +58,19 @@ class Dynamics:
 
 class FinitePopulationDynamics(Dynamics):
     def __init__(self, game: Game, **kwargs) -> None:
-        """
-        Args:
-            max_its: int maximum number of steps to run evolution
-
-            threshold: a float controlling convergence of evolution
-
-            init_gamma: a float controlling the sharpness of the seed population (composed of a Sender P and Receiver Q) agents' distributions
-        """
         super().__init__(game, **kwargs)
         self.n = kwargs["population_size"]
 
-        population_init_gamma = kwargs["population_init_gamma"]
-        if population_init_gamma == "log10(0.5)":
-            population_init_gamma = np.log10(0.5)
-        self.population_init_gamma = population_init_gamma
+        self.population_init_tau = kwargs["population_init_tau"]
 
         # create a population of n many (P,Q) agents
         self.Ps = random_stochastic_matrix(
             (self.n, self.game.num_states, self.game.num_signals),
-            self.population_init_gamma,
+            self.population_init_tau,
         )
         self.Qs = random_stochastic_matrix(
             (self.n, self.game.num_signals, self.game.num_states),
-            self.population_init_gamma,
+            self.population_init_tau,
         )
 
         # define the adjacency matrix for the environment of interacting agents
@@ -247,15 +234,15 @@ class ReplicatorDynamics(Dynamics):
 
     def __init__(self, game: Game, **kwargs) -> None:
         super().__init__(game, **kwargs)
-        self.init_gamma = None
-        if kwargs["population_init_gamma"] is not None:
-            self.init_gamma = 10 ** kwargs["population_init_gamma"]
+        self.init_tau = None
+        if kwargs["population_init_tau"] is not None:
+            self.init_tau = kwargs["population_init_tau"]
 
         self.P = random_stochastic_matrix(
-            (self.game.num_states, self.game.num_signals), self.init_gamma
+            (self.game.num_states, self.game.num_signals), self.init_tau
         )  # Sender 'population frequencies'
         self.Q = random_stochastic_matrix(
-            (self.game.num_signals, self.game.num_states), self.init_gamma
+            (self.game.num_signals, self.game.num_states), self.init_tau
         )  # Receiver 'population frequencies'
 
         # Record first 100 and logspaced values to max_its

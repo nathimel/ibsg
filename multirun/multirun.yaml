@@ -123,24 +123,21 @@ hydra:
     hydra:
     - hydra.mode=MULTIRUN
     task:
-    - game.meaning_dist_gamma='log10(0.5)'
+    - game.meaning_dist_pi=0.5
     - simulation/dynamics=imprecise_conditional_imitation
-    - simulation.dynamics.imprecise_imitation_gamma='log10(0.5)'
-    - game.discriminative_need_gamma='log10(0.5)'
+    - simulation.dynamics.imprecise_imitation_alpha=0.5
+    - game.discriminative_need_gamma=5e-3,5e-2,5e-1,5e0,5e1,5e2
     - game.universe=100
     - game.num_signals=100
-    - simulation.dynamics.population_init_gamma=null
-    - seed=range(7)
-    - plotting.generate_movie_plots=True
-    - plotting.generate_movies=True
-    - simulation.dynamics.max_its=200
+    - simulation.dynamics.population_init_tau=null
+    - seed=range(8)
+    - simulation.dynamics.max_its=20
     - simulation.dynamics.threshold=1e-4
-    - game.overwrite_curves=True
     - simulation.multiprocessing=False
   job:
     name: measure
     chdir: true
-    override_dirname: game.overwrite_curves=True,game.universe=100,plotting.generate_movie_plots=True,plotting.generate_movies=True,simulation.dynamics.max_its=200,simulation.dynamics.threshold=1e-4,simulation.multiprocessing=False,simulation/dynamics=imprecise_conditional_imitation
+    override_dirname: game.universe=100,simulation.dynamics.max_its=20,simulation.dynamics.threshold=1e-4,simulation.multiprocessing=False,simulation/dynamics=imprecise_conditional_imitation
     id: ???
     num: ???
     config_name: config
@@ -155,11 +152,10 @@ hydra:
         - game.num_states
         - game.num_signals
         - simulation.dynamics.population_size
-        - simulation.dynamics.imprecise_imitation_gamma
-        - simulation.dynamics.population_init_gamma
-        - game.prior_init_alpha
+        - simulation.dynamics.imprecise_imitation_alpha
+        - simulation.dynamics.population_init_tau
         - game.distance
-        - game.meaning_dist_gamma
+        - game.meaning_dist_pi
         - game.discriminative_need_gamma
         - simulation.dynamics.name
         - simulation.num_runs
@@ -197,22 +193,20 @@ hydra:
   verbose: false
 game:
   universe: 100
-  prior: -8
+  prior: 1.0e-08
   num_signals: 100
   distance: squared_dist
-  discriminative_need_gamma: log10(0.5)
-  meaning_dist_gamma: log10(0.5)
+  discriminative_need_gamma: 0.5
+  meaning_dist_pi: 0.5
   num_processes: 6
-  overwrite_curves: true
-  maxbeta: 5
-  minbeta: -2
-  numbeta: 1500
+  overwrite_curves: false
+  dev_betas: false
 simulation:
   dynamics:
-    max_its: 200
+    max_its: 20
     threshold: 0.0001
-    population_init_gamma: null
-    imprecise_imitation_gamma: log10(0.5)
+    population_init_tau: null
+    imprecise_imitation_alpha: 0.5
     population_size: null
     graph: null
     name: imprecise_conditional_imitation
@@ -265,12 +259,12 @@ filepaths:
   trajectory_movies_dir: movies
   encoder_tile_movie_fn: tiles.mp4
   encoder_line_movie_fn: lines.mp4
-  curve_subdir: universe=${game.universe}/num_signals=${game.num_signals}/prior=${game.prior}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_gamma}
-  simulation_subdir: ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/ii=${simulation.dynamics.imprecise_imitation_gamma}/discr_need=${game.discriminative_need_gamma}/population_init=${simulation.dynamics.population_init_gamma}/population_size=${simulation.dynamics.population_size}/num_runs=${simulation.num_runs}/seed=${seed}
+  curve_subdir: universe=${game.universe}/num_signals=${game.num_signals}/prior=${game.prior}/dist=${game.distance}/meaning_certainty=${game.meaning_dist_pi}
+  simulation_subdir: ${filepaths.curve_subdir}/dynamics=${simulation.dynamics.name}/ii=${simulation.dynamics.imprecise_imitation_alpha}/discr_need=${game.discriminative_need_gamma}/population_init=${simulation.dynamics.population_init_tau}/population_size=${simulation.dynamics.population_size}/max_its=${simulation.dynamics.max_its}/num_runs=${simulation.num_runs}/seed=${seed}
   leaf_subdir: ${filepaths.simulation_subdir}
   hydra_run_root: outputs
   hydra_sweep_root: multirun
 plotting:
-  generate_movie_plots: true
-  generate_movies: true
+  generate_movie_plots: false
+  generate_movies: false
 seed: 42
