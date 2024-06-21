@@ -83,22 +83,28 @@ def save_final_encoders(fn: str, runs: list) -> None:
     print(f"Saved {len(runs)} encoders to {os.path.join(os.getcwd(), fn)}")
 
 
-def save_all_encoders(fn: str, runs: list) -> None:
-    """Save the encoders from all rounds of each game to a file (npz compressed).
+def save_all_agents(encoders_fn: str, decoders_fn: str, runs: list) -> None:
+    """Save the agents (encoders, decoders) from all rounds of each game to a file (npz compressed).
 
     Args:
-        fn: the file to save the encoders to
+        encoders_fn: the file to save the encoders to
+
+        decoders_fn: the file to save the decoders to
 
         runs: a list of Game objects
     """
     # N.B.: the below may be ragged!
     # We should either use a fill value, which is inefficient,
     # or save differently.
-    kwargs = {f"run_{run_i}": np.stack(g.ib_encoders) for run_i, g in enumerate(runs)}
-    np.savez_compressed(fn, **kwargs)
-    print(
-        f"Saved all encoders across rounds and runs to {os.path.join(os.getcwd(), fn)}"
-    )
+    for (fn, attr) in zip(
+        [encoders_fn, decoders_fn], 
+        ["ib_encoders", "ib_decoders"],
+    ):
+        kwargs = {f"run_{run_i}": np.stack(getattr(g, attr)) for run_i, g in enumerate(runs)}
+        np.savez_compressed(fn, **kwargs)
+        print(
+            f"Saved all {attr} across rounds and runs to {os.path.join(os.getcwd(), fn)}"
+        )
 
     kwargs_sr = {
         f"run_{run_i}": np.stack(g.steps_recorded) for run_i, g in enumerate(runs)
@@ -133,82 +139,6 @@ def save_ndarray(fn: str, arr: np.ndarray) -> None:
 def load_encoders_as_df(fn: str) -> pd.DataFrame:
     """Load encoders saved in a .pt file, and convert from torch.tensor to pd.DataFrame."""
     return encoders_to_df(np.load(fn))
-
-
-points_columns = [
-    "complexity",
-    "accuracy",
-    "distortion",
-    "mse",
-    "eu_gamma",
-    "kl_eb",
-    "min_gnid",
-    "gnid_beta",
-    "sender_delta",
-    "receiver_delta",
-]
-efficiency_columns = [
-    "min_epsilon",
-    "min_beta",
-]
-
-
-def final_points_df(runs: list) -> pd.DataFrame:
-    """Collect the (complexity, accuracy, ...) points for the final round of every game across runs and store in one dataframe.
-
-    Args:
-        runs: a list of Game objects
-    """
-    return points_to_df(
-        [
-            (
-                *g.points[
-                    -1
-                ],  # comp, acc, dist, mse, eu_gamma, kl_eb, min_gnid, gnid_beta
-                None,  # min_epsilon (efficiency loss)
-                None,  # min_beta
-                i,  # run number
-            )
-            for i, g in enumerate(runs)
-        ],
-        columns=points_columns + efficiency_columns + ["run"],
-    )
-
-
-def trajectories_df(runs: list) -> pd.DataFrame:
-    """Collect the (complexity, accuracy, distortion, mse) trajectories of every game across runs and store in one dataframe.
-
-    Args:
-        runs: a list of Game objects
-
-    Returns:
-        a dataframe with the columns `["complexity", "accuracy", "distortion", "mse", "round", "run", ... ]`, which is the result of concatenating `len(runs)` number of dataframes, each with max_round = `len(run.points)` number of observations; N.B.: this value may vary from one run to the next.
-
-    """
-    # build a df for each and concatenate
-    return pd.concat(
-        [
-            pd.DataFrame(
-                # label runs
-                data=np.hstack(
-                    (
-                        # label rounds
-                        np.hstack(
-                            (
-                                np.array(
-                                    run.points
-                                ),  # (num_rounds, len(points_columns))
-                                np.array(run.steps_recorded)[:, None],
-                            )
-                        ),
-                        np.ones(len(run.points))[:, None] * run_num + 1,
-                    ),
-                ),
-                columns=points_columns + ["round", "run"],
-            )
-            for run_num, run in enumerate(runs)
-        ]
-    )
 
 
 encoder_columns = [

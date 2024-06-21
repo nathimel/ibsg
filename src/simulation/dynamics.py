@@ -33,23 +33,6 @@ class Dynamics:
             self.game.universe, self.confusion_alpha, self.game.dist_mat
         )
 
-        # TODO: move all measurement to measure.py, and only do model checkpointing.
-        pt_args = [
-            self.game.meaning_dists,
-            self.game.prior,
-            self.game.dist_mat,
-            self.game.utility,
-            self.confusion,
-            self.ib_optimal_encoders,
-            self.ib_optimal_betas,
-        ]
-
-        self.get_point = lambda encoder, decoder: ib_encoder_to_measurements(
-            *pt_args,
-            encoder=encoder,
-            decoder=decoder,
-        )
-
     def run(self):
         raise NotImplementedError
 
@@ -275,10 +258,6 @@ class ReplicatorDynamics(Dynamics):
             P_prev = copy.deepcopy(self.P)
             Q_prev = copy.deepcopy(self.Q)
 
-            point = self.get_point(P_prev, Q_prev)
-
-            # self.game.points.append(self.get_point(P_prev, Q_prev))
-
             self.evolution_step()  # N.B.: fitness requires population update
 
             # Check for convergence
@@ -288,11 +267,6 @@ class ReplicatorDynamics(Dynamics):
             ) or (its == self.max_its):
                 converged = True
 
-            # start recording the convergence info
-            P_delta = np.abs(self.P - P_prev).sum()
-            Q_delta = np.abs(self.Q - Q_prev).sum()
-            point = point + (P_delta, Q_delta)
-
             # We record the first 200 steps and then 100 evenly spaced steps between the current and 20k
             # if (its < 200) or (its % 2000 == 0) or converged:
             # logspaced
@@ -301,10 +275,10 @@ class ReplicatorDynamics(Dynamics):
                 self.game.ib_encoders.append(
                     rows_zero_to_uniform(normalize_rows(P_prev))
                 )
-                self.game.points.append(point)
+                self.game.ib_decoders.append(
+                    rows_zero_to_uniform(normalize_rows(Q_prev))
+                )
                 self.game.steps_recorded.append(its)
-
-                # won't this lose info about the iteration number? How to work around this without causing index errors?
 
         progress_bar.close()
 

@@ -48,18 +48,18 @@ def main():
         leaf_cfg = omegaconf.OmegaConf.load(parent / leaf_hydra_cfg_fn)
 
         # Check if simulations have been run
-        sim_fn = parent / cfg.filepaths.simulation_points_save_fn
-        if not sim_fn.exists():
+        sim_traj_fn = parent / cfg.filepaths.trajectory_points_save_fn
+        if not sim_traj_fn.exists():
             continue
 
         # Create dataframes
-        df_sim = pd.read_csv(sim_fn)
-        df_sim["point_type"] = "simulation"
-
-        df_traj = pd.read_csv(
-            parent / cfg.filepaths.trajectory_points_save_fn
-        )  # may need to check if exists
+        df_traj = pd.read_csv(sim_traj_fn)
         df_traj["point_type"] = "trajectory"
+
+        # Until this gets fixed in measure
+        # df_sim = df_traj[df_traj["is_final_iteration"] == True].copy()
+        df_sim = df_traj.iloc[[-1]].copy()
+        df_sim["point_type"] = "simulation"
 
         df_nearopt = pd.read_csv(
             parent / cfg.filepaths.nearest_optimal_points_save_fn

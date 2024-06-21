@@ -28,6 +28,7 @@ curve_metadata_save_fn: curve_config.yaml # will be a copy of the first hydra co
 simulation_points_save_fn: simulation_points.csv # final point
 trajectory_points_save_fn: trajectory_points.csv # all points
 trajectory_encoders_save_fn: trajectory_encoders.npz # encoder, per step per run
+trajectory_decoders_save_fn: trajectory_decoders.npz # decoder, per step per run
 steps_recorded_save_fn: steps_recorded.npz
 variant_points_save_fn: variant_points.csv
 final_encoders_save_fn: final_encoders.npy # final encoders

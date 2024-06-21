@@ -131,13 +131,13 @@ hydra:
     - game.num_signals=100
     - simulation.dynamics.population_init_tau=null
     - seed=range(8)
-    - simulation.dynamics.max_its=20
+    - simulation.dynamics.max_its=1e4
     - simulation.dynamics.threshold=1e-4
     - simulation.multiprocessing=False
   job:
     name: measure
     chdir: true
-    override_dirname: game.universe=100,simulation.dynamics.max_its=20,simulation.dynamics.threshold=1e-4,simulation.multiprocessing=False,simulation/dynamics=imprecise_conditional_imitation
+    override_dirname: game.universe=100,simulation.dynamics.max_its=1e4,simulation.dynamics.threshold=1e-4,simulation.multiprocessing=False,simulation/dynamics=imprecise_conditional_imitation
     id: ???
     num: ???
     config_name: config
@@ -203,7 +203,7 @@ game:
   dev_betas: false
 simulation:
   dynamics:
-    max_its: 20
+    max_its: 10000.0
     threshold: 0.0001
     population_init_tau: null
     imprecise_imitation_alpha: 0.5
@@ -233,6 +233,7 @@ filepaths:
   simulation_points_save_fn: simulation_points.csv
   trajectory_points_save_fn: trajectory_points.csv
   trajectory_encoders_save_fn: trajectory_encoders.npz
+  trajectory_decoders_save_fn: trajectory_decoders.npz
   steps_recorded_save_fn: steps_recorded.npz
   variant_points_save_fn: variant_points.csv
   final_encoders_save_fn: final_encoders.npy
