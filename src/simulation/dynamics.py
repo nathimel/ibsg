@@ -29,7 +29,9 @@ class Dynamics:
         self.ib_optimal_encoders = kwargs["ib_optimal_encoders"]
         self.ib_optimal_betas = kwargs["ib_optimal_betas"]
 
-        self.confusion = generate_confusion_matrix(self.game.universe, self.confusion_alpha, self.game.dist_mat)
+        self.confusion = generate_confusion_matrix(
+            self.game.universe, self.confusion_alpha, self.game.dist_mat
+        )
 
         # TODO: move all measurement to measure.py, and only do model checkpointing.
         pt_args = [
@@ -178,10 +180,12 @@ class FinitePopulationDynamics(Dynamics):
 
 def mutate(parent_behavior: np.ndarray, num_samples: int):
     eye = np.eye(parent_behavior.shape[-1])
-    sample_indices = np.stack([
-        np.random.choice(len(sub_p), size=num_samples, replace=True, p=sub_p)
-        for sub_p in parent_behavior
-    ])
+    sample_indices = np.stack(
+        [
+            np.random.choice(len(sub_p), size=num_samples, replace=True, p=sub_p)
+            for sub_p in parent_behavior
+        ]
+    )
     samples = eye[sample_indices]
     return samples.mean(axis=-2)
 
@@ -215,8 +219,8 @@ class MoranProcess(FinitePopulationDynamics):
         fitnesses = self.measure_fitness()
 
         # i = np.random.choice(fitnesses, 1)
-        i = np.random.choice(np.ones(self.n), 1, p=fitnesses) # birth
-        j = np.random.choice(np.ones(self.n), 1) # death
+        i = np.random.choice(np.ones(self.n), 1, p=fitnesses)  # birth
+        j = np.random.choice(np.ones(self.n), 1)  # death
 
         # replace the random deceased with fitness-sampled offspring
         self.Ps[j] = self.Ps[i]
@@ -246,7 +250,19 @@ class ReplicatorDynamics(Dynamics):
         )  # Receiver 'population frequencies'
 
         # Record first 100 and logspaced values to max_its
-        self.steps_to_record = list(range(100)) + [int(x) for x in np.logspace(start=np.log10(100), stop=np.log10(self.max_its), num=99, endpoint=False)] + [self.max_its-1]
+        self.steps_to_record = (
+            list(range(100))
+            + [
+                int(x)
+                for x in np.logspace(
+                    start=np.log10(100),
+                    stop=np.log10(self.max_its),
+                    num=99,
+                    endpoint=False,
+                )
+            ]
+            + [self.max_its - 1]
+        )
 
     def run(self):
         its = 0
@@ -282,7 +298,9 @@ class ReplicatorDynamics(Dynamics):
             # logspaced
             if its in self.steps_to_record or converged:
                 # Record data from before evolution step + convergence check
-                self.game.ib_encoders.append(rows_zero_to_uniform(normalize_rows(P_prev)))
+                self.game.ib_encoders.append(
+                    rows_zero_to_uniform(normalize_rows(P_prev))
+                )
                 self.game.points.append(point)
                 self.game.steps_recorded.append(its)
 
@@ -339,8 +357,8 @@ class ReplicatorDiffusionDynamics(ReplicatorDynamics):
         P = C @ P
         P = normalize_rows(P)
 
-        # The RDD is formulated in Correia (2013) such that the Receiver update is weighted by the _joint_ distribution Sender(word, state). 
-        Q *= p * (U @ P).T        
+        # The RDD is formulated in Correia (2013) such that the Receiver update is weighted by the _joint_ distribution Sender(word, state).
+        Q *= p * (U @ P).T
 
         # In Franke and Correia, the plain RD (without diffusion/noise) is such that Receiver update is weighted by Sender(state|word), via Bayes rule.
         # Q *= (U @ bayes(P, p))
@@ -374,56 +392,80 @@ class ImpreciseConditionalImitation(ReplicatorDynamics):
         # --------- Simulate communicative interaction to be imitated ---------
 
         # probability that an agent observes state s_o given actual s_a
-        observation_noise = confusion # `[states, states]`
-        interpretation_noise = confusion # `[states, states]`
+        observation_noise = confusion  # `[states, states]`
+        interpretation_noise = confusion  # `[states, states]`
 
         # probability that a random sender sends signal w in actual s_a
-        sigma = observation_noise @ sender # `[states, signals]`
+        sigma = observation_noise @ sender  # `[states, signals]`
 
         # probability that s_r is realized by a random receiver in response to signal w
-        rho = receiver @ interpretation_noise # `[signals, states]`
+        rho = receiver @ interpretation_noise  # `[signals, states]`
 
         # --------- Simulate observation/imitation by agents ---------
 
         # probability that actual state is s_a if random sender produced w
-        sigma_inverse = bayes(sigma, prior) # `[signals, states]`
+        sigma_inverse = bayes(sigma, prior)  # `[signals, states]`
 
         # probability that s_a is actual if s_o is observed by an agent
-        obs_inverse = bayes(confusion, prior) # `[states, states]`
+        obs_inverse = bayes(confusion, prior)  # `[states, states]`
 
         # probability that a random 'learner' observes s_o and observes a random 'teacher' send signal w
         # marginalize s_a over shape `[s_o, s_a, w]` to get `[s_o, w]`
         sender_imitation = np.sum(
-            obs_inverse[:, :, None] * sigma[None, :, :,],
+            obs_inverse[:, :, None]
+            * sigma[
+                None,
+                :,
+                :,
+            ],
             axis=1,
-        ) # `[states, signals]`
+        )  # `[states, signals]`
 
         # probability that a random learner will observe a random teacher choose interpretation s_o given signal w
         # marginalize s_r over shape `[w, s_r, s_o]` to get `[w, s_o]`
         receiver_imitation = np.sum(
-            interpretation_noise[None, :, :,] * rho[:, :, None],
+            interpretation_noise[
+                None,
+                :,
+                :,
+            ]
+            * rho[:, :, None],
             axis=1,
         )
 
-        # --------- Expected utilities ---------    
+        # --------- Expected utilities ---------
 
         # EU for sender: function of w, s_o, and current receiver
 
         # first marginalize s_r over `[s_a, w, s_r]`
         prob_w_given_s_a = np.sum(
             # `[1, w, s_r]` * `[s_a, 1, s_r]`
-            rho[None, :, :,] * utility[:, None, :,],
+            rho[
+                None,
+                :,
+                :,
+            ]
+            * utility[
+                :,
+                None,
+                :,
+            ],
             axis=-1,
-        ) # to get shape `[s_a, w]`
+        )  # to get shape `[s_a, w]`
 
         # then marginalize s_a over resulting `[s_o, s_a, w]`
         prob_w_given_s_o = np.sum(
             # `[s_o, s_a, 1]` * `[1, s_a, w]`
-            obs_inverse[:, :, None] * prob_w_given_s_a[None, :, :,],
+            obs_inverse[:, :, None]
+            * prob_w_given_s_a[
+                None,
+                :,
+                :,
+            ],
             axis=1,
-        ) # to get shape `[s_o, w]`
+        )  # to get shape `[s_o, w]`
 
-        eu_sender = prob_w_given_s_o # `[states, signals]`
+        eu_sender = prob_w_given_s_o  # `[states, signals]`
 
         # ------------------------------------------
 
@@ -432,18 +474,36 @@ class ImpreciseConditionalImitation(ReplicatorDynamics):
         # first marginalize s_r over `[s_i, s_a, s_r]`
         prob_s_a_given_s_i = np.sum(
             # `[s_i, 1, s_r]` * `[1, s_a, s_r]` # TODO: order of s_i, s_a?
-            interpretation_noise[:, None, :,] * utility[None, :, :,],
+            interpretation_noise[
+                :,
+                None,
+                :,
+            ]
+            * utility[
+                None,
+                :,
+                :,
+            ],
             axis=-1,
-        ) # to get shape `[s_i, s_a]`
+        )  # to get shape `[s_i, s_a]`
 
         # then marginalize s_a over `[w, s_i, s_a]`
         prob_w_given_s_i = np.sum(
             # `[w, 1, s_a]` * `[1, s_i, s_a]`
-            sigma_inverse[:, None, :,] * prob_s_a_given_s_i[None, :, :,],
+            sigma_inverse[
+                :,
+                None,
+                :,
+            ]
+            * prob_s_a_given_s_i[
+                None,
+                :,
+                :,
+            ],
             axis=-1,
-        ) # to get shape `[w, s_i]`
+        )  # to get shape `[w, s_i]`
 
-        eu_receiver = prob_w_given_s_i # `[signals, states]`
+        eu_receiver = prob_w_given_s_i  # `[signals, states]`
 
         # --------- Discrete-time replicator dynamics updates ---------
 

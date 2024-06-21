@@ -37,9 +37,7 @@ def main(config: DictConfig):
     )  # we will update with gNID and eps
     emergent_encoders = np.load(fullpath(fps.final_encoders_save_fn))
     betas = np.load(util.get_bound_fn(config, "betas"))
-    optimal_encoders = np.load(
-        util.get_bound_fn(config, "encoders")
-    )  # ordered by beta
+    optimal_encoders = np.load(util.get_bound_fn(config, "encoders"))  # ordered by beta
     curve_fn = util.get_bound_fn(config, "ib")
     curve_data = pd.read_csv(curve_fn)
 
@@ -67,22 +65,22 @@ def main(config: DictConfig):
     # Measure Euclidean dist of each language to any optimal curve point
     traj_points = traj_data[["complexity", "accuracy"]].values
     curve_points = curve_data[["complexity", "accuracy"]].values
-    distances = cdist(traj_points, curve_points) # shape `(traj_pts, curve_pts)`
+    distances = cdist(traj_points, curve_points)  # shape `(traj_pts, curve_pts)`
     # For each traj_point, get the minimum dist to any curve_point
     min_distances = np.min(distances, axis=1)
 
     ##########################################################################
     # Measure efficiency of emergent encoders
     ##########################################################################
-    
+
     # Compute min efficiency loss and gNID for each final emergent encoder
-    
+
     # Measure efficiency loss 1/beta (F_emergent - F_optimal) to any F_optimal
     # F_[q] = em_complexity - em_acc
     # eps = 1/beta * ( F_[q] - F_[q*] )
-    F_opt = curve_points[:,0] - betas * curve_points[:,1]
+    F_opt = curve_points[:, 0] - betas * curve_points[:, 1]
     fitted_betas = []
-    fitted_epsilon = []    
+    fitted_epsilon = []
     fitted_encoders = []
     for em in tqdm(emergent_encoders, desc="fitting final encoders"):
         comp, acc, _ = ib_encoder_to_point(g.prior, g.meaning_dists, em)
@@ -102,21 +100,22 @@ def main(config: DictConfig):
 
         if epsilon_em < 0:
             breakpoint()
-            raise Exception(f"A final encoder has negative efficiency loss: epsilon={epsilon_em}.")
-
+            raise Exception(
+                f"A final encoder has negative efficiency loss: epsilon={epsilon_em}."
+            )
 
     # Save the fitted optimal encoder to each emergent encoder
     util.save_ndarray(fullpath(fps.nearest_optimal_save_fn), np.array(fitted_encoders))
 
     ##########################################################################
     # Measure trajectory points' efficiency loss to any encoder (like with Euclidean distance to curve, above)
-    ##########################################################################  
-    
+    ##########################################################################
+
     # Repeat for all trajectory points, not just final
     min_eps = []
     min_beta = []
-    for (traj_complexity, traj_accuracy) in tqdm(
-        traj_points, 
+    for traj_complexity, traj_accuracy in tqdm(
+        traj_points,
         desc="finding minimum efficiency loss per trajectory point",
     ):
         F_traj = traj_complexity - betas * traj_accuracy
@@ -131,7 +130,9 @@ def main(config: DictConfig):
         min_beta.append(beta_traj)
 
         if epsilon_traj < 0:
-            raise Exception(f"A trajectory encoder has negative efficiency loss: epsilon={epsilon_traj}.")
+            raise Exception(
+                f"A trajectory encoder has negative efficiency loss: epsilon={epsilon_traj}."
+            )
 
     ##########################################################################
     # Write data
@@ -167,7 +168,9 @@ def main(config: DictConfig):
         # select (just one for now) emergent encoder
         idx = config.simulation.inspect_eps_encoder - 1
         assert idx >= 0, "Use 1-indexing for fitted epsilon encoder inspection."
-        assert idx <= config.simulation.num_runs, "Inspection index must be less than num_runs"
+        assert (
+            idx <= config.simulation.num_runs
+        ), "Inspection index must be less than num_runs"
         # last_encoder_eps = fitted_epsilon[idx]
         curve_data["eps"] = F_em_deviation
         single_encoder_data = sim_data.iloc[[idx]]
@@ -176,7 +179,7 @@ def main(config: DictConfig):
             curve_data, single_encoder_data, single_optimal_data
         )
         util.save_plot(
-            fullpath(fps.single_eps_inspect_plot_fn).replace("idx", str(idx+1)), 
+            fullpath(fps.single_eps_inspect_plot_fn).replace("idx", str(idx + 1)),
             plot,
         )
 

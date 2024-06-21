@@ -34,23 +34,27 @@ def main(config: DictConfig):
 
         ib_results = get_bottleneck(config)
 
-        encoders, ib_points, betas = zip(*[
-            (item.qxhat_x,
-            (item.rate, item.accuracy, item.distortion, item.beta),
-            item.beta)
-            for item in ib_results
-        ])
+        encoders, ib_points, betas = zip(
+            *[
+                (
+                    item.qxhat_x,
+                    (item.rate, item.accuracy, item.distortion, item.beta),
+                    item.beta,
+                )
+                for item in ib_results
+            ]
+        )
 
         util.save_points_df(
             curve_fn,
             util.points_to_df(
                 ib_points,
                 columns=[
-                    "complexity", 
-                    "accuracy", 
+                    "complexity",
+                    "accuracy",
                     "distortion",
                     "beta",
-                ]
+                ],
             ),
         )
         util.save_ndarray(encoders_fn, np.stack(encoders))
@@ -73,7 +77,6 @@ def main(config: DictConfig):
     else:
         print("data found, skipping mse curve estimation")
 
-
     ##########################################################################
     # Save metadata
     ##########################################################################
@@ -85,7 +88,7 @@ def main(config: DictConfig):
         OmegaConf.save(curve_metadata, metadata_fn)
 
         print(f"Saved a hydra config as curve metadata to {metadata_fn}")
-    else: 
+    else:
         print("data found, skipping curve metadata save.")
 
 

@@ -27,6 +27,7 @@ def set_seed(seed: int) -> None:
 # Data
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
 def write_pickle(fn: str, data):
     with open(fn, "wb") as f:
         pickle.dump(data, f, protocol=pickle.HIGHEST_PROTOCOL)
@@ -81,34 +82,38 @@ def save_final_encoders(fn: str, runs: list) -> None:
     np.save(fn, np.stack([np.array(g.ib_encoders[-1]) for g in runs]))
     print(f"Saved {len(runs)} encoders to {os.path.join(os.getcwd(), fn)}")
 
+
 def save_all_encoders(fn: str, runs: list) -> None:
     """Save the encoders from all rounds of each game to a file (npz compressed).
 
     Args:
         fn: the file to save the encoders to
 
-        runs: a list of Game objects    
+        runs: a list of Game objects
     """
     # N.B.: the below may be ragged!
-    # We should either use a fill value, which is inefficient, 
+    # We should either use a fill value, which is inefficient,
     # or save differently.
-    kwargs = {
-        f"run_{run_i}": np.stack(g.ib_encoders) for run_i, g in enumerate(runs)
-    }
+    kwargs = {f"run_{run_i}": np.stack(g.ib_encoders) for run_i, g in enumerate(runs)}
     np.savez_compressed(fn, **kwargs)
-    print(f"Saved all encoders across rounds and runs to {os.path.join(os.getcwd(), fn)}")
+    print(
+        f"Saved all encoders across rounds and runs to {os.path.join(os.getcwd(), fn)}"
+    )
 
     kwargs_sr = {
         f"run_{run_i}": np.stack(g.steps_recorded) for run_i, g in enumerate(runs)
-    }    
+    }
     # TODO: use the config yaml file, not hard coded fn
     fn_sr = "steps_recorded.npz"
     np.savez_compressed(fn_sr, **kwargs_sr)
-    print(f"Saved list of indices for steps recorded across rounds and runs to {os.path.join(os.getcwd(), fn_sr)}")
+    print(
+        f"Saved list of indices for steps recorded across rounds and runs to {os.path.join(os.getcwd(), fn_sr)}"
+    )
+
 
 def load_all_encoders(fn: str) -> list[np.ndarray]:
     """Load all the encoders from all rounds of each game from npz file.
-    
+
     Args:
         fn: the file to load all encoders from.
 
@@ -157,7 +162,9 @@ def final_points_df(runs: list) -> pd.DataFrame:
     return points_to_df(
         [
             (
-                *g.points[-1],  # comp, acc, dist, mse, eu_gamma, kl_eb, min_gnid, gnid_beta
+                *g.points[
+                    -1
+                ],  # comp, acc, dist, mse, eu_gamma, kl_eb, min_gnid, gnid_beta
                 None,  # min_epsilon (efficiency loss)
                 None,  # min_beta
                 i,  # run number
@@ -188,7 +195,9 @@ def trajectories_df(runs: list) -> pd.DataFrame:
                         # label rounds
                         np.hstack(
                             (
-                                np.array(run.points),  # (num_rounds, len(points_columns))
+                                np.array(
+                                    run.points
+                                ),  # (num_rounds, len(points_columns))
                                 np.array(run.steps_recorded)[:, None],
                             )
                         ),
@@ -210,7 +219,9 @@ encoder_columns = [
 ]
 
 
-def encoders_to_df(encoders: np.ndarray, labels: np.ndarray, col: str = "run") -> pd.DataFrame:
+def encoders_to_df(
+    encoders: np.ndarray, labels: np.ndarray, col: str = "run"
+) -> pd.DataFrame:
     """Get a dataframe with columns ['meanings', 'words', 'p', 'naming probability \n'].
 
     Args:
@@ -283,6 +294,7 @@ def get_bound_fn(
 
 # TODO: Look into hydra.utils.get_original_cwd!
 
+
 def get_root(config: DictConfig, cwd=None) -> str:
     """Get the full path of the root of the repo, relative to hydra interpolations."""
     return os.path.abspath(
@@ -319,6 +331,7 @@ def save_plot(fn: str, plot: ggplot, width=10, height=10, dpi=300) -> None:
     """Save a plot with some default settings."""
     plot.save(fn, width=width, height=height, dpi=dpi, verbose=False)
     print(f"Saved a plot to {fn}")
+
 
 def save_fig(fn: str, fig: Figure, dpi=300) -> None:
     fig.savefig(fn, dpi=dpi)

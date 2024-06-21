@@ -1,10 +1,8 @@
-
-
 import numpy as np
 
 from ultk.effcomm.rate_distortion import (
-    rows_zero_to_uniform, 
-    ib_optimal_decoder, 
+    rows_zero_to_uniform,
+    ib_optimal_decoder,
     ib_encoder_to_point,
     get_ib_bound,
 )
@@ -91,9 +89,9 @@ def ib_encoder_to_measurements(
     # Expected KL between emergent receiver and the Bayesian optimal inverse of the Sender.
     # D[ R(\hat{x}_o | w) || S_bayes(\hat{x}_o | w) ]
     kl_vec = information.kl_divergence(
-        p=decoder, # shape `(words, meanings)`
-        q=bayesian_decoder, # `(words, meanings)`
-        axis=1, # take entropy of meanings, i.e. sum over 2nd axis
+        p=decoder,  # shape `(words, meanings)`
+        q=bayesian_decoder,  # `(words, meanings)`
+        axis=1,  # take entropy of meanings, i.e. sum over 2nd axis
         base=2,
     )
 
@@ -104,15 +102,17 @@ def ib_encoder_to_measurements(
     # TODO: find the min gnid distance to the curve
     # Need to load up the entire curve sigh
     # TODO: I think I should just refactor everything, and measure after simulations instead of during
-    gnids_to_curve = [information.gNID(encoder, opt_enc, prior) for opt_enc in ib_optimal_encoders]
+    gnids_to_curve = [
+        information.gNID(encoder, opt_enc, prior) for opt_enc in ib_optimal_encoders
+    ]
     min_index = np.argmin(gnids_to_curve)
     min_gnid = gnids_to_curve[min_index]
     gnid_beta = ib_optimal_betas[min_index]
 
     return (
-        complexity, 
-        accuracy, 
-        distortion, 
+        complexity,
+        accuracy,
+        distortion,
         mse,
         eu_gamma,
         kl_eb,
@@ -126,7 +126,8 @@ def ib_encoder_to_measurements(
 ##############################################################################
 
 
-from .betas import dev_betas, default_betas # this is hard-codey
+from .betas import dev_betas, default_betas  # this is hard-codey
+
 
 def get_bottleneck(config: DictConfig) -> optimizers.IBResult:
     """Compute the `(complexity, accuracy, comm_cost)` values and optimal encoders corresponding to an Information Bottleneck theoretical bound.
@@ -147,9 +148,11 @@ def get_bottleneck(config: DictConfig) -> optimizers.IBResult:
     )
     return [item for item in results if item is not None]
 
+
 ##############################################################################
 # RD CURVE ESTIMATION
 ##############################################################################
+
 
 def get_rd_curve(config: DictConfig) -> list[tuple[float]]:
     """Compute the `(complexity, comm_cost)` values corresponding to a Rate-Distortion (with MSE distortion) theoretical bound.

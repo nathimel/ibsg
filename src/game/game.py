@@ -23,7 +23,7 @@ class Game:
         num_signals: int,
         prior: np.ndarray,
         distance: str,
-        meaning_dist_pi: float,        
+        meaning_dist_pi: float,
         discr_need_gamma: float,
         **kwargs,
     ) -> None:
@@ -38,7 +38,7 @@ class Game:
 
             distance: the kind of distance measure to use as input to the similarity-based utility and meaning distributions.
 
-            meaning_dist_pi: a float controlling the uniform-ness of the meaning distributions P(U|M), which represent perceptual uncertainty. higher pi -> full certainty.            
+            meaning_dist_pi: a float controlling the uniform-ness of the meaning distributions P(U|M), which represent perceptual uncertainty. higher pi -> full certainty.
 
             discr_need_gamma: a float controlling the uniform-ness of the payoff / utility / fitness function, representing discriminative need. Higher discr -> all or nothing reward.
         """
@@ -64,9 +64,13 @@ class Game:
         self.meaning_dists = meaning_dists
 
         # updated by dynamics
-        self.points: list[tuple[float]] = []  # list of (complexity, accuracy, comm_cost, MSE, EU_gamma, KL_eb, min_gNID, gnid_beta) points
+        self.points: list[
+            tuple[float]
+        ] = (
+            []
+        )  # list of (complexity, accuracy, comm_cost, MSE, EU_gamma, KL_eb, min_gNID, gnid_beta) points
         self.ib_encoders: list[np.ndarray] = []
-        self.steps_recorded = [] # for bookkeeping above
+        self.steps_recorded = []  # for bookkeeping above
 
         self.__dict__.update(**kwargs)
 
@@ -75,11 +79,13 @@ class Game:
         """Automatically construct a sim-max game from a hydra config."""
 
         # Warn the user against inappropriate comparisons
-        if config.game.meaning_dist_pi != config.simulation.dynamics.imprecise_imitation_alpha:
+        if (
+            config.game.meaning_dist_pi
+            != config.simulation.dynamics.imprecise_imitation_alpha
+        ):
             warnings.warn(
                 "The values of {config.game.meaning_dist_width, config.simulation.dynamics.imprecise_imitation_alpha} should be equal. It is unlikely that you want to run analyses where they vary."
             )
-
 
         # Load prior and universe
         universe = None

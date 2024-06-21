@@ -1,6 +1,6 @@
-
 from scipy.special import softmax
 import numpy as np
+
 
 def normalize_rows(mat: np.ndarray):
     """Normalize each row of 2D array / tensor to sum to 1.0."""

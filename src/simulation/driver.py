@@ -13,6 +13,7 @@ from misc import util
 # Helper functions for running experiments
 ##############################################################################
 
+
 def run_simulations(config: DictConfig) -> list[Game]:
     """Run a simulation for multiple runs."""
 
@@ -48,9 +49,7 @@ def run_simulation(config: DictConfig) -> Game:
 
     # Load up the IB optimal encoders and betas
     betas = np.load(util.get_bound_fn(config, "betas"))
-    optimal_encoders = np.load(
-        util.get_bound_fn(config, "encoders")
-    )  # ordered by beta
+    optimal_encoders = np.load(util.get_bound_fn(config, "encoders"))  # ordered by beta
 
     dynamics: Dynamics = dynamics_map[config.simulation.dynamics.name]
     dynamics = dynamics(

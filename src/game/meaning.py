@@ -32,7 +32,9 @@ def build_universe(
     """
     assert (referents_df["name"] == prior_df["name"]).all()
 
-    referents_df = referents_df.loc[:, ~referents_df.columns.str.contains('^Unnamed')] # if we forgot index=False
+    referents_df = referents_df.loc[
+        :, ~referents_df.columns.str.contains("^Unnamed")
+    ]  # if we forgot index=False
 
     if features is None:
         features = [feature for feature in referents_df.columns if feature != "name"]

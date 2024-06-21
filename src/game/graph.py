@@ -19,9 +19,7 @@ def generate_adjacency_matrix(
     elif graph == "random":
         # generate a random UNWEIGHTED graph
         graph = np.zeros(n, n)
-        while not (
-            graph - np.eye(n, n)
-        ).any():  # at least one irreflexive connection
+        while not (graph - np.eye(n, n)).any():  # at least one irreflexive connection
             graph = np.array(np.random.randn(n, n) > 0, dtype=int)
 
     else:

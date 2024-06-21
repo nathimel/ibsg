@@ -4,6 +4,7 @@ import numpy as np
 from ultk.language.semantics import Universe, Referent
 from misc.tools import normalize_rows
 
+
 # distance measures
 def hamming_dist(t: np.ndarray, u: np.ndarray) -> float:
     # indicator
@@ -31,15 +32,12 @@ def referent_to_ndarray(referent: Referent):
 
 def generate_confusion_matrix(
     universe: Universe,
-    alpha: float, 
+    alpha: float,
     dist_mat: np.ndarray,
 ) -> np.ndarray:
     """Given a universe, confusion alpha, and distance matrix, generate a conditional probability distribution over points in the universe given points in the universe."""
-    return normalize_rows(
-            generate_sim_matrix(
-                universe, alpha, dist_mat
-            )
-        )
+    return normalize_rows(generate_sim_matrix(universe, alpha, dist_mat))
+
 
 def generate_dist_matrix(
     universe: Universe,

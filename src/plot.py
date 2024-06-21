@@ -16,7 +16,7 @@ def generate_tradeoff_plots(
     comp_acc_fn: str,
     comp_dist_fn: str,
     comp_mse_fn: str,
-    sim_data: pd.DataFrame = None,    
+    sim_data: pd.DataFrame = None,
     trajectory_data: pd.DataFrame = None,
     nearest_opt_data: pd.DataFrame = None,
     variant_data: pd.DataFrame = None,
@@ -70,32 +70,34 @@ def generate_encoder_plots(
     util.ensure_dir(tiles_dir)
     util.ensure_dir(lines_dir)
 
-    encoders_data = util.encoders_to_df(encoders, labels=title_nums, col=individual_file_prefix)
+    encoders_data = util.encoders_to_df(
+        encoders, labels=title_nums, col=individual_file_prefix
+    )
 
     # Encoders, faceted by run
-    if facet_runs and len(encoders_data["run"].value_counts().to_dict()) - 1:  # > one run
+    if (
+        facet_runs and len(encoders_data["run"].value_counts().to_dict()) - 1
+    ):  # > one run
         faceted_lines_plot = vis.faceted_encoders(encoders_data, "line")
         faceted_tiles_plot = vis.faceted_encoders(encoders_data, "tile")
         util.save_plot(faceted_lines_fn, faceted_lines_plot)
         util.save_plot(faceted_tiles_fn, faceted_tiles_plot)
 
-
     # NOTE: I'm commenting out encoder plots for now because I never need them and its slow to generate them
     # Individual encoders
-    # tile_plots = vis.get_n_encoder_plots(encoders_data, "tile", 
+    # tile_plots = vis.get_n_encoder_plots(encoders_data, "tile",
     # item_key=individual_file_prefix, title_var="t",)
 
     # line_plots = vis.get_n_encoder_plots(encoders_data, "line", item_key=individual_file_prefix,) #REPLACED WITH BELOW
 
     # Centroid lineplot
     line_figs = vis.get_n_centroid_plots(
-        encoders, 
+        encoders,
         prior,
         item_key=individual_file_prefix,
         title_nums=title_nums,
         title_var="t",
     )
-
 
     # Save each
     # [
@@ -142,7 +144,7 @@ def main(config):
         fullpath(fps.complexity_distortion_plot_fn),
         fullpath(fps.complexity_mse_plot_fn),
         # kwargs
-        sim_data=sim_data, # emergent points        
+        sim_data=sim_data,  # emergent points
         # trajectory_data=pd.read_csv(fullpath(fps.trajectory_points_save_fn))
         # if config.simulation.trajectory
         # else None,

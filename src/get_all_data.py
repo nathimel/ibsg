@@ -13,10 +13,12 @@ from tqdm import tqdm
 
 # N.B.: If this script is not finding the results you've run, make sure you've run setup.py, which stores the game.pkl file in the leaf directory!
 
-def main():
 
+def main():
     if len(sys.argv) != 2:
-        print("Usage: python src/get_all_data.py. PATH_TO_ALL_DATA \nThis script does not use hydra; do not pass overrides.")
+        print(
+            "Usage: python src/get_all_data.py. PATH_TO_ALL_DATA \nThis script does not use hydra; do not pass overrides."
+        )
         sys.exit(1)
 
     # Where to save the giant dataframe
@@ -40,7 +42,6 @@ def main():
     print(f"collecting all simulation data from {root_dir}.")
     game_fns = list(Path(root_dir).rglob(game_fn))
     for path in tqdm(game_fns):
-
         parent = path.parent.absolute()
 
         # Load full config w/ overrides
@@ -55,15 +56,19 @@ def main():
         df_sim = pd.read_csv(sim_fn)
         df_sim["point_type"] = "simulation"
 
-        df_traj = pd.read_csv(parent / cfg.filepaths.trajectory_points_save_fn) # may need to check if exists
+        df_traj = pd.read_csv(
+            parent / cfg.filepaths.trajectory_points_save_fn
+        )  # may need to check if exists
         df_traj["point_type"] = "trajectory"
 
-        df_nearopt = pd.read_csv(parent / cfg.filepaths.nearest_optimal_points_save_fn) # this will include all relevant data, e.g. comp, acc, min_distance_to_curve, etc.
+        df_nearopt = pd.read_csv(
+            parent / cfg.filepaths.nearest_optimal_points_save_fn
+        )  # this will include all relevant data, e.g. comp, acc, min_distance_to_curve, etc.
         df_nearopt["point_type"] = "nearest_optimal"
 
         # Concat
         df = concat([df_sim, df_traj, df_nearopt])
-        
+
         # Annotate with metadata
         df["universe"] = leaf_cfg.game.universe
         df["prior"] = leaf_cfg.game.prior
@@ -73,19 +78,20 @@ def main():
         df["meaning_dist_pi"] = leaf_cfg.game.meaning_dist_pi
 
         df["dynamics"] = leaf_cfg.simulation.dynamics.name
-        df["imprecise_imitation_alpha"] = leaf_cfg.simulation.dynamics.imprecise_imitation_alpha
+        df[
+            "imprecise_imitation_alpha"
+        ] = leaf_cfg.simulation.dynamics.imprecise_imitation_alpha
         df["population_init_tau"] = leaf_cfg.simulation.dynamics.population_init_tau
         df["seed"] = leaf_cfg.seed
         df["max_its"] = leaf_cfg.simulation.dynamics.max_its
 
         simulation_results.append(df)
-    
+
     # Collect all curves
     print(f"collecting all curve data from {root_dir}.")
     curves = []
     curve_fns = list(Path(root_dir).rglob(curve_metadata_fn))
     for path in tqdm(curve_fns):
-
         parent = path.parent.absolute()
 
         # load mdetadata
@@ -101,7 +107,7 @@ def main():
         # Annotate
         df["universe"] = curve_metadata.universe
         df["prior"] = curve_metadata.prior
-        df["num_signals"] = curve_metadata.num_signals # this is a bit spurious
+        df["num_signals"] = curve_metadata.num_signals  # this is a bit spurious
         df["distance"] = curve_metadata.distance
         df["meaning_dist_pi"] = curve_metadata.meaning_dist_pi
 
@@ -117,6 +123,7 @@ def main():
     # Save
     df.to_csv(save_fn, index=False)
     print(f"Saved a dataframe to {save_fn}")
+
 
 if __name__ == "__main__":
     main()

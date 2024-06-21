@@ -110,7 +110,7 @@ def single_eps_heatmap_tradeoff_plot(
     plot = (
         pn.ggplot(data=data, mapping=pn.aes(x="complexity", y="accuracy"))
         + pn.geom_point(size=3, mapping=pn.aes(color="eps"))
-        + pn.scale_color_continuous("inferno", trans = "log10")
+        + pn.scale_color_continuous("inferno", trans="log10")
         + pn.geom_point(
             data=sim_data,
             fill="red",
@@ -148,7 +148,7 @@ def get_n_encoder_plots(
     df: pd.DataFrame,
     plot_type: str,
     all_items: bool = True,
-    item_key: str = "run", # can also pass "round"
+    item_key: str = "run",  # can also pass "round"
     title_var: str = None,
     n: int = 8,
 ) -> list[pn.ggplot]:
@@ -172,40 +172,44 @@ def get_n_encoder_plots(
     # TODO: label title $S^{t}(w|x_o)$
     return [
         (
-            plots[plot_type](data[data[item_key] == item], item_key=item_key) 
+            plots[plot_type](data[data[item_key] == item], item_key=item_key)
             + pn.ggtitle(f"{title_var} {item}")
             # + pn.ggtitle(f"$S^{{{title_var}={item}}}(w | x_o)$")
         )
         for item in items
     ]
 
-# TODO: create a plot similar to plot_type="line", but 
+
+# TODO: create a plot similar to plot_type="line", but
 # - the color corresponds to the centroid.??
 # - and the cmap is for ordinal/continuous data
 def get_n_centroid_plots(
     encoders: np.ndarray,
     prior: np.ndarray,
     all_items: bool = True,
-    item_key: str = "run",     
+    item_key: str = "run",
     title_nums: np.ndarray = None,
     title_var: str = None,
     n: int = 8,
 ) -> list:
     """Return a list of plots, one for each encoder corresponding to each run our round. If `all_items` is False, get `n` plots, which is 8 by default.
 
-        Args:
-            plot_type: {"tile", "line"}
+    Args:
+        plot_type: {"tile", "line"}
 
-            item_key: {"run", "round"}
+        item_key: {"run", "round"}
 
-            title_var: defaults to `item_key`
+        title_var: defaults to `item_key`
     """
     if title_nums is None:
         title_nums = np.arange(len(encoders))
     if title_var is None:
-        title_var = item_key        
-    # TODO: replace enumerate with title_nums, an arg    
-    return [get_centroid_lineplot(enc, prior, title=f"{title_var}={idx}") for idx, enc in zip(title_nums, encoders)]
+        title_var = item_key
+    # TODO: replace enumerate with title_nums, an arg
+    return [
+        get_centroid_lineplot(enc, prior, title=f"{title_var}={idx}")
+        for idx, enc in zip(title_nums, encoders)
+    ]
 
 
 def faceted_encoders(df: pd.DataFrame, plot_type: str) -> pn.ggplot:
@@ -227,13 +231,13 @@ def faceted_encoders(df: pd.DataFrame, plot_type: str) -> pn.ggplot:
 
 
 # Heatmaps
-def basic_encoder_tile(df: pd.DataFrame, item_key = "run") -> pn.ggplot:
+def basic_encoder_tile(df: pd.DataFrame, item_key="run") -> pn.ggplot:
     """Return a single tile (heatmap) plot for an encoder."""
     df = format_encoder_df(df, ["word", "meaning"], item_key=item_key)
     return (
         pn.ggplot(df, pn.aes(**dict(zip(["x", "y", "fill"], encoder_columns[:3]))))
         + pn.geom_tile()
-        + pn.scale_fill_cmap(cmap_name = 'inferno', limits=[0, 1])
+        + pn.scale_fill_cmap(cmap_name="inferno", limits=[0, 1])
     )
 
 
@@ -252,13 +256,16 @@ def basic_encoder_lineplot(df: pd.DataFrame, **kwargs) -> pn.ggplot:
         + pn.ylim([0, 1])
     )
 
+
 # Better version of above with lines colored by centroid.
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
+
+
 def get_centroid_lineplot(qW_M: np.ndarray, pM: np.ndarray, title: str = "") -> Figure:
     """Return a single plot for an encoder, with lines colored by the centroid meaning for the word."""
     # Choose your colormap
-    colormap = plt.get_cmap('copper')
+    colormap = plt.get_cmap("copper")
 
     # Generate 100 equally spaced values between 0 and 1
     values = np.linspace(0, 1, 100)
@@ -273,9 +280,7 @@ def get_centroid_lineplot(qW_M: np.ndarray, pM: np.ndarray, title: str = "") -> 
 
     # try just argmax color first
     # TODO: consult noga for true weighted average centroid color!
-    word_colors = [
-        colors[np.argmax(qM_W[word_idx])] for word_idx in range(len(qM_W))
-    ]
+    word_colors = [colors[np.argmax(qM_W[word_idx])] for word_idx in range(len(qM_W))]
 
     x = list(range(100))
     # Plot each line with its corresponding color
@@ -284,20 +289,20 @@ def get_centroid_lineplot(qW_M: np.ndarray, pM: np.ndarray, title: str = "") -> 
         ax.plot(
             x,
             qW_M.T[word_idx],
-            color=word_colors[word_idx], 
+            color=word_colors[word_idx],
             linewidth=1,
         )
 
-    # if title: 
+    # if title:
     #     ax.set_title(label=title)
-    
-    ax.set_ylim(0,1)
+
+    ax.set_ylim(0, 1)
 
     ax.set_yticks(
-        ticks=[0,1],
+        ticks=[0, 1],
     )
     ax.set_xticks(
-        ticks=[0,50,100],
+        ticks=[0, 50, 100],
     )
     ax.set_xlabel(r"$X_o$")
     # ax.set_xlabel("meaning")
@@ -310,8 +315,8 @@ def get_centroid_lineplot(qW_M: np.ndarray, pM: np.ndarray, title: str = "") -> 
     sm.set_array([])
 
     # fig.colorbar(
-    #     sm, 
-    #     # label='centroid $m$ for $w$', 
+    #     sm,
+    #     # label='centroid $m$ for $w$',
     #     label='color coding for $w$',
     #     ticks=[0,50,100],
     #     location='bottom',
@@ -321,7 +326,8 @@ def get_centroid_lineplot(qW_M: np.ndarray, pM: np.ndarray, title: str = "") -> 
 
 
 def format_encoder_df(
-    df: pd.DataFrame, numeric_to_categorical: list[str],
+    df: pd.DataFrame,
+    numeric_to_categorical: list[str],
     item_key: str = "run",
 ) -> pd.DataFrame:
     # create new dataframe labeled by 1-indexed runs

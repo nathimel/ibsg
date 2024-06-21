@@ -14,7 +14,10 @@ def main(config: DictConfig):
     g = Game.from_hydra(config)
 
     util.write_pickle(config.filepaths.game_fn, g)
-    print(f"Wrote game pickle file to {os.path.join(os.getcwd(), config.filepaths.game_fn)}.")
+    print(
+        f"Wrote game pickle file to {os.path.join(os.getcwd(), config.filepaths.game_fn)}."
+    )
+
 
 if __name__ == "__main__":
     main()

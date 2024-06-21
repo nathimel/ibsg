@@ -30,6 +30,5 @@ def main(config):
         util.save_all_encoders(config.filepaths.trajectory_encoders_save_fn, runs)
 
 
-
 if __name__ == "__main__":
     main()

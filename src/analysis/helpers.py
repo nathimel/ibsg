@@ -9,18 +9,17 @@ from ultk.effcomm.rate_distortion import ib_encoder_to_point
 from misc import util
 
 
-
 def alt_encoders_to_df(
     encoders: np.ndarray, meaning_dists: np.ndarray, prior: np.ndarray
 ) -> pd.DataFrame:
     """Convert an array of alternative encoders (to the original emergent ones) to a dataframe.
-    
+
     Args:
         encoders: an array of shape `(num_beta, num_meanings, num_words)`
 
         meaning_dists: the meaning distributions p(y|x) that characterize the domain
 
-        prior: the prior over meanigns p(x) that characterizes the domain        
+        prior: the prior over meanigns p(x) that characterizes the domain
 
     Returns:
         a pd.DataFrame with columns ["complexity", "accuracy", "distortion", "mse", "run"]
