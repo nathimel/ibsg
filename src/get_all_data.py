@@ -111,7 +111,7 @@ def main():
         df["distance"] = curve_metadata.distance
         df["meaning_dist_pi"] = curve_metadata.meaning_dist_pi
 
-        # note that we aren't checking for seed, because we don't save diff curves based on random seed. maybe we should, but not for now.
+        # Add expected utilities
 
         curves.append(df)
 

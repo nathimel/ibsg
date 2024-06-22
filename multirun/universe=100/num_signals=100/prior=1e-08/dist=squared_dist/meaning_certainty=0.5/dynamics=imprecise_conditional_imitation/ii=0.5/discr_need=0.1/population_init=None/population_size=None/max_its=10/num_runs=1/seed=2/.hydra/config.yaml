@@ -42,6 +42,7 @@ filepaths:
   trajectory_encoders_save_fn: trajectory_encoders.npz
   trajectory_decoders_save_fn: trajectory_decoders.npz
   steps_recorded_save_fn: steps_recorded.npz
+  curve_eus_save_fn: curve_eus.csv
   variant_points_save_fn: variant_points.csv
   final_encoders_save_fn: final_encoders.npy
   nearest_optimal_points_save_fn: nearest_optimal_points.csv

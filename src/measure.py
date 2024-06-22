@@ -72,10 +72,9 @@ def main(config: DictConfig):
         traj_data,
     )
 
-    # Overwrite curve data with EU measurements
-    curve_data[f"eu_gamma={config.game.discriminative_need_gamma}"] = optima_eus
-    print("overwriting curve data with optima's expected utility for gamma")
-    util.save_points_df(curve_fn, curve_data)
+    # Write a simulation-specific column to be merged with curve data later
+    curve_data["eu"] = optima_eus
+    util.save_points_df(fullpath(fps.curve_eus_save_fn), curve_data[["beta", "eu"]])
 
 
     # Inspect a single epsilon-fitted plot
