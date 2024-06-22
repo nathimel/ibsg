@@ -90,16 +90,18 @@ def measure_encoders(
             eu_gamma = np.sum(g.prior * (system * g.utility))
 
             # Expected KL between emergent receiver and the Bayesian optimal inverse of the Sender.
-            # D[ R(\hat{x}_o | w) || S_bayes(\hat{x}_o | w) ]
+            # D[ R(\hat{x}_o | w) || S_bayes(\hat{x}_o | w) ], shape `(words, words)`
             kl_vec = information.kl_divergence(
-                p=decoder,  # shape `(words, meanings)`
-                q=bayesian_decoder,  # `(words, meanings)`
+                p=np.where(
+                    decoder * g.prior > 0., decoder, 0., # guard against underflows driving KL to infinity
+                ),
+                q=bayesian_decoder,
                 axis=1,  # take entropy of meanings, i.e. sum over 2nd axis
                 base=2,
             )
             # Take expectation over p(w)
             pw = probability.marginalize(encoder, g.meaning_dists @ g.prior)
-            kl_eb = np.sum(pw * kl_vec)         
+            kl_eb = np.sum(pw * kl_vec)
 
 
             ####################################################################

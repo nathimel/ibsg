@@ -138,8 +138,8 @@ hydra:
     name: measure
     chdir: true
     override_dirname: game.universe=100,simulation.dynamics.max_its=10000.0,simulation.dynamics.threshold=0.0001,simulation.multiprocessing=False,simulation/dynamics=imprecise_conditional_imitation
-    id: measure_42
-    num: 42
+    id: measure_0
+    num: 0
     config_name: config
     env_set: {}
     env_copy: []

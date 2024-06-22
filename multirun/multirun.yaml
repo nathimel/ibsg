@@ -126,18 +126,18 @@ hydra:
     - game.meaning_dist_pi=0.5
     - simulation/dynamics=imprecise_conditional_imitation
     - simulation.dynamics.imprecise_imitation_alpha=0.5
-    - game.discriminative_need_gamma=5e-3,5e-2,5e-1,5e0,5e1,5e2
+    - game.discriminative_need_gamma=0.1,0.11,0.12,0.13,0.14,0.15,0.16,0.17,0.18,0.19
     - game.universe=100
     - game.num_signals=100
     - simulation.dynamics.population_init_tau=null
-    - seed=range(8)
-    - simulation.dynamics.max_its=1e4
+    - seed=2
+    - simulation.dynamics.max_its=10
     - simulation.dynamics.threshold=1e-4
     - simulation.multiprocessing=False
   job:
     name: measure
     chdir: true
-    override_dirname: game.universe=100,simulation.dynamics.max_its=1e4,simulation.dynamics.threshold=1e-4,simulation.multiprocessing=False,simulation/dynamics=imprecise_conditional_imitation
+    override_dirname: game.universe=100,simulation.dynamics.max_its=10,simulation.dynamics.threshold=1e-4,simulation.multiprocessing=False,simulation/dynamics=imprecise_conditional_imitation
     id: ???
     num: ???
     config_name: config
@@ -203,7 +203,7 @@ game:
   dev_betas: false
 simulation:
   dynamics:
-    max_its: 10000.0
+    max_its: 10
     threshold: 0.0001
     population_init_tau: null
     imprecise_imitation_alpha: 0.5
@@ -268,4 +268,4 @@ filepaths:
 plotting:
   generate_movie_plots: false
   generate_movies: false
-seed: 42
+seed: 2
