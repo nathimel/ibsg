@@ -99,8 +99,8 @@ def measure_encoders(
                 axis=1,  # take entropy of meanings, i.e. sum over 2nd axis
                 base=2,
             )
-            if np.any(np.isinf(kl_vec)):
-                breakpoint()
+            # if np.any(np.isinf(kl_vec)):
+                # breakpoint()
             # Take expectation over p(w)
             pw = probability.marginalize(encoder, g.meaning_dists @ g.prior)
             kl_eb = np.sum(pw * kl_vec)

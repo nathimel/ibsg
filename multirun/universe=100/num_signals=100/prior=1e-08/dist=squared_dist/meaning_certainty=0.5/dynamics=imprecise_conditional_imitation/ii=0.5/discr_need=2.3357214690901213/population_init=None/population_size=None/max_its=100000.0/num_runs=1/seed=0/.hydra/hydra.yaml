@@ -138,8 +138,8 @@ hydra:
     name: setup
     chdir: true
     override_dirname: game.universe=100,simulation.dynamics.max_its=100000.0,simulation.dynamics.threshold=0.0001,simulation.multiprocessing=False,simulation/dynamics=imprecise_conditional_imitation
-    id: setup_136
-    num: 136
+    id: setup_17
+    num: 17
     config_name: config
     env_set: {}
     env_copy: []
