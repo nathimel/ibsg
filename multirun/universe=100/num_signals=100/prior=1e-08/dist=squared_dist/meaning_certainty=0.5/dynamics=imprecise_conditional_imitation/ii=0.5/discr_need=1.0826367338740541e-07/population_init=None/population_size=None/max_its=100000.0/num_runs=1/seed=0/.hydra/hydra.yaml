@@ -5,7 +5,18 @@ hydra:
     dir: ${filepaths.hydra_sweep_root}
     subdir: ${filepaths.leaf_subdir}
   launcher:
-    _target_: hydra._internal.core_plugins.basic_launcher.BasicLauncher
+    _target_: hydra_plugins.hydra_joblib_launcher.joblib_launcher.JoblibLauncher
+    n_jobs: -1
+    backend: null
+    prefer: processes
+    require: null
+    verbose: 0
+    timeout: null
+    pre_dispatch: 2*n_jobs
+    batch_size: auto
+    temp_folder: null
+    max_nbytes: null
+    mmap_mode: r
   sweeper:
     _target_: hydra._internal.core_plugins.basic_sweeper.BasicSweeper
     max_batch_size: null
@@ -124,10 +135,10 @@ hydra:
     - simulation.dynamics.threshold=0.0001
     - simulation.multiprocessing=False
   job:
-    name: setup
+    name: measure
     chdir: true
     override_dirname: game.universe=100,simulation.dynamics.max_its=100000.0,simulation.dynamics.threshold=0.0001,simulation.multiprocessing=False,simulation/dynamics=imprecise_conditional_imitation
-    id: '8'
+    id: measure_8
     num: 8
     config_name: config
     env_set: {}
@@ -177,6 +188,6 @@ hydra:
       hydra/hydra_help: default
       hydra/help: default
       hydra/sweeper: basic
-      hydra/launcher: basic
+      hydra/launcher: joblib
       hydra/output: default
   verbose: false

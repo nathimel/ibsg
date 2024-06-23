@@ -135,10 +135,10 @@ hydra:
     - simulation.dynamics.threshold=0.0001
     - simulation.multiprocessing=False
   job:
-    name: run_simulations
+    name: measure
     chdir: true
     override_dirname: game.universe=100,simulation.dynamics.max_its=100000.0,simulation.dynamics.threshold=0.0001,simulation.multiprocessing=False,simulation/dynamics=imprecise_conditional_imitation
-    id: run_simulations_6
+    id: measure_6
     num: 6
     config_name: config
     env_set: {}

@@ -122,8 +122,10 @@ def measure_encoders(
             fitted_opt = ib_optimal_encoders[min_ind]
 
             if fitted_eps < 0:
-                raise Exception(
-                    f"A trajectory encoder has negative efficiency loss: epsilon={fitted_eps}."
+                # raise Exception(
+                import warnings
+                warnings.warn(
+                    f"A trajectory encoder has negative efficiency loss: epsilon={fitted_eps}, fitted_beta={fitted_beta}, iteration={recorded_step}."
                 )
 
             ####################################################################

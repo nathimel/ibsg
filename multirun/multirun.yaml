@@ -5,18 +5,7 @@ hydra:
     dir: ${filepaths.hydra_sweep_root}
     subdir: ${filepaths.leaf_subdir}
   launcher:
-    _target_: hydra_plugins.hydra_joblib_launcher.joblib_launcher.JoblibLauncher
-    n_jobs: -1
-    backend: null
-    prefer: processes
-    require: null
-    verbose: 0
-    timeout: null
-    pre_dispatch: 2*n_jobs
-    batch_size: auto
-    temp_folder: null
-    max_nbytes: null
-    mmap_mode: r
+    _target_: hydra._internal.core_plugins.basic_launcher.BasicLauncher
   sweeper:
     _target_: hydra._internal.core_plugins.basic_sweeper.BasicSweeper
     max_batch_size: null
@@ -126,14 +115,7 @@ hydra:
     - game.meaning_dist_pi=0.5
     - simulation/dynamics=imprecise_conditional_imitation
     - simulation.dynamics.imprecise_imitation_alpha=0.5
-    - game.discriminative_need_gamma=choice( 1e-10, 2.395026619987481e-10, 5.736152510448681e-10,
-      1.373823795883261e-09, 3.290344562312671e-09, 7.880462815669905e-09, 1.887391822135096e-08,
-      4.5203536563602405e-08, 1.0826367338740541e-07, 2.592943797404667e-07, 6.210169418915616e-07,
-      1.487352107293512e-06, 3.562247890262437e-06, 8.531678524172797e-06, 2.0433597178569398e-05,
-      4.893900918477489e-05, 0.00011721022975334794, 0.0002807216203941176, 0.0006723357536499335,
-      0.0016102620275609393, 0.0038566204211634724, 0.009236708571873847, 0.022122162910704502,
-      0.05298316906283702, 0.12689610031679183, 0.3039195382313195, 0.7278953843983131,
-      1.7433288221999872, 4.175318936560392, 10.0, 1e2, 1e100 )
+    - game.discriminative_need_gamma=8.531678524172797e-06
     - game.universe=100
     - game.num_signals=100
     - simulation.dynamics.population_init_tau=null
@@ -142,7 +124,7 @@ hydra:
     - simulation.dynamics.threshold=1e-4
     - simulation.multiprocessing=False
   job:
-    name: run_simulations
+    name: measure
     chdir: true
     override_dirname: game.universe=100,simulation.dynamics.max_its=1e5,simulation.dynamics.threshold=1e-4,simulation.multiprocessing=False,simulation/dynamics=imprecise_conditional_imitation
     id: ???
@@ -195,7 +177,7 @@ hydra:
       hydra/hydra_help: default
       hydra/help: default
       hydra/sweeper: basic
-      hydra/launcher: joblib
+      hydra/launcher: basic
       hydra/output: default
   verbose: false
 game:
@@ -203,7 +185,7 @@ game:
   prior: 1.0e-08
   num_signals: 100
   distance: squared_dist
-  discriminative_need_gamma: 0.5
+  discriminative_need_gamma: 8.531678524172797e-06
   meaning_dist_pi: 0.5
   num_processes: 6
   overwrite_curves: false
