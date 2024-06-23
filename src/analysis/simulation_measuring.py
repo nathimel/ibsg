@@ -93,12 +93,14 @@ def measure_encoders(
             # D[ R(\hat{x}_o | w) || S_bayes(\hat{x}_o | w) ], shape `(words, words)`
             kl_vec = information.kl_divergence(
                 p=np.where(
-                    decoder * g.prior > 0., decoder, 0., # guard against underflows driving KL to infinity
+                    (encoder * g.prior).T > 0., decoder, 0., # guard against underflows driving KL to infinity
                 ),
                 q=bayesian_decoder,
                 axis=1,  # take entropy of meanings, i.e. sum over 2nd axis
                 base=2,
             )
+            if np.any(np.isinf(kl_vec)):
+                breakpoint()
             # Take expectation over p(w)
             pw = probability.marginalize(encoder, g.meaning_dists @ g.prior)
             kl_eb = np.sum(pw * kl_vec)

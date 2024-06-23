@@ -251,6 +251,18 @@ def get_universe_fn(config: DictConfig, *args, cwd=None, **kwargs) -> str:
 
     return fp
 
+def format_curve_config(config: DictConfig) -> DictConfig:
+    """Return curve metadata, which is the game config group without discriminative_need_gamma."""
+    return DictConfig({
+        key: value for key, value in config.items() if key in [
+            "universe",
+            "prior",
+            "num_signals",
+            "distance",
+            "meaning_dist_pi",
+        ]
+    })
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Plot

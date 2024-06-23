@@ -84,7 +84,7 @@ def main(config: DictConfig):
     if config.game.overwrite_curves or not os.path.isfile(metadata_fn):
         print("saving curve metadata...")
 
-        curve_metadata = config.game
+        curve_metadata = util.format_curve_config(config.game)
         OmegaConf.save(curve_metadata, metadata_fn)
 
         print(f"Saved a hydra config as curve metadata to {metadata_fn}")

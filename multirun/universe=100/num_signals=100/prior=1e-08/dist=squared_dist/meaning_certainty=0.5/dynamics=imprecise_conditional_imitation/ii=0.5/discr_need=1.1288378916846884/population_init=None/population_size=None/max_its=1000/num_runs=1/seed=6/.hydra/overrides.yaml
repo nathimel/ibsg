@@ -1,0 +1,11 @@
+- game.meaning_dist_pi=0.5
+- simulation/dynamics=imprecise_conditional_imitation
+- simulation.dynamics.imprecise_imitation_alpha=0.5
+- game.discriminative_need_gamma=1.1288378916846884
+- game.universe=100
+- game.num_signals=100
+- simulation.dynamics.population_init_tau=null
+- seed=6
+- simulation.dynamics.max_its=1000
+- simulation.dynamics.threshold=0.0001
+- simulation.multiprocessing=False

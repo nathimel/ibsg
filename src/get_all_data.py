@@ -8,6 +8,10 @@ import pandas as pd
 
 from pathlib import Path
 from tqdm import tqdm
+from misc import util
+
+from warnings import simplefilter
+simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
 # We don't use the hydra.compose api, since we can't use sweeps with that anyways. Instead, we literally build a giant dataframe of all outputs in multirun.
 
@@ -36,6 +40,40 @@ def main():
     game_fn = cfg.filepaths.game_fn
     curve_metadata_fn = cfg.filepaths.curve_metadata_save_fn
     leaf_hydra_cfg_fn = ".hydra/config.yaml"
+
+    ##########################################################################
+    # Collect all curves
+    ##########################################################################
+    print(f"collecting all curve data from {root_dir}.")
+    curves_dict = dict()
+    curve_fns = list(Path(root_dir).rglob(curve_metadata_fn))
+    for path in tqdm(curve_fns):
+        parent = path.parent.absolute()
+
+        # load mdetadata
+        curve_metadata = omegaconf.OmegaConf.load(parent / curve_metadata_fn)
+
+        # Create dataframe
+        df_ib = pd.read_csv(parent / cfg.filepaths.curve_points_save_fn)
+        df_ib["point_type"] = "ib_bound"
+        df_mse = pd.read_csv(parent / cfg.filepaths.mse_curve_points_save_fn)
+        df_mse["point_type"] = "mse_bound"
+        df = concat([df_ib, df_mse])
+
+        # Annotate
+        df["universe"] = curve_metadata.universe
+        df["prior"] = curve_metadata.prior
+        df["num_signals"] = curve_metadata.num_signals  # this is a bit spurious
+        df["distance"] = curve_metadata.distance
+        df["meaning_dist_pi"] = curve_metadata.meaning_dist_pi
+
+        curve_hash = hash(util.format_curve_config(curve_metadata))
+        curves_dict[curve_hash] = df
+
+
+    ##########################################################################
+    # Collect all simulations
+    ##########################################################################
 
     # Collect all the results of individual simulations
     simulation_results = []
@@ -85,39 +123,18 @@ def main():
         df["seed"] = leaf_cfg.seed
         df["max_its"] = leaf_cfg.simulation.dynamics.max_its
 
+        # Add expected utility values to respective curve
+        df_eu = pd.read_csv(parent / cfg.filepaths.curve_eus_save_fn)
+        curve_cfg_hash = hash(util.format_curve_config(leaf_cfg.game))
+        eu_col = f"eu_gamma={leaf_cfg.game.discriminative_need_gamma}"
+        eu_values = df_eu.eu.tolist() + df_eu.eu.tolist() # once for ib and mse
+        curves_dict[curve_cfg_hash][eu_col] = eu_values
+
         simulation_results.append(df)
-
-    # Collect all curves
-    print(f"collecting all curve data from {root_dir}.")
-    curves = []
-    curve_fns = list(Path(root_dir).rglob(curve_metadata_fn))
-    for path in tqdm(curve_fns):
-        parent = path.parent.absolute()
-
-        # load mdetadata
-        curve_metadata = omegaconf.OmegaConf.load(parent / curve_metadata_fn)
-
-        # Create dataframe
-        df_ib = pd.read_csv(parent / cfg.filepaths.curve_points_save_fn)
-        df_ib["point_type"] = "ib_bound"
-        df_mse = pd.read_csv(parent / cfg.filepaths.mse_curve_points_save_fn)
-        df_mse["point_type"] = "mse_bound"
-        df = concat([df_ib, df_mse])
-
-        # Annotate
-        df["universe"] = curve_metadata.universe
-        df["prior"] = curve_metadata.prior
-        df["num_signals"] = curve_metadata.num_signals  # this is a bit spurious
-        df["distance"] = curve_metadata.distance
-        df["meaning_dist_pi"] = curve_metadata.meaning_dist_pi
-
-        # Add expected utilities
-
-        curves.append(df)
 
     # Concat all
     df_sims = concat(simulation_results)
-    df_curves = concat(curves)
+    df_curves = concat(list(curves_dict.values()))
     df = concat([df_sims, df_curves])
 
     # Save

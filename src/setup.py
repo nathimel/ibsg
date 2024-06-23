@@ -12,6 +12,7 @@ def main(config: DictConfig):
     util.set_seed(config.seed)
 
     g = Game.from_hydra(config)
+    breakpoint()
 
     util.write_pickle(config.filepaths.game_fn, g)
     print(
