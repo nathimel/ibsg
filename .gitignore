@@ -5,6 +5,9 @@
 **/*.npy
 **/*.npz
 
+# THis gets big!
+analysis_data/all_data.csv
+
 # Movies
 **/*.mp4
 **/*round_*.png
