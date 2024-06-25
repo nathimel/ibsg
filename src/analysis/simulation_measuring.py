@@ -93,7 +93,7 @@ def measure_encoders(
             # D[ R(\hat{x}_o | w) || S_bayes(\hat{x}_o | w) ], shape `(words, words)`
             kl_vec = information.kl_divergence(
                 p=np.where(
-                    (encoder * g.prior).T > 0., decoder, 0., # guard against underflows driving KL to infinity
+                    (encoder * g.prior).T > 0., decoder, 0., # guard against underflows driving KL to infinity. TODO: more principled: implement numerically stable bayes rule in logspace.
                 ),
                 q=bayesian_decoder,
                 axis=1,  # take entropy of meanings, i.e. sum over 2nd axis
@@ -133,23 +133,18 @@ def measure_encoders(
             ####################################################################
                         
 
-            # Find lowest gNID to any optimal system
+            # Find the gNID of the epsilon-fitted system
             gnids_to_curve = [
                 information.gNID(encoder, opt_enc, g.prior) for opt_enc in ib_optimal_encoders
             ]
-            min_index = np.argmin(gnids_to_curve)
-            min_gnid = gnids_to_curve[min_index]
-            gnid_beta = ib_optimal_betas[min_index]
-
+            optimal_encoder = ib_optimal_encoders[min_ind]
+            gnid = information.gNID(encoder, optimal_encoder)
 
             ####################################################################
             # Append Observation 
             ####################################################################
 
             iteration = recorded_step
-
-            # BUG: this is not right, it should be the final step recorded
-            is_final_iteration = iteration == steps_recorded_run[-1]
 
             # aliases
             min_epsilon = fitted_eps
@@ -158,7 +153,6 @@ def measure_encoders(
             observation: tuple[float] = (
                 run_num,
                 iteration,
-                is_final_iteration,
                 complexity,
                 accuracy,
                 distortion,
@@ -167,8 +161,7 @@ def measure_encoders(
                 kl_eb,
                 min_epsilon,
                 min_epsilon_beta,
-                min_gnid,
-                gnid_beta,
+                gnid,
             )
             observations.append(observation)
             fitted_encoders.append(fitted_opt)
@@ -177,7 +170,6 @@ def measure_encoders(
 
         "run_num",        
         "iteration",
-        "is_final_iteration",
 
         "complexity",
         "accuracy",
@@ -188,7 +180,6 @@ def measure_encoders(
         "min_epsilon",
         "min_epsilon_beta",
         "min_gnid",
-        "gnid_beta",
     ]
 
     trajectory_dataframe = pd.DataFrame(

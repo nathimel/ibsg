@@ -122,6 +122,8 @@ def main():
         df["population_init_tau"] = leaf_cfg.simulation.dynamics.population_init_tau
         df["seed"] = leaf_cfg.seed
         df["max_its"] = leaf_cfg.simulation.dynamics.max_its
+        # Did the dynamics converge?
+        df["did_converge"] = df["iteration"].max() < leaf_cfg.simulation.dynamics.max_its
 
         # Add expected utility values to respective curve
         df_eu = pd.read_csv(parent / cfg.filepaths.curve_eus_save_fn)
