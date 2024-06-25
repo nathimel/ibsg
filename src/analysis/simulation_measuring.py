@@ -35,6 +35,7 @@ def measure_encoders(
     ib_optimal_encoders: np.ndarray,
     ib_optimal_betas: np.ndarray,
     curve_data: pd.DataFrame,
+    optima_eus: list[float],
     ) -> SimulationMeasurement:
 
     # Compute value of IB objective funcion achieved by optima
@@ -129,16 +130,15 @@ def measure_encoders(
                 )
 
             ####################################################################
-            # Record complexity, accuracy, etc.
+            # Record additional data of epsilon-fitted system
             ####################################################################
-                        
+            min_epsilon_complexity, min_epsilon_accuracy, min_epsilon_distortion, min_epsilon_mse = curve_data[["complexity", "accuracy", "distortion", "mse"]].values[min_ind]
+            min_epsilon_eu_gamma = optima_eus[min_ind]
 
             # Find the gNID of the epsilon-fitted system
-            gnids_to_curve = [
-                information.gNID(encoder, opt_enc, g.prior) for opt_enc in ib_optimal_encoders
-            ]
             optimal_encoder = ib_optimal_encoders[min_ind]
-            gnid = information.gNID(encoder, optimal_encoder)
+            min_epsilon_gnid = information.gNID(encoder, optimal_encoder, g.prior)
+            min_epsilon_nid = information.NID(encoder, optimal_encoder, g.prior)
 
             ####################################################################
             # Append Observation 
@@ -159,9 +159,17 @@ def measure_encoders(
                 mse,
                 eu_gamma,
                 kl_eb,
+
                 min_epsilon,
+                min_ind,
                 min_epsilon_beta,
-                gnid,
+                min_epsilon_complexity,
+                min_epsilon_accuracy,
+                min_epsilon_distortion,
+                min_epsilon_mse,
+                min_epsilon_eu_gamma,
+                min_epsilon_gnid,
+                min_epsilon_nid,
             )
             observations.append(observation)
             fitted_encoders.append(fitted_opt)
@@ -177,9 +185,17 @@ def measure_encoders(
         "mse",
         "eu_gamma",
         "kl_eb",
+
         "min_epsilon",
+        "min_epsilon_index",
         "min_epsilon_beta",
-        "min_gnid",
+        "min_epsilon_complexity",
+        "min_epsilon_accuracy",
+        "min_epsilon_distortion",
+        "min_epsilon_mse",
+        "min_epsilon_eu_gamma",
+        "min_epsilon_gnid",  
+        "min_epsilon_nid",
     ]
 
     trajectory_dataframe = pd.DataFrame(
@@ -215,4 +231,3 @@ def get_optimal_encoders_eu(g: Game, optimal_encoders: np.ndarray) -> list[float
             ) * g.utility
         ) for encoder in tqdm(optimal_encoders, desc="computing eu of optima")
     ]
-

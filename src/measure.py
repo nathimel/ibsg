@@ -49,7 +49,10 @@ def main(config: DictConfig):
 
     ##########################################################################
     # Get all measurements
-    ##########################################################################    
+    ##########################################################################  
+
+
+    optima_eus: list[float] = get_optimal_encoders_eu(g, optimal_encoders)
     measurement = measure_encoders(
         g,
         trajectory_encoders,
@@ -58,10 +61,10 @@ def main(config: DictConfig):
         optimal_encoders,
         betas,
         curve_data,
+        optima_eus,
     )
     traj_data: pd.DataFrame = measurement.trajectory_dataframe
     fitted_optima: np.ndarray = measurement.fitted_encoders
-    optima_eus: list[float] = get_optimal_encoders_eu(g, optimal_encoders)
 
     ##########################################################################
     # Write data

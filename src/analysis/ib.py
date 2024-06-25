@@ -12,6 +12,7 @@ from misc.tools import normalize_rows
 
 from omegaconf import DictConfig
 from game.game import Game
+from tqdm import tqdm
 
 
 def ib_encoder_to_measurements(
@@ -129,7 +130,7 @@ def ib_encoder_to_measurements(
 from .betas import dev_betas, default_betas  # this is hard-codey
 
 
-def get_bottleneck(config: DictConfig) -> optimizers.IBResult:
+def get_bottleneck(config: DictConfig) -> list[optimizers.IBResult]:
     """Compute the `(complexity, accuracy, comm_cost)` values and optimal encoders corresponding to an Information Bottleneck theoretical bound.
 
     Args:
@@ -175,3 +176,18 @@ def get_rd_curve(config: DictConfig) -> list[tuple[float]]:
         ensure_monotonicity=True,
     ).get_results()
     return [(item.rate, item.distortion) for item in results if item is not None]
+
+# Helper
+def get_optimal_encoders_mse(g: Game, optimal_encoders: np.ndarray) -> list[float]:
+    return  [
+        # Mean squared error = sum(prior * (optimal_team * distance))
+        np.sum(
+            g.prior * (
+                g.meaning_dists @ (
+                    encoder @ ib_optimal_decoder(
+                        encoder, g.prior, g.meaning_dists
+                    )
+                ) @ g.meaning_dists 
+            ) * g.dist_mat
+        ) for encoder in tqdm(optimal_encoders, desc="computing mse of optima")
+    ]

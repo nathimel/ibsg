@@ -5,7 +5,7 @@ import os
 import numpy as np
 
 from omegaconf import DictConfig, OmegaConf
-from analysis.ib import get_bottleneck, get_rd_curve
+from analysis.ib import get_bottleneck, get_rd_curve, get_optimal_encoders_mse
 from game.game import Game
 from misc import util
 
@@ -45,9 +45,7 @@ def main(config: DictConfig):
             ]
         )
 
-        util.save_points_df(
-            curve_fn,
-            util.points_to_df(
+        curve_data = util.points_to_df(
                 ib_points,
                 columns=[
                     "complexity",
@@ -55,7 +53,14 @@ def main(config: DictConfig):
                     "distortion",
                     "beta",
                 ],
-            ),
+        )
+        # Add mse to ib curve
+        optima_mse: list[float] = get_optimal_encoders_mse(g, [item.qxhat_x for item in ib_results])
+        curve_data["mse"] = optima_mse
+
+        util.save_points_df(
+            curve_fn,
+            curve_data,
         )
         util.save_ndarray(encoders_fn, np.stack(encoders))
         util.save_ndarray(betas_save_fn, np.array(betas))
