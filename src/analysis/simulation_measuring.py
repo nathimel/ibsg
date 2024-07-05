@@ -144,9 +144,8 @@ def measure_encoders(
             # Append Observation 
             ####################################################################
 
-            iteration = recorded_step
-
             # aliases
+            iteration = recorded_step            
             min_epsilon = fitted_eps
             min_epsilon_beta = fitted_beta
 

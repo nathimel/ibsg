@@ -1,0 +1,6 @@
+heatmap of gamma vs beta
+colored by some score (min epsilon, gnid, nid etc)
+that is achieved by running one step of the dynamics on the solution for beta
+
+we can do the reverse too:
+gamma vs. beta, colored by some score that is achieved by running one step of BA on the solution for beta
