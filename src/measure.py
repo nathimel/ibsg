@@ -79,6 +79,12 @@ def main(config: DictConfig):
     curve_data["eu"] = optima_eus
     util.save_points_df(fullpath(fps.curve_eus_save_fn), curve_data[["beta", "eu"]])
 
+    # Save fitted optima for a trajectory to npz binary
+    np.savez_compressed(
+        fps.nearest_optimal_save_fn,
+        **{f"run_{run_i}": encs for run_i, encs in enumerate(fitted_optima)},
+    )
+    print(f"Saved all fitted optima across rounds and runs to {os.path.join(os.getcwd(), fps.nearest_optimal_save_fn)}")
 
     # Inspect a single epsilon-fitted plot
     if config.simulation.inspect_eps:

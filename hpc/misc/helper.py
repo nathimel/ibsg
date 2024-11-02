@@ -18,11 +18,14 @@ overrides = [
     "simulation.dynamics.max_its=100000.0",
     "simulation.dynamics.threshold=0.0001",
     "simulation.multiprocessing=False",
+    "plotting.generate_movie_plots=True",
+    # "plotting.generate_movies=True", # HPC doesn't have FFMPEG anyway
 ]
 
 # Configs to manipulate ... we could use sys argv
 ##############################################################################
-gammas = np.logspace(-10, 1, 100)
+# gammas = np.logspace(-8, 1, 100)
+gammas = [0.] + np.logspace(-8, 1, 100).tolist() + [1e100]
 seeds = range(8)
 ##############################################################################
 

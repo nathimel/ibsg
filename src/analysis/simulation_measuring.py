@@ -1,5 +1,5 @@
 """Various methods for analyzing simulations, centered around studying the efficiency of emergent systems over their trajectories."""
-
+import warnings
 import numpy as np
 import pandas as pd
 
@@ -100,7 +100,8 @@ def measure_encoders(
                 axis=1,  # take entropy of meanings, i.e. sum over 2nd axis
                 base=2,
             )
-            # if np.any(np.isinf(kl_vec)):
+            if np.any(np.isinf(kl_vec)):
+                warnings.warn(f"Infinite kl divergence at iteration {recorded_step}")
                 # breakpoint()
             # Take expectation over p(w)
             pw = probability.marginalize(encoder, g.meaning_dists @ g.prior)
@@ -144,8 +145,9 @@ def measure_encoders(
             # Append Observation 
             ####################################################################
 
+            iteration = recorded_step
+
             # aliases
-            iteration = recorded_step            
             min_epsilon = fitted_eps
             min_epsilon_beta = fitted_beta
 

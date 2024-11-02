@@ -73,6 +73,8 @@ class Game:
         self.ib_decoders: list[np.ndarray] = []
         self.steps_recorded = []  # for bookkeeping above
 
+        # If we really need to, we can add sender_delta and receiver_delta to observations above
+
         self.__dict__.update(**kwargs)
 
     @classmethod

@@ -58,7 +58,7 @@ def main(config):
                 faceted_tiles_fn=None,
                 lines_dir=moviepath(run, fps.encoder_line_plots_dir),
                 tiles_dir=moviepath(run, fps.encoder_tile_plots_dir),
-                individual_file_prefix="round",
+                individual_file_prefix="step_record",
                 title_nums=steps_recorded_run,
             )
         else:

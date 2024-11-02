@@ -1,2 +1,0 @@
-slurmstepd: error: *** JOB 23105122 ON hpc3-19-12 CANCELLED AT 2023-08-06T16:27:44 ***
-slurmstepd: error: Detected 1500 oom_kill events in StepId=23105122.batch. Some of the step tasks have been OOM Killed.

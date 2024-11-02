@@ -33,10 +33,14 @@ steps_recorded_save_fn: steps_recorded.npz
 
 curve_eus_save_fn: curve_eus.csv # expected utility relative to gamma of all optima, to be merged with curve_data later
 
+# Permutation baseline 
+permuted_trajectory_points_save_fn: permuted_trajectory_points.csv
+permuted_nearest_optimal_save_fn: permuted_nearest_optimal.npz
+
 variant_points_save_fn: variant_points.csv
 final_encoders_save_fn: final_encoders.npy # final encoders
 nearest_optimal_points_save_fn: nearest_optimal_points.csv
-nearest_optimal_save_fn: nearest_optimal_encoders.npy # most similar optimal encoders
+nearest_optimal_save_fn: nearest_optimal_encoders.npz # most similar optimal encoders; encoder, per step per run
 approximated_encoders_save_fn: approximated_encoders.npy # distributions constructed via sampling of the final encoders
 approximated_simulation_points_save_fn: approximated_simulation_points.csv # their corresponding points
 

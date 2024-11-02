@@ -196,10 +196,10 @@ def main(config):
     # nearest IB-optimal encoders
     nearopt_encoders_fn = fullpath(fps.nearest_optimal_save_fn)
     if os.path.exists(nearopt_encoders_fn):
-        # pass
-        # Can't work on the below until we sort out the epsilon fit
+        # some bs to get the encoders across iterations
+        nearopt_encoders = next(iter(np.load(nearopt_encoders_fn).values()))
         generate_encoder_plots(
-            np.load(nearopt_encoders_fn),
+            nearopt_encoders,
             g.prior,
             fullpath(fps.nearest_optimal_faceted_lines_plot_fn),
             fullpath(fps.nearest_optimal_faceted_tiles_plot_fn),

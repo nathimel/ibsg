@@ -1,6 +1,0 @@
-./hpc/scripts/curve.sh: line 16: 2133170 Killed                  python src/curve.py "$@"
-
-real	189m59.973s
-user	0m41.367s
-sys	0m3.931s
-slurmstepd: error: Detected 1 oom_kill event in StepId=23104650.batch. Some of the step tasks have been OOM Killed.

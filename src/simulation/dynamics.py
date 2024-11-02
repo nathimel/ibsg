@@ -251,7 +251,8 @@ class ReplicatorDynamics(Dynamics):
         its = 0
         converged = False
         progress_bar = tqdm(total=self.max_its)
-        while not converged:
+        while its <= self.max_its:
+        # while not converged:
             its += 1
             progress_bar.update(1)
 
@@ -270,7 +271,8 @@ class ReplicatorDynamics(Dynamics):
             # We record the first 200 steps and then 100 evenly spaced steps between the current and 20k
             # if (its < 200) or (its % 2000 == 0) or converged:
             # logspaced
-            if its in self.steps_to_record or converged:
+            # NOTE: New logic: don't check for convergence
+            if its in self.steps_to_record:
                 # Record data from before evolution step + convergence check
                 self.game.ib_encoders.append(
                     rows_zero_to_uniform(normalize_rows(P_prev))
