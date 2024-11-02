@@ -8,9 +8,12 @@
 # THis gets big!
 analysis_data/all_data.csv
 
+# Don't keep all slurm outputs
+hpc/outputs/*
+
 # Movies
 **/*.mp4
-**/*round_*.png
+# **/*round_*.png
 
 # Consider excluding all_data.csv, since that is auto-reproduced by sweeping over repo anyway
 # analysis_data/all_data.csv 
