@@ -24,18 +24,8 @@ This codebase uses [hydra](https://hydra.cc/) to organize configurations and out
 
 Here is an example command that will execute an experiment, overriding the hydra config defaults.
 
-TODO: update to reflect the corrected parameterization, where gamma is now the raw value instead of exponent, and meaning_dist_gamma is now meaning_dist_variance, and population_init is now temp, but is typically null, and imprecise_imitation_gamma should be alpha, and there should be a warning or error thrown when it does not equal meaning_dist_variance.
-
 ```    
-./scripts/run.sh -m \
-"game.universe=2ball_300" \
-"game.prior=2ball_300_power_2" \
-"game.num_signals=300" \
-"game.discriminative_need_gamma=0" \
-"simulation.num_runs=8" \
-"simulation.dynamics.population_init_gamma=range(-3,4)" \
-"simulation.dynamics.imprecise_imitation_gamma=range(-3, 4)" \
-"simulation/dynamics=replicator_diffusion, nowak_krakauer"
+TODO
 ```
 
 Description of command line args, in order of appearance:
@@ -43,35 +33,9 @@ Description of command line args, in order of appearance:
 - `./scripts/run.sh -m `
     - The `-m` flag indicates to hydra that we are performing a 'multirun' sweep over configs.
 
-- The next three overrides specify parameters of both the signaling games, and of the IB theoretical bound (see [https://github.com/nathimel/ibsg/tree/main/src/game/game.py](src/game/game.py)). Note that all overrides can be specified in any order.
-- `game.universe=2ball_300`
-    - We specify a universe of 300 referents sampled from a unit sphere in 3 dimensions. This universe is loaded from a CSV file at [data/universe/2ball_300.csv](https://github.com/nathimel/ibsg/tree/main/data/universe/2cube_300.csv) folder, so we pass the filename using `"game.universe=2ball_300"` (see the [nballs](https://github.com/nathimel/ibsg/tree/main/src/notebooks/old_analyses/nballs.ipynb) notebook for some visualization). You can encode a universe with any structure you like into a csv file; the default universe is just $\\{1, \dots, 10\\}$.
-- `game.prior=2ball_300_power_2`
-    - We specify a power-law distributed prior over meanings at [data/prior/2ball_300_power_2.csv](data/prior/2ball_300_power_2.csv) (see the [power_prior](https://github.com/nathimel/ibsg/tree/main/src/notebooks/old_analyses/power_prior.ipynb) notebook for visualizations). Use any prior you like, encoded as a CSV file. If we omit this, a uniform prior will be inferred.
-- `game.num_signals=300`
-    - We let Sender and Receiver have 300 possible signals for all rounds of the signaling game (thus allowing for perfectly accurate languages).
 
+For each of the N jobs, unique folders will be generated and outputs will be written to them under [multirun](https://github.com/nathimel/ibsg/tree/main/multirun/). These folders are hierarchically organized by the parameters described above.
 
-- `game.discriminative_need_gamma=0`
-    - We set the degree of tolerable pragmatic slack / discriminative need in a signaling game to be moderate. This is the one integer parameter for payoff / utility / fitness in the signaling game. It will be the exponent of $10$, i.e., the actual parameter supplied to the utility function is $1$. (see `generate_sim_matrix` at [src/game/perception.py](https://github.com/nathimel/ibsg/tree/main/src/game/perception.py)).
-
-- `simulation.num_runs=8`
-    - We simulate evolution eight different times. Since some evolutionary dynamics are nondeterministic, this can be important. By default, these runs are executed in parallel using all available CPU cores. The number of processes to run, and whether to multiprocess, can be overriden. See [conf/simulation/basic.yaml](https://github.com/nathimel/ibsg/tree/main/conf/simulation/basic.yaml).
-
-- The next three overrides ask hydra to *sweep* over different parameters, holding all other parameters equal. Sweeps are performed locally and serially (but see https://hydra.cc/docs/plugins/joblib_launcher/).
-
-- `simulation.dynamics.population_init_gamma=range(-3,4)`
-    - We seep over different initial conditions of the initial population of senders and receivers The integers in this list to sweep  (-3, -2, ..., 3) correspond to an exponent of ten for an energy-based initialization (see [random_stochastic_matrix](https://github.com/nathimel/ibsg/tree/main/src/misc/tools.py)). We have therefore now requested that hydra execute 7 jobs, each of them running 8 (runs) simulations.
-
-- `simulation.dynamics.imprecise_imitation_gamma=range(-3, 4)`
-    - We sweep over different levels of perceptual/mutation noise in the signaling game dynamics (see [src/game/perception.py](https://github.com/nathimel/ibsg/tree/main/src/game/perception.py)). We have therefore now requested that hydra execute 49 jobs.
-
-- `simulation/dynamics=replicator_diffusion, nowak_krakauer`
-    - We sweep over two different dynamics inspired by the replicator equation (see [src/simulation/dynamics.py](https://github.com/nathimel/ibsg/tree/main/src/simulation/dynamics.py)). We now have requested 98 jobs (however, the IB theoretical bound is appropriate for all 98 simulation sweeps, so it is only estimated once).
-
-For each of the 98 jobs, unique folders will be generated and outputs will be written to them under [multirun](https://github.com/nathimel/ibsg/tree/main/multirun/). These folders are hierarchically organized by the parameters described above.
-
-Happy exploring!
 
 </details>
 
