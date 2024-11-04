@@ -119,7 +119,7 @@ class Game:
             ).tolist()
 
         universe = build_universe(referents_df, prior_df)
-        prior = universe.prior_numpy()
+        prior = universe.prior_numpy
         if not np.isclose(prior.sum(), np.array([1.0])):
             raise Exception(f"Prior does not sum to 1.0. (sum={prior.sum()})")
 

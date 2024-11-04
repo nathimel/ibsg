@@ -4,7 +4,7 @@ This repository contains code for constructing sim-max games, simulating  dynami
 
 ## Replicating
 
-The full experiment involves fairly extensive parameter sweeping. This codebase is integrated with a [SLURM](https://slurm.schedmd.com/quickstart.html) job scheduler to efficiency run many simulations in parallel. The top-level script to run the full experiment is in [hpc/scripts/array.sub]. This reads over 800 parameter combinations specified in [hpc/configs/sim.txt] and submits one job per line.
+The full experiment involves fairly extensive parameter sweeping. This codebase is integrated with a [SLURM](https://slurm.schedmd.com/quickstart.html) job scheduler to efficiency run many simulations in parallel. The top-level script to run the full experiment is in [hpc/scripts/array.sub](hpc/scripts/array.sub). This reads over 800 parameter combinations specified in [hpc/configs/sim.txt](hpc/configs/sim.txt) and submits one job per line.
 
 To run with different parameter configurations, you can use the [hpc/misc/helper.py] script to automatically write to the lines of a config file with the combinations you want.
 
