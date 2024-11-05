@@ -1,0 +1,9 @@
+universe: 100
+prior: 1.0e-08
+num_signals: 100
+distance: squared_dist
+discriminative_need_gamma: 0.5
+meaning_dist_pi: 0.5
+num_processes: 6
+overwrite_curves: false
+dev_betas: false

@@ -491,10 +491,20 @@ class ImpreciseConditionalImitation(ReplicatorDynamics):
         self.Q = copy.deepcopy(receiver_new)
         self.warn_if_all_zero()
 
+class ScrambledUtilityICI(ImpreciseConditionalImitation):
+    """A baseline dynamical process that works like the Imprecise Conditional Imitation dynamic, but has a permuted utility matrix."""
+    def __init__(self, game: Game, **kwargs) -> None:
+        super().__init__(game, **kwargs)
+        # breakpoint()
+        self.game.utility = game.utility[np.random.permutation(game.utility.shape[0])]
+        # NOTE: I don't understand why with scrambled utility and scrambled meaning dists, the dynamics still reaches very very optimal systems.
+        # self.confusion = self.confusion[np.random.permutation(self.confusion.shape[0])]
+        # breakpoint()
 
 dynamics_map = {
     "moran_process": MoranProcess,
     "nowak_krakauer": NowakKrakauerDynamics,
     "replicator_diffusion": ReplicatorDiffusionDynamics,
     "imprecise_conditional_imitation": ImpreciseConditionalImitation,
+    "scrambled_utility_ici": ScrambledUtilityICI,
 }

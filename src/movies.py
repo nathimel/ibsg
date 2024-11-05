@@ -71,7 +71,7 @@ def main(config):
 
             lines_mp4_fn = os.path.join(movie_dir, "lines.mp4")
             os.system(
-                f"ffmpeg -f image2 -framerate 10 -i movies/run_{run}/encoder_line_plots/round_%d.png -vcodec mpeg4 -y {lines_mp4_fn}"
+                f"ffmpeg -f image2 -framerate 10 -i movies/run_{run}/encoder_line_plots/step_record_%d.png -vcodec mpeg4 -y {lines_mp4_fn}"
             )
 
             # print(f"Generated movie at {os.path.join(os.getcwd(), tiles_mp4_fn)}.")
