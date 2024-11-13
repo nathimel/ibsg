@@ -12,8 +12,15 @@ def random_stochastic_matrix(shape: tuple[int], beta: float = 1e-2):
     if beta is not None:
         energies = beta * np.random.randn(*shape)
         return softmax(energies, axis=-1)
-    return random_uniform_stochastic_matrix(shape)
+    return random_uniform_stochastic_matrices(shape)
 
+
+def random_uniform_stochastic_matrices(shape: tuple[int]) -> np.ndarray:
+    # Base case: if shape is 2D, create the stochastic matrix
+    if len(shape) == 2:
+        return random_uniform_stochastic_matrix(shape)
+    # Recursive case: if shape has more than 2 dimensions, iterate over the first dimension
+    return np.array([random_stochastic_matrix(shape[1:]) for _ in range(shape[0])])
 
 def random_uniform_stochastic_matrix(shape: tuple[int]):
     """Generate a stochastic matrix by randomly sampling uniformly from [0,1] and renormalizing."""

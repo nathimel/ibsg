@@ -59,11 +59,9 @@ The main experimental results can be reproduced by running `./scripts/run.sh`.
 
 This will perform four basic steps by running the following scripts (with the appropriate config overrides):
 
-1. Estimate the information curve
+1. Compute the IB curve
 
     `python src/curve.py`
-
-    Estimate the appropriate IB curve.
 
 2. Simulate evolution
 
@@ -71,26 +69,18 @@ This will perform four basic steps by running the following scripts (with the ap
 
     Run one or more trials of an evolutionary dynamics simulation on a sim-max game, and save the resulting data.
 
-3. Measure efficiency
+3. Measure efficiency and other data of trajectories
 
     `python src/measure.py`
 
     Measure the optimality of emergent systems w.r.t the IB  bound, record most similar theoretically optimal systems, and save resulting data.
     Optionally:
-    - approximate each emergent sender (encoder) distribution via limited sampling of its behavior. This is an exploratory simulation of how real data collection might skew efficiency measurements.
-    - generate and save hypothetical variants of the emergent systems for comparison.
 
-4. Visualize results
-
-    `python src/plot.py`
-
-    Produce plots of the emergent systems on the information plane and compare the distributions of each emergent encoder to different variants (e.g. its nearest optimal, sample-approximated, and rotated variant encoders).
-
-5. Collect the results of all multisweeps into one dataframe
+4. Collect the results of all multisweeps into one dataframe
 
     `python src/get_all_data.py`
 
-    Search recursively for the results of simulation sweeps and IB curve estimations, collect them into dataframes annotated with their appropriate parameters as columns, and write as one (long) dataframe to [all_data](analysis_data/all_data.csv) in tidy data format. This can be used to produce and directly compare plots as in [this notebook](src/notebooks/analyze.ipynb).
+    Search recursively for the results of simulation sweeps and IB curve estimations, collect them into dataframes annotated with their appropriate parameters as columns, and write as one (long) dataframe to [all_data](analysis_data/all_data.csv) in tidy data format. This can be used to produce plots as in [this notebook](src/notebooks/journal.ipynb).
     - NOTE: It is important to run this script on the same machine used to run simulations or estimate curves. The reason for this is because this script will look for numpy binaries (e.g., `betas.npy` or `optimal_encoders.npy`) generated during those steps. However, **all numpy binaries are excluded from git history** via the `.gitignore` due to large file limits. So, if you ran experiments using a remote server, you must run this script on the same server if you want perform data analysis on those experiments.
 
 ## References

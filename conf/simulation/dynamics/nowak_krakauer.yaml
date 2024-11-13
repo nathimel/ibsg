@@ -1,4 +1,3 @@
 name: nowak_krakauer
-population_size: 100
-num_samples: 10
-graph: complete # 'complete' or 'random'
+population_size: 20
+num_samples: 100

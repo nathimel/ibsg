@@ -15,6 +15,9 @@ hpc/outputs/*
 **/*.mp4
 # **/*round_*.png
 
+src/notebooks/other_movies
+src/notebooks/bound_movie
+
 # Consider excluding all_data.csv, since that is auto-reproduced by sweeping over repo anyway
 # analysis_data/all_data.csv 
 
